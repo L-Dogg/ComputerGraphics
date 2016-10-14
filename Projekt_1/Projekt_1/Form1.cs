@@ -49,23 +49,24 @@ namespace Projekt_1
 				if (curPoly.points.Count != 0)
 				{
 					var line = new Line(curPoly.points.Last(), point);
-					curPoly.lines.Add(line);
 					graphics.DrawLine(edgePen, line.start, line.end);
 					Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, new Algorithms.PlotFunction((x, y) => { graphics.FillEllipse(Brushes.Red, x, y, 1, 1); return true; }));
-					Redraw();
 
 					if (curPoly.points[0].ComparePoints(point))
 					{
 						drawing = false;
+						curPoly.lines.Add(new Line(curPoly.points.Last(), curPoly.points.First()));
 						polygons.Add(curPoly);
 						curPoly = new Polygon();
 					}
 					else
 					{
+						curPoly.lines.Add(line);
 						curPoly.points.Add(point);
 						graphics.FillEllipse(pointBrush, e.X, e.Y, pointSize, pointSize);
 					}
 
+					Redraw();
 				}
 				else
 				{

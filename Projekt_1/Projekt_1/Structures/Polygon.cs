@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bresenhams;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,7 +16,8 @@ namespace Projekt_1
         public void Draw(Graphics g)
         {
 			foreach (var line in lines)
-				g.DrawLine(Pens.Black, line.start, line.end);
+				Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, new Algorithms.PlotFunction((x, y) => { g.FillEllipse(Brushes.Black, x, y, 1, 1); return true; }));
+				
 
 			foreach (var point in points)
 				g.FillEllipse(Brushes.Red, point.X, point.Y, 5, 5);
