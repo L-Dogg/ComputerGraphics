@@ -23,6 +23,7 @@ namespace Projekt_1
 		private bool relationChanged = false;
 		#endregion
 
+		#region Operating fields
 		private Polygon operatingPolygon;
 		private Point operatingPoint;
 		private Line operatingLine;
@@ -35,10 +36,11 @@ namespace Projekt_1
 		/// </summary>
 		private Line[] adjacentEdges = new Line[2];
 
+		#endregion
+
 		private Pen edgePen = new Pen(Color.Black);
 		private Brush pointBrush = Brushes.Red;
-
-        private const int pointSize = 5;
+		private const string existingRelationMessage = "Relacja dla tej krawędzi została już zdefiniowana";
 		#endregion
 
 		public Form1()
@@ -55,6 +57,7 @@ namespace Projekt_1
 			// Pokaż menu kontekstowe:
 			if (e.Button == MouseButtons.Right)
 			{
+				SetContextMenuItems();
 				// Menu kotekstowe dla relacji
 				if (WasEdgeClicked(point))
 				{
@@ -63,7 +66,6 @@ namespace Projekt_1
 				// Podstawowe menu kontekstowe
 				else
 				{
-					SetContextMenuItems();
 					contextMenuStrip1.Show(this, point);
 				}
 				
@@ -303,7 +305,7 @@ namespace Projekt_1
 					i++;
 					adjacentEdges[0] = li;
 				}
-				else if (li != line && ((li.start == line.end) || li.end == line.end))
+				else if (li != line && (li.start == line.end || li.end == line.end))
                 {
 					i++;
 					adjacentEdges[1] = li;
@@ -332,6 +334,7 @@ namespace Projekt_1
 
 		/// <summary>
 		/// W zależności od liczby wielokątów zmienia wygląd menu kontekstowego.
+		/// W zależności od ustawienia relacji zmienia wygląd menu kontekstowego.
 		/// </summary>
 		private void SetContextMenuItems()
 		{
@@ -343,6 +346,12 @@ namespace Projekt_1
 			{
 				contextMenuStrip1.Items[1].Enabled = contextMenuStrip1.Items[2].Enabled = true;
 			}
+
+			if (operatingLine != null)
+			{
+				for (int i = 0; i < relationsContextMenu.Items.Count; i++)
+					relationsContextMenu.Items[i].Enabled = operatingLine.relation == RelationType.None;
+            }
 		}
 		#endregion
 
