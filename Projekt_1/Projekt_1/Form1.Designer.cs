@@ -34,6 +34,7 @@
 			this.usuńWielokątToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.background1 = new Projekt_1.Background();
+			this.ątToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -42,21 +43,22 @@
 			this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dodajWielokątToolStripMenuItem,
-            this.usuńWielokątToolStripMenuItem});
+            this.usuńWielokątToolStripMenuItem,
+            this.ątToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(163, 92);
 			this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
 			// 
 			// dodajWielokątToolStripMenuItem
 			// 
 			this.dodajWielokątToolStripMenuItem.Name = "dodajWielokątToolStripMenuItem";
-			this.dodajWielokątToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.dodajWielokątToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.dodajWielokątToolStripMenuItem.Text = "Dodaj wielokąt";
 			// 
 			// usuńWielokątToolStripMenuItem
 			// 
 			this.usuńWielokątToolStripMenuItem.Name = "usuńWielokątToolStripMenuItem";
-			this.usuńWielokątToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.usuńWielokątToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.usuńWielokątToolStripMenuItem.Text = "Usuń wielokąt";
 			// 
 			// background1
@@ -67,6 +69,12 @@
 			this.background1.TabIndex = 1;
 			this.background1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.background1_MouseDown);
 			this.background1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.background1_MouseMove);
+			// 
+			// ątToolStripMenuItem
+			// 
+			this.ątToolStripMenuItem.Name = "ątToolStripMenuItem";
+			this.ątToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.ątToolStripMenuItem.Text = "Przesuń wielokąt";
 			// 
 			// Form1
 			// 
@@ -88,6 +96,7 @@
 		private System.Windows.Forms.ToolStripMenuItem usuńWielokątToolStripMenuItem;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Background background1;
-    }
+		private System.Windows.Forms.ToolStripMenuItem ątToolStripMenuItem;
+	}
 }
 

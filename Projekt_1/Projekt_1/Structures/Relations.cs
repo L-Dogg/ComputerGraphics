@@ -8,6 +8,7 @@ namespace Projekt_1.Structures
 {
 	public enum RelationType
 	{
+		None,
 		Horizontal,
 		Vertical,
 		Length,

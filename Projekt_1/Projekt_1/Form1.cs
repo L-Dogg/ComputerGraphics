@@ -13,8 +13,14 @@ namespace Projekt_1
 		private Polygon curPoly = new Polygon();
 		private List<Polygon> polygons = new List<Polygon>();
 
-		private bool moving = false;
+		#region States
+		private bool movingVertex = false;
 		private bool drawing = false;
+		private bool deletingPolygon = false;
+		private bool movingPolygon = false;
+		private bool userWantsToMovePolygon = false;
+		#endregion
+
 		private Polygon operatingPolygon;
 		private Point pointToMove;
 		private Line lineToDivide;
@@ -27,7 +33,7 @@ namespace Projekt_1
 		private Brush pointBrush = Brushes.Red;
 
         private const int pointSize = 5;
-		#endregion 
+		#endregion
 
 		public Form1()
 		{
@@ -40,10 +46,28 @@ namespace Projekt_1
 		private void background1_MouseDown(object sender, MouseEventArgs e)
 		{
 			var point = new Point(e.X, e.Y);
+			// Pokaż menu kontekstowe:
 			if (e.Button == MouseButtons.Right)
 			{
 				contextMenuStrip1.Show(this, point);
 			}
+			// Usuwanie wierzchołka LMB + CTRL
+			else if (e.Button == MouseButtons.Left && Form.ModifierKeys == Keys.Control && WasVertexClicked(point))
+			{
+				polygons.Remove(operatingPolygon);
+				if (operatingPolygon.points.Count == 3)
+				{
+					Redraw();
+					return;
+				}
+				FindAdjacentPoints(pointToMove, operatingPolygon);
+				operatingPolygon.points.Remove(pointToMove);
+				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
+				operatingPolygon.lines.Add(new Line(adjacentPoints[0], adjacentPoints[1]));
+				polygons.Add(operatingPolygon);
+				Redraw();
+			}
+			// Zwykłe rysowanie
 			else if (drawing && e.Button == MouseButtons.Left)
 			{
 				if (curPoly.points.Count != 0)
@@ -73,7 +97,33 @@ namespace Projekt_1
 					point.Draw(background1.BackgroundImage as Bitmap);
 				}
 			}
-			else if (!drawing && !moving && e.Button == MouseButtons.Left && WasEdgeClicked(point))
+			// Tryb usuwania wielokąta (LMB na dowolną część wielokąta)
+			else if (deletingPolygon && e.Button == MouseButtons.Left && (WasEdgeClicked(point) || WasVertexClicked(point)))
+			{
+				deletingPolygon = false;
+				polygons.Remove(operatingPolygon);
+				Redraw();
+			}
+			// Włączenie trybu przesuwania wierzchołka
+			else if (!drawing && !movingPolygon && !movingVertex && e.Button == MouseButtons.Left && WasVertexClicked(point))
+			{
+				movingVertex = true;
+				polygons.Remove(operatingPolygon);
+				operatingPolygon.points.Remove(pointToMove);
+				FindAdjacentPoints(pointToMove, operatingPolygon);
+				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
+			}
+			// Wyłączenie trybu przesuwania wierzchołka
+			else if (movingVertex && e.Button == MouseButtons.Left)
+			{
+				movingVertex = false;
+				operatingPolygon.points.Add(point);
+				operatingPolygon.lines.Add(new Line(point, adjacentPoints[0]));
+				operatingPolygon.lines.Add(new Line(point, adjacentPoints[1]));
+				polygons.Add(operatingPolygon);
+			}
+			// Tryb dodawania wierzchołka w środku krawędzi
+			else if (!drawing && !movingVertex && e.Button == MouseButtons.Left && WasEdgeClicked(point))
 			{
 				operatingPolygon.lines.Remove(lineToDivide);
 				var midPoint = new Point(Math.Min(lineToDivide.start.X, lineToDivide.end.X) + Math.Abs(lineToDivide.start.X - lineToDivide.end.X) / 2, 
@@ -85,21 +135,18 @@ namespace Projekt_1
 				polygons.Add(operatingPolygon);
 				Redraw();
 			}
-			else if (!drawing && !moving && e.Button == MouseButtons.Left && WasVertexClicked(point))
+			// Rozpoczęcie przesuwania wierzchołka
+			else if (!drawing && userWantsToMovePolygon && e.Button == MouseButtons.Left && WasVertexClicked(point))
 			{
-				moving = true;
-				polygons.Remove(operatingPolygon);
-				operatingPolygon.points.Remove(pointToMove);
-				FindAdjacentPoints(pointToMove, operatingPolygon);
-				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
-			}
-			else if (moving && e.Button == MouseButtons.Left)
+				userWantsToMovePolygon = false;
+				movingPolygon = true;
+            }
+			// Zakończenie przesuwania wielokąta
+			else if (!drawing && movingPolygon && e.Button == MouseButtons.Left)
 			{
-				moving = false;
-				operatingPolygon.points.Add(point);
-				operatingPolygon.lines.Add(new Line(point, adjacentPoints[0]));
-				operatingPolygon.lines.Add(new Line(point, adjacentPoints[1]));
+				movingPolygon = false;
 				polygons.Add(operatingPolygon);
+				Redraw();
 			}
         }
 
@@ -108,6 +155,15 @@ namespace Projekt_1
 			if (e.ClickedItem == contextMenuStrip1.Items[0])
 			{
 				this.drawing = true;
+			}
+			if (e.ClickedItem == contextMenuStrip1.Items[1])
+			{
+				this.deletingPolygon = true;
+			}
+			if (e.ClickedItem == contextMenuStrip1.Items[2])
+			{
+				this.userWantsToMovePolygon = true;
+				polygons.Remove(operatingPolygon);
 			}
 		}
 
@@ -118,7 +174,7 @@ namespace Projekt_1
 				Redraw();   
 				Algorithms.Line(curPoly.points.Last().X, curPoly.points.Last().Y, e.Location.X, e.Location.Y, background1.BackgroundImage as Bitmap);
 			}
-			else if (moving)
+			else if (movingVertex)
 			{
 				var point = new Point(e.X, e.Y);
 				Redraw();
@@ -126,11 +182,23 @@ namespace Projekt_1
 				Algorithms.Line(adjacentPoints[0].X, adjacentPoints[0].Y, e.Location.X, e.Location.Y, background1.BackgroundImage as Bitmap);
 				Algorithms.Line(adjacentPoints[1].X, adjacentPoints[1].Y, e.Location.X, e.Location.Y, background1.BackgroundImage as Bitmap);
 			}
+			else if (movingPolygon)
+			{
+				var xDiff = pointToMove.X - e.X;
+				var yDiff = pointToMove.Y - e.Y;
+				operatingPolygon.points.ForEach((Point p) => { p.X += xDiff; p.Y += yDiff; });
+				operatingPolygon.lines.ForEach((Line line) => { line.end.X += xDiff; line.end.Y += yDiff;
+																line.start.X += xDiff; line.start.Y += yDiff; });
+				Redraw();
+			}
 		}
 
 		#endregion
 
 		#region Private Methods
+		/// <summary>
+		/// Ponowne wyrenderowanie grafiki.
+		/// </summary>
 		private void Redraw()
         {
 			background1.BackgroundImage.Dispose();
@@ -138,17 +206,27 @@ namespace Projekt_1
 			
 			curPoly.Draw(bmp);
 
-            foreach (var poly in this.polygons)
+			// Optymalizacja (nie rysujemy wielokątów które się nie zmieniły)
+			if (movingPolygon || movingVertex)
+			{
+				operatingPolygon.Draw(bmp);
+				background1.BackgroundImage = bmp;
+				return;
+			}
+
+			foreach (var poly in this.polygons)
             {
 				poly.Draw(bmp);
             }
-			if (moving)
-			{
-				operatingPolygon.Draw(bmp);
-			}
 			background1.BackgroundImage = bmp;
-        }
+		}
 
+		/// <summary>
+		/// Sprawdzenie czy został kliknięty pewien wierzchołek.
+		/// W polach klasy zapisuje informacje, który wierzchołek jakiego wielokąta został kliknięty.
+		/// </summary>
+		/// <param name="clicked">Punkt kliknięcia.</param>
+		/// <returns>Czy jakikolwiek wierzchołek został kliknięty.</returns>
 		private bool WasVertexClicked(Point clicked)
 		{
 			foreach (var poly in this.polygons)
@@ -166,6 +244,12 @@ namespace Projekt_1
 			return false;			
 		}
 
+		/// <summary>
+		/// Sprawdzenie czy została kliknięty pewna krawędź.
+		/// W polach klasy zapisuje informacje, która krawędź jakiego wielokąta został kliknięty.
+		/// </summary>
+		/// <param name="clicked">Punkt kliknięcia.</param>
+		/// <returns>Czy jakakolwiek krawędź została kliknięta.</returns>
 		private bool WasEdgeClicked(Point clicked)
 		{
 			foreach (var poly in polygons)
@@ -183,6 +267,11 @@ namespace Projekt_1
 			return false;
 		}
 
+		/// <summary>
+		/// Znajduje punkty będące końcami odcinków o poczatku w punkcie p.
+		/// </summary>
+		/// <param name="p">Początek odcinka.</param>
+		/// <param name="poly">Rozważany wielokąt.</param>
 		private void FindAdjacentPoints(Point p, Polygon poly)
 		{
 			int i = 0;
