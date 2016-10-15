@@ -60,10 +60,11 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Structures\Line.cs" />
-    <Compile Include="Structures\PointComparer.cs" />
+    <Compile Include="Structures\PointExtender.cs" />
     <Compile Include="Structures\Polygon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\Relations.cs" />
     <EmbeddedResource Include="Background.resx">
       <DependentUpon>Background.cs</DependentUpon>
     </EmbeddedResource>

@@ -13,14 +13,14 @@ namespace Projekt_1
 		public List<Point> points = new List<Point>();
 		public List<Line> lines = new List<Line>();
 
-        public void Draw(Graphics g)
+        public void Draw(Bitmap bmp)
         {
 			foreach (var line in lines)
-				Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, new Algorithms.PlotFunction((x, y) => { g.FillEllipse(Brushes.Black, x, y, 1, 1); return true; }));
-				
-
+				Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, bmp);
+			
 			foreach (var point in points)
-				g.FillEllipse(Brushes.Red, point.X, point.Y, 5, 5);
+				point.Draw(bmp);
+			
 		}
 	}
 }

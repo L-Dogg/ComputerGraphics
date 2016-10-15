@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Bresenhams;
+using System;
 
 namespace Projekt_1
 {
@@ -14,14 +15,14 @@ namespace Projekt_1
 
 		private bool moving = false;
 		private bool drawing = false;
-		private Polygon polygonToMove;
+		private Polygon operatingPolygon;
 		private Point pointToMove;
+		private Line lineToDivide;
 		/// <summary>
-		/// Punkty, któr
+		/// Punkty, które leżą przy krawędziach kończących się w obecenie przeciąganym punkcie.
 		/// </summary>
 		private Point[] adjacentPoints = new Point[2];
 
-		private Graphics graphics;
 		private Pen edgePen = new Pen(Color.Black);
 		private Brush pointBrush = Brushes.Red;
 
@@ -32,7 +33,6 @@ namespace Projekt_1
 		{
 			InitializeComponent();
 			background1.BackgroundImage = new Bitmap(background1.Size.Width, background1.Size.Height); ;
-			graphics = Graphics.FromImage(background1.BackgroundImage);
 		}
 
 		#region MouseEvents
@@ -49,8 +49,7 @@ namespace Projekt_1
 				if (curPoly.points.Count != 0)
 				{
 					var line = new Line(curPoly.points.Last(), point);
-					graphics.DrawLine(edgePen, line.start, line.end);
-					Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, new Algorithms.PlotFunction((x, y) => { graphics.FillEllipse(Brushes.Red, x, y, 1, 1); return true; }));
+					Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, background1.BackgroundImage as Bitmap);
 
 					if (curPoly.points[0].ComparePoints(point))
 					{
@@ -63,7 +62,7 @@ namespace Projekt_1
 					{
 						curPoly.lines.Add(line);
 						curPoly.points.Add(point);
-						graphics.FillEllipse(pointBrush, e.X, e.Y, pointSize, pointSize);
+						point.Draw(background1.BackgroundImage as Bitmap);
 					}
 
 					Redraw();
@@ -71,24 +70,36 @@ namespace Projekt_1
 				else
 				{
 					curPoly.points.Add(point);
-					graphics.FillEllipse(pointBrush, e.X, e.Y, pointSize, pointSize);
+					point.Draw(background1.BackgroundImage as Bitmap);
 				}
 			}
-			else if (!drawing && !moving && e.Button == MouseButtons.Left && WasVertexClicked())
+			else if (!moving && !drawing && e.Button == MouseButtons.Left && WasEdgeClicked(point))
+			{
+				operatingPolygon.lines.Remove(lineToDivide);
+				var midPoint = new Point(Math.Min(lineToDivide.start.X, lineToDivide.end.X) + Math.Abs(lineToDivide.start.X - lineToDivide.end.X) / 2, 
+					Math.Min(lineToDivide.start.Y, lineToDivide.end.Y) +  Math.Abs(lineToDivide.start.Y - lineToDivide.end.Y) / 2);
+				operatingPolygon.lines.Add(new Line(midPoint, lineToDivide.end));
+				operatingPolygon.lines.Add(new Line(midPoint, lineToDivide.start));
+				operatingPolygon.points.Add(midPoint);
+				polygons.Remove(operatingPolygon);
+				polygons.Add(operatingPolygon);
+				Redraw();
+			}
+			else if (!drawing && !moving && e.Button == MouseButtons.Left && WasVertexClicked(point))
 			{
 				moving = true;
-				polygons.Remove(polygonToMove);
-				polygonToMove.points.Remove(pointToMove);
-				FindAdjacentPoints(pointToMove, polygonToMove);
-				polygonToMove.lines = polygonToMove.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
+				polygons.Remove(operatingPolygon);
+				operatingPolygon.points.Remove(pointToMove);
+				FindAdjacentPoints(pointToMove, operatingPolygon);
+				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
 			}
 			else if (moving && e.Button == MouseButtons.Left)
 			{
 				moving = false;
-				polygonToMove.points.Add(point);
-				polygonToMove.lines.Add(new Line(point, adjacentPoints[0]));
-				polygonToMove.lines.Add(new Line(point, adjacentPoints[1]));
-				polygons.Add(polygonToMove);
+				operatingPolygon.points.Add(point);
+				operatingPolygon.lines.Add(new Line(point, adjacentPoints[0]));
+				operatingPolygon.lines.Add(new Line(point, adjacentPoints[1]));
+				polygons.Add(operatingPolygon);
 			}
         }
 
@@ -105,50 +116,71 @@ namespace Projekt_1
 			if (drawing && curPoly.points.Any())
 			{
 				Redraw();   
-				graphics.DrawLine(edgePen, curPoly.points.Last(), e.Location);
+				Algorithms.Line(curPoly.points.Last().X, curPoly.points.Last().Y, e.Location.X, e.Location.Y, background1.BackgroundImage as Bitmap);
 			}
 			else if (moving)
 			{
 				var point = new Point(e.X, e.Y);
 				Redraw();
-				graphics.FillEllipse(pointBrush, e.X, e.Y, pointSize, pointSize);
-				graphics.DrawLine(edgePen, adjacentPoints[0], point);
-				graphics.DrawLine(edgePen, adjacentPoints[1], point);
+				point.Draw(background1.BackgroundImage as Bitmap);
+				Algorithms.Line(adjacentPoints[0].X, adjacentPoints[0].Y, e.Location.X, e.Location.Y, background1.BackgroundImage as Bitmap);
+				Algorithms.Line(adjacentPoints[1].X, adjacentPoints[1].Y, e.Location.X, e.Location.Y, background1.BackgroundImage as Bitmap);
 			}
 		}
 
 		#endregion
 
+		#region Private Methods
 		private void Redraw()
         {
-			background1.BackgroundImage = new Bitmap(background1.Size.Width, background1.Size.Height);
-			this.graphics = Graphics.FromImage(background1.BackgroundImage);
-			curPoly.Draw(this.graphics);
+			background1.BackgroundImage.Dispose();
+			var bmp = new Bitmap(background1.Size.Width, background1.Size.Height);
+			
+			curPoly.Draw(bmp);
+
             foreach (var poly in this.polygons)
             {
-				poly.Draw(this.graphics);
+				poly.Draw(bmp);
             }
 			if (moving)
 			{
-				polygonToMove.Draw(this.graphics);
+				operatingPolygon.Draw(bmp);
 			}
+			background1.BackgroundImage = bmp;
         }
 
-		private bool WasVertexClicked()
+		private bool WasVertexClicked(Point clicked)
 		{
 			foreach (var poly in this.polygons)
 			{
 				foreach (var point in poly.points)
 				{
-					if (point.ComparePoints(point))
+					if (point.ComparePoints(clicked))
 					{
 						pointToMove = point;
-						polygonToMove = poly;
+						operatingPolygon = poly;
 						return true;
 					}
 				}
 			}
 			return false;			
+		}
+
+		private bool WasEdgeClicked(Point clicked)
+		{
+			foreach (var poly in polygons)
+			{
+				foreach (var line in poly.lines)
+				{
+					if (clicked.IsCloseToLine(line))
+					{
+						operatingPolygon = poly;
+						lineToDivide = line;
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		private void FindAdjacentPoints(Point p, Polygon poly)
@@ -165,5 +197,6 @@ namespace Projekt_1
 					return;
 			}
 		}
-    }
+		#endregion
+	}
 }

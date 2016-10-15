@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Projekt_1
 {
-	class Line
+	public class Line
 	{ 
 		public Point start, end;
 		public Line(Point _s, Point _e)

@@ -44,7 +44,7 @@
             this.dodajWielokątToolStripMenuItem,
             this.usuńWielokątToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
 			this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
 			// 
 			// dodajWielokątToolStripMenuItem
@@ -61,9 +61,9 @@
 			// 
 			// background1
 			// 
-			this.background1.Location = new System.Drawing.Point(13, 13);
+			this.background1.Location = new System.Drawing.Point(3, 2);
 			this.background1.Name = "background1";
-			this.background1.Size = new System.Drawing.Size(1007, 541);
+			this.background1.Size = new System.Drawing.Size(1151, 582);
 			this.background1.TabIndex = 1;
 			this.background1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.background1_MouseDown);
 			this.background1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.background1_MouseMove);

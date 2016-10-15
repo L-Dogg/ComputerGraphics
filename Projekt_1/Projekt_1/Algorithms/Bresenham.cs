@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace Bresenhams
 		/// <param name="x1">The end x</param>
 		/// <param name="y1">The end y</param>
 		/// <param name="plot">The plotting function (if this returns false, the algorithm stops early)</param>
-		public static void Line(int x0, int y0, int x1, int y1, PlotFunction plot)
+		public static void Line(int x0, int y0, int x1, int y1, Bitmap bmp)
 		{
 			bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
 			if (steep) { Swap<int>(ref x0, ref y0); Swap<int>(ref x1, ref y1); }
@@ -42,7 +43,11 @@ namespace Bresenhams
 
 			for (int x = x0; x <= x1; ++x)
 			{
-				if (!(steep ? plot(y, x) : plot(x, y))) return;
+				if (steep)
+					bmp.SetPixel(y, x, Color.Black);
+				else
+					bmp.SetPixel(x, y, Color.Black);
+
 				err = err - dY;
 				if (err < 0) { y += ystep; err += dX; }
 			}
