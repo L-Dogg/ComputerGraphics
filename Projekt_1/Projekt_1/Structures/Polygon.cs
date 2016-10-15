@@ -1,4 +1,5 @@
 ﻿using Bresenhams;
+using Projekt_1.Structures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,12 +14,18 @@ namespace Projekt_1
 		public List<Point> points = new List<Point>();
 		public List<Line> lines = new List<Line>();
 
-        public void Draw(Bitmap bmp)
+		private static Color horizontalColor = Color.Yellow;
+		private static Color regularColor = Color.Black;
+
+		public void Draw(Bitmap bmp)
         {
-			bmp.
-			
 			foreach (var line in lines)
-				Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, bmp);
+			{
+				if (line.relation == RelationType.Horizontal)
+					Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, bmp, horizontalColor);
+				else
+					Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, bmp, regularColor);
+			}
 			
 			foreach (var point in points)
 				point.Draw(bmp);

@@ -8,9 +8,21 @@ namespace Projekt_1.Structures
 {
 	public enum RelationType
 	{
+		/// <summary>
+		/// Bez relacji.
+		/// </summary>
 		None,
+		/// <summary>
+		/// Relacja pozioma.
+		/// </summary>
 		Horizontal,
+		/// <summary>
+		/// Relacja pionowa.
+		/// </summary>
 		Vertical,
+		/// <summary>
+		/// Relacja długości.
+		/// </summary>
 		Length,
 	}
 }

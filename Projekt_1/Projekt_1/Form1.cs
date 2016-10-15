@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Bresenhams;
 using System;
+using Projekt_1.Structures;
 
 namespace Projekt_1
 {
@@ -19,15 +20,20 @@ namespace Projekt_1
 		private bool deletingPolygon = false;
 		private bool movingPolygon = false;
 		private bool userWantsToMovePolygon = false;
+		private bool relationChanged = false;
 		#endregion
 
 		private Polygon operatingPolygon;
-		private Point pointToMove;
-		private Line lineToDivide;
+		private Point operatingPoint;
+		private Line operatingLine;
 		/// <summary>
 		/// Punkty, które leżą przy krawędziach kończących się w obecenie przeciąganym punkcie.
 		/// </summary>
 		private Point[] adjacentPoints = new Point[2];
+		/// <summary>
+		/// Sąsiednie krawędzie. [0] - współdzieląca start, [1] - współdzieląca end.
+		/// </summary>
+		private Line[] adjacentEdges = new Line[2];
 
 		private Pen edgePen = new Pen(Color.Black);
 		private Brush pointBrush = Brushes.Red;
@@ -52,7 +58,7 @@ namespace Projekt_1
 				// Menu kotekstowe dla relacji
 				if (WasEdgeClicked(point))
 				{
-					// TODO:
+					relationsContextMenu.Show(this, point);
 				}
 				// Podstawowe menu kontekstowe
 				else
@@ -71,9 +77,9 @@ namespace Projekt_1
 					Redraw();
 					return;
 				}
-				FindAdjacentPoints(pointToMove, operatingPolygon);
-				operatingPolygon.points.Remove(pointToMove);
-				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
+				FindAdjacentPoints(operatingPoint, operatingPolygon);
+				operatingPolygon.points.Remove(operatingPoint);
+				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != operatingPoint && line.end != operatingPoint; }).ToList();
 				operatingPolygon.lines.Add(new Line(adjacentPoints[0], adjacentPoints[1]));
 				polygons.Add(operatingPolygon);
 				Redraw();
@@ -134,9 +140,9 @@ namespace Projekt_1
 			{
 				movingVertex = true;
 				polygons.Remove(operatingPolygon);
-				operatingPolygon.points.Remove(pointToMove);
-				FindAdjacentPoints(pointToMove, operatingPolygon);
-				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != pointToMove && line.end != pointToMove; }).ToList();
+				operatingPolygon.points.Remove(operatingPoint);
+				FindAdjacentPoints(operatingPoint, operatingPolygon);
+				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != operatingPoint && line.end != operatingPoint; }).ToList();
 			}
 			// Wyłączenie trybu przesuwania wierzchołka
 			else if (movingVertex && e.Button == MouseButtons.Left)
@@ -150,33 +156,17 @@ namespace Projekt_1
 			// Tryb dodawania wierzchołka w środku krawędzi
 			else if (!drawing && !movingVertex && e.Button == MouseButtons.Left && WasEdgeClicked(point))
 			{
-				operatingPolygon.lines.Remove(lineToDivide);
-				var midPoint = new Point(Math.Min(lineToDivide.start.X, lineToDivide.end.X) + Math.Abs(lineToDivide.start.X - lineToDivide.end.X) / 2, 
-					Math.Min(lineToDivide.start.Y, lineToDivide.end.Y) +  Math.Abs(lineToDivide.start.Y - lineToDivide.end.Y) / 2);
-				operatingPolygon.lines.Add(new Line(midPoint, lineToDivide.end));
-				operatingPolygon.lines.Add(new Line(midPoint, lineToDivide.start));
+				operatingPolygon.lines.Remove(operatingLine);
+				var midPoint = new Point(Math.Min(operatingLine.start.X, operatingLine.end.X) + Math.Abs(operatingLine.start.X - operatingLine.end.X) / 2, 
+					Math.Min(operatingLine.start.Y, operatingLine.end.Y) +  Math.Abs(operatingLine.start.Y - operatingLine.end.Y) / 2);
+				operatingPolygon.lines.Add(new Line(midPoint, operatingLine.end));
+				operatingPolygon.lines.Add(new Line(midPoint, operatingLine.start));
 				operatingPolygon.points.Add(midPoint);
 				polygons.Remove(operatingPolygon);
 				polygons.Add(operatingPolygon);
 				Redraw();
 			}
         }
-
-		private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-		{
-			if (e.ClickedItem == contextMenuStrip1.Items[0])
-			{
-				this.drawing = true;
-			}
-			if (e.ClickedItem == contextMenuStrip1.Items[1])
-			{
-				this.deletingPolygon = true;
-			}
-			if (e.ClickedItem == contextMenuStrip1.Items[2])
-			{
-				this.userWantsToMovePolygon = true;
-			}
-		}
 
 		private void background1_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -195,10 +185,10 @@ namespace Projekt_1
 			}
 			else if (movingPolygon)
 			{
-				var xDiff = e.X - pointToMove.X;
-				var yDiff = e.Y - pointToMove.Y;
-				pointToMove.X += xDiff;
-				pointToMove.Y += yDiff;
+				var xDiff = e.X - operatingPoint.X;
+				var yDiff = e.Y - operatingPoint.Y;
+				operatingPoint.X += xDiff;
+				operatingPoint.Y += yDiff;
 				var pts = new List<Point>();
 				foreach (var p in operatingPolygon.points)
 					pts.Add(new Point(p.X + xDiff, p.Y + yDiff));
@@ -223,7 +213,7 @@ namespace Projekt_1
 			curPoly.Draw(bmp);
 
 			// Optymalizacja (nie rysujemy wielokątów które się nie zmieniły)
-			if (movingPolygon || movingVertex)
+			if (movingPolygon || movingVertex || relationChanged)
 			{
 				operatingPolygon.Draw(bmp);
 				background1.BackgroundImage = bmp;
@@ -251,7 +241,7 @@ namespace Projekt_1
 				{
 					if (point.ComparePoints(clicked))
 					{
-						pointToMove = point;
+						operatingPoint = point;
 						operatingPolygon = poly;
 						return true;
 					}
@@ -275,7 +265,7 @@ namespace Projekt_1
 					if (clicked.IsCloseToLine(line))
 					{
 						operatingPolygon = poly;
-						lineToDivide = line;
+						operatingLine = line;
 						return true;
 					}
 				}
@@ -303,6 +293,43 @@ namespace Projekt_1
 			}
 		}
 		
+		private void FindAdjacentEdges(Line line, Polygon poly)
+		{
+			int i = 0;
+			foreach(Line li in poly.lines)
+			{
+				if (li != line && (li.end == line.start || li.start == line.start))
+				{
+					i++;
+					adjacentEdges[0] = li;
+				}
+				else if (li != line && ((li.start == line.end) || li.end == line.end))
+                {
+					i++;
+					adjacentEdges[1] = li;
+				}
+
+				if (i == 2)
+					return;
+			}
+		}
+
+		private void HorizontalProcessing()
+		{
+			FindAdjacentEdges(operatingLine, operatingPolygon);
+			if (adjacentEdges[0].relation == RelationType.Horizontal || adjacentEdges[0].relation == RelationType.Horizontal)
+			{
+				MessageBox.Show("Nie można dodać relacji - sąsiednia krawędź również jest pozioma.");
+				return;
+			}
+			operatingLine.relation = RelationType.Horizontal;
+			operatingPolygon.points.Remove(operatingLine.start);
+			var horPoint = new Point(operatingLine.start.X, operatingLine.end.Y);
+			operatingPolygon.points.Add(horPoint);
+			adjacentEdges[0].end = horPoint;
+			operatingLine.start = horPoint;
+		}
+
 		/// <summary>
 		/// W zależności od liczby wielokątów zmienia wygląd menu kontekstowego.
 		/// </summary>
@@ -315,6 +342,48 @@ namespace Projekt_1
 			else
 			{
 				contextMenuStrip1.Items[1].Enabled = contextMenuStrip1.Items[2].Enabled = true;
+			}
+		}
+		#endregion
+
+		#region ContextMenu Handlers
+		private void relationsContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			relationChanged = true;
+			// Pozioma
+			if (e.ClickedItem == relationsContextMenu.Items[0])
+			{
+				HorizontalProcessing();
+				Redraw();
+			}
+			// Pionowa
+			if (e.ClickedItem == relationsContextMenu.Items[1])
+			{
+
+			}
+			// Długość
+			if (e.ClickedItem == relationsContextMenu.Items[2])
+			{
+
+			}
+		}
+
+		private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			// Dodaj
+			if (e.ClickedItem == contextMenuStrip1.Items[0])
+			{
+				this.drawing = true;
+			}
+			// Usuń
+			if (e.ClickedItem == contextMenuStrip1.Items[1])
+			{
+				this.deletingPolygon = true;
+			}
+			// Przesuń
+			if (e.ClickedItem == contextMenuStrip1.Items[2])
+			{
+				this.userWantsToMovePolygon = true;
 			}
 		}
 		#endregion

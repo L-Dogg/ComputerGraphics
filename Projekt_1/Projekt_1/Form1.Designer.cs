@@ -34,11 +34,11 @@
 			this.usuńWielokątToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.ątToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.background1 = new Projekt_1.Background();
 			this.relationsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.poziomaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pionowaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.długośćToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.background1 = new Projekt_1.Background();
 			this.contextMenuStrip1.SuspendLayout();
 			this.relationsContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -72,15 +72,6 @@
 			this.ątToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.ątToolStripMenuItem.Text = "Przesuń wielokąt";
 			// 
-			// background1
-			// 
-			this.background1.Location = new System.Drawing.Point(3, 2);
-			this.background1.Name = "background1";
-			this.background1.Size = new System.Drawing.Size(1151, 582);
-			this.background1.TabIndex = 1;
-			this.background1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.background1_MouseDown);
-			this.background1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.background1_MouseMove);
-			// 
 			// relationsContextMenu
 			// 
 			this.relationsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -89,6 +80,7 @@
             this.długośćToolStripMenuItem});
 			this.relationsContextMenu.Name = "relationsContextMenu";
 			this.relationsContextMenu.Size = new System.Drawing.Size(153, 92);
+			this.relationsContextMenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.relationsContextMenu_ItemClicked);
 			// 
 			// poziomaToolStripMenuItem
 			// 
@@ -107,6 +99,15 @@
 			this.długośćToolStripMenuItem.Name = "długośćToolStripMenuItem";
 			this.długośćToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.długośćToolStripMenuItem.Text = "Długość";
+			// 
+			// background1
+			// 
+			this.background1.Location = new System.Drawing.Point(3, 2);
+			this.background1.Name = "background1";
+			this.background1.Size = new System.Drawing.Size(1151, 582);
+			this.background1.TabIndex = 1;
+			this.background1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.background1_MouseDown);
+			this.background1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.background1_MouseMove);
 			// 
 			// Form1
 			// 
