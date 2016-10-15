@@ -49,7 +49,18 @@ namespace Projekt_1
 			// Pokaż menu kontekstowe:
 			if (e.Button == MouseButtons.Right)
 			{
-				contextMenuStrip1.Show(this, point);
+				// Menu kotekstowe dla relacji
+				if (WasEdgeClicked(point))
+				{
+					// TODO:
+				}
+				// Podstawowe menu kontekstowe
+				else
+				{
+					SetContextMenuItems();
+					contextMenuStrip1.Show(this, point);
+				}
+				
 			}
 			// Usuwanie wierzchołka LMB + CTRL
 			else if (e.Button == MouseButtons.Left && Form.ModifierKeys == Keys.Control && WasVertexClicked(point))
@@ -97,6 +108,20 @@ namespace Projekt_1
 					point.Draw(background1.BackgroundImage as Bitmap);
 				}
 			}
+			// Rozpoczęcie przesuwania wielokąta
+			else if (!drawing && userWantsToMovePolygon && e.Button == MouseButtons.Left && WasVertexClicked(point))
+			{
+				userWantsToMovePolygon = false;
+				polygons.Remove(operatingPolygon);
+				movingPolygon = true;
+            }
+			// Zakończenie przesuwania wielokąta
+			else if (!drawing && movingPolygon && e.Button == MouseButtons.Left)
+			{
+				movingPolygon = false;
+				polygons.Add(operatingPolygon);
+				Redraw();
+			}
 			// Tryb usuwania wielokąta (LMB na dowolną część wielokąta)
 			else if (deletingPolygon && e.Button == MouseButtons.Left && (WasEdgeClicked(point) || WasVertexClicked(point)))
 			{
@@ -105,7 +130,7 @@ namespace Projekt_1
 				Redraw();
 			}
 			// Włączenie trybu przesuwania wierzchołka
-			else if (!drawing && !movingPolygon && !movingVertex && e.Button == MouseButtons.Left && WasVertexClicked(point))
+			else if (!drawing && !userWantsToMovePolygon && !movingPolygon && !movingVertex && e.Button == MouseButtons.Left && WasVertexClicked(point))
 			{
 				movingVertex = true;
 				polygons.Remove(operatingPolygon);
@@ -135,19 +160,6 @@ namespace Projekt_1
 				polygons.Add(operatingPolygon);
 				Redraw();
 			}
-			// Rozpoczęcie przesuwania wierzchołka
-			else if (!drawing && userWantsToMovePolygon && e.Button == MouseButtons.Left && WasVertexClicked(point))
-			{
-				userWantsToMovePolygon = false;
-				movingPolygon = true;
-            }
-			// Zakończenie przesuwania wielokąta
-			else if (!drawing && movingPolygon && e.Button == MouseButtons.Left)
-			{
-				movingPolygon = false;
-				polygons.Add(operatingPolygon);
-				Redraw();
-			}
         }
 
 		private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -163,7 +175,6 @@ namespace Projekt_1
 			if (e.ClickedItem == contextMenuStrip1.Items[2])
 			{
 				this.userWantsToMovePolygon = true;
-				polygons.Remove(operatingPolygon);
 			}
 		}
 
@@ -184,9 +195,14 @@ namespace Projekt_1
 			}
 			else if (movingPolygon)
 			{
-				var xDiff = pointToMove.X - e.X;
-				var yDiff = pointToMove.Y - e.Y;
-				operatingPolygon.points.ForEach((Point p) => { p.X += xDiff; p.Y += yDiff; });
+				var xDiff = e.X - pointToMove.X;
+				var yDiff = e.Y - pointToMove.Y;
+				pointToMove.X += xDiff;
+				pointToMove.Y += yDiff;
+				var pts = new List<Point>();
+				foreach (var p in operatingPolygon.points)
+					pts.Add(new Point(p.X + xDiff, p.Y + yDiff));
+				operatingPolygon.points = pts;
 				operatingPolygon.lines.ForEach((Line line) => { line.end.X += xDiff; line.end.Y += yDiff;
 																line.start.X += xDiff; line.start.Y += yDiff; });
 				Redraw();
@@ -284,6 +300,21 @@ namespace Projekt_1
 
 				if (i == 2)
 					return;
+			}
+		}
+		
+		/// <summary>
+		/// W zależności od liczby wielokątów zmienia wygląd menu kontekstowego.
+		/// </summary>
+		private void SetContextMenuItems()
+		{
+			if (polygons.Count == 0)
+			{
+				contextMenuStrip1.Items[1].Enabled = contextMenuStrip1.Items[2].Enabled = false;
+			}
+			else
+			{
+				contextMenuStrip1.Items[1].Enabled = contextMenuStrip1.Items[2].Enabled = true;
 			}
 		}
 		#endregion

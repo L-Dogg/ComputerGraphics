@@ -15,6 +15,8 @@ namespace Projekt_1
 
         public void Draw(Bitmap bmp)
         {
+			bmp.
+			
 			foreach (var line in lines)
 				Algorithms.Line(line.start.X, line.start.Y, line.end.X, line.end.Y, bmp);
 			
