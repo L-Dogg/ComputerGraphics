@@ -73,7 +73,7 @@ namespace Projekt_1
 					point.Draw(background1.BackgroundImage as Bitmap);
 				}
 			}
-			else if (!moving && !drawing && e.Button == MouseButtons.Left && WasEdgeClicked(point))
+			else if (!drawing && !moving && e.Button == MouseButtons.Left && WasEdgeClicked(point))
 			{
 				operatingPolygon.lines.Remove(lineToDivide);
 				var midPoint = new Point(Math.Min(lineToDivide.start.X, lineToDivide.end.X) + Math.Abs(lineToDivide.start.X - lineToDivide.end.X) / 2, 
