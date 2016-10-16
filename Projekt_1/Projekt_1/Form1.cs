@@ -57,9 +57,10 @@ namespace Projekt_1
 			// Pokaż menu kontekstowe:
 			if (e.Button == MouseButtons.Right)
 			{
-				SetContextMenuItems();
+				var wasEdgeClicked = WasEdgeClicked(point);
+                SetContextMenuItems();
 				// Menu kotekstowe dla relacji
-				if (WasEdgeClicked(point))
+				if (wasEdgeClicked)
 				{
 					relationsContextMenu.Show(this, point);
 				}
@@ -164,8 +165,6 @@ namespace Projekt_1
 				operatingPolygon.lines.Add(new Line(midPoint, operatingLine.end));
 				operatingPolygon.lines.Add(new Line(midPoint, operatingLine.start));
 				operatingPolygon.points.Add(midPoint);
-				polygons.Remove(operatingPolygon);
-				polygons.Add(operatingPolygon);
 				Redraw();
 			}
         }
@@ -350,7 +349,7 @@ namespace Projekt_1
 			if (operatingLine != null)
 			{
 				for (int i = 0; i < relationsContextMenu.Items.Count; i++)
-					relationsContextMenu.Items[i].Enabled = operatingLine.relation == RelationType.None;
+					relationsContextMenu.Items[i].Enabled = (operatingLine.relation == RelationType.None);
             }
 		}
 		#endregion
