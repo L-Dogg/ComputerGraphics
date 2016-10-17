@@ -61,11 +61,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="States\DrawingState.cs" />
+    <Compile Include="States\IdleState.cs" />
     <Compile Include="States\IState.cs" />
+    <Compile Include="States\PolygonMoveState.cs" />
     <Compile Include="Structures\PointExtender.cs" />
     <Compile Include="Structures\Polygon.cs" />
     <Compile Include="Structures\Relation.cs" />
     <Compile Include="Structures\Segment.cs" />
+    <Compile Include="Utilities\ClickChecker.cs" />
     <EmbeddedResource Include="Background.resx">
       <DependentUpon>Background.cs</DependentUpon>
     </EmbeddedResource>

@@ -23,10 +23,10 @@ namespace GK1.Structures
 		/// <param name="p"></param>
 		/// <param name="line"></param>
 		/// <returns></returns>
-		public static bool IsCloseToLine(this Point p, Line line)
+		public static bool IsCloseToLine(this Point p, Segment line)
 		{
-			double distance = Math.Abs((line.end.Y - line.start.Y) * p.X - (line.end.X - line.start.X) * p.Y + line.end.X * line.start.Y - line.end.Y * line.start.X) /
-				Math.Sqrt((line.end.Y - line.start.Y) * (line.end.Y - line.start.Y) + (line.end.X - line.start.X) * (line.end.X - line.start.X));
+			double distance = Math.Abs((line.To.Y - line.From.Y) * p.X - (line.To.X - line.From.X) * p.Y + line.To.X * line.From.Y - line.To.Y * line.From.X) /
+				Math.Sqrt((line.To.Y - line.From.Y) * (line.To.Y - line.From.Y) + (line.To.X - line.From.X) * (line.To.X - line.From.X));
 			if (distance < 2 * margin)
 				return p.OnRectangle(line);
 			return false;
@@ -39,12 +39,12 @@ namespace GK1.Structures
 					bmp.SetPixel(i, j, color);
 		}
 
-		public static bool OnRectangle(this Point p, Line line)
+		public static bool OnRectangle(this Point p, Segment line)
 		{
-			var minY = (line.start.Y < line.end.Y) ? line.start.Y : line.end.Y;
-			var maxY = (line.start.Y < line.end.Y) ? line.end.Y : line.start.Y;
-			var minX = (line.start.X < line.end.X) ? line.start.X : line.end.X;
-			var maxX = (line.start.X < line.end.X) ? line.end.X : line.start.X;
+			var minY = (line.From.Y < line.To.Y) ? line.From.Y : line.To.Y;
+			var maxY = (line.From.Y < line.To.Y) ? line.To.Y : line.From.Y;
+			var minX = (line.From.X < line.To.X) ? line.From.X : line.To.X;
+			var maxX = (line.From.X < line.To.X) ? line.To.X : line.From.X;
 
 			if (p.Y <= maxY && p.Y >= minY && p.X <= maxX && p.X >= minX)
 				return true;

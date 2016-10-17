@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,11 @@ namespace GK1.States
 
 		void MouseMove(object sender, MouseEventArgs e);
 
-		void Render();
+		/// <summary>
+		/// Draws polygons on bitmap. Draws relation markers using graphics.
+		/// </summary>
+		/// <param name="bitmap">Bitmap to draw on.</param>
+		/// <param name="g">Graphics for relation drawing.</param>
+		void Render(Bitmap bitmap, Graphics g);
 	}
 }
