@@ -10,6 +10,8 @@ namespace GK1.States
 {
 	class PolygonMoveState : IState
 	{
+
+
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
 			throw new NotImplementedException();

@@ -26,7 +26,6 @@ namespace Bresenhams
 		/// <param name="x1">The end x</param>
 		/// <param name="y1">The end y</param>
 		/// <param name="bmp">Bitmap to draw on</param>
-		/// <param name="plot">The plotting function (if this returns false, the algorithm stops early)</param>
 		public static void Line(int x0, int y0, int x1, int y1, Bitmap bmp)
 		{
 			Line(x0, y0, x1, y1, bmp, Color.Black);
@@ -41,7 +40,6 @@ namespace Bresenhams
 		/// <param name="y1">The end y</param>
 		/// <param name="bmp">Bitmap to draw on</param>
 		/// <param name="color">Pixel color</param>
-		/// <param name="plot">The plotting function (if this returns false, the algorithm stops early)</param>
 		public static void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
 		{
 			bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);

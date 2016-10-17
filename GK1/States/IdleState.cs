@@ -40,7 +40,7 @@ namespace GK1.States
 			// Add
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[0])
 			{
-				MainForm.CurrentState = new PolygonMoveState(); // TODO CONSTRUCTOR
+				MainForm.CurrentState = new DrawingState(MainForm);
 			}
 			// Remove
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[1])
@@ -50,7 +50,7 @@ namespace GK1.States
 			// Move
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[2])
 			{
-				MainForm.CurrentState = new DrawingState(); // TODO CONSTRUCTOR
+				MainForm.CurrentState = new PolygonMoveState(); // TODO CONSTRUCTOR
 			}
 		}
 
@@ -148,11 +148,12 @@ namespace GK1.States
 			{
 				currentPolygon.Render(bitmap, g);
 				InnerState = InnerState.Regular;
-				return;
 			}
-
-			foreach (var polygon in MainForm.Polygons)
-				polygon.Render(bitmap, g);
+			else
+			{
+				foreach (var polygon in MainForm.Polygons)
+					polygon.Render(bitmap, g);
+			}
         }
 	}
 }

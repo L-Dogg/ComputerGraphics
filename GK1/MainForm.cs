@@ -27,7 +27,7 @@ namespace GK1
 		/// <summary>
 		/// Polygon that was chosen by user.
 		/// </summary>
-		public Polygon CurrentPolygon { get; set; }
+		public Polygon CurrentPolygon { get; set; } = new Polygon();
 
 		/// <summary>
 		/// Segment that was clicked by user.
