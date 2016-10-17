@@ -35,7 +35,7 @@ namespace Projekt_1
 		/// Sąsiednie krawędzie. [0] - współdzieląca start, [1] - współdzieląca end.
 		/// </summary>
 		private Line[] adjacentEdges = new Line[2];
-
+		private int operatingLineIndex = 0;
 		#endregion
 
 		private Pen edgePen = new Pen(Color.Black);
@@ -82,8 +82,9 @@ namespace Projekt_1
 				}
 				FindAdjacentPoints(operatingPoint, operatingPolygon);
 				operatingPolygon.points.Remove(operatingPoint);
-				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != operatingPoint && line.end != operatingPoint; }).ToList();
-				operatingPolygon.lines.Add(new Line(adjacentPoints[0], adjacentPoints[1]));
+				var edgeToAddAfter = operatingPolygon.lines.Where((line) => { return line.start == operatingPoint || line.end == operatingPoint; }).First();
+				operatingPolygon.lines = new LinkedList<Line>(operatingPolygon.lines.Where((line) => { return line.start != operatingPoint && line.end != operatingPoint; }));
+				operatingPolygon.lines.AddAfter(new LinkedListNode<Line>(edgeToAddAfter), new Line(adjacentPoints[0], adjacentPoints[1]));
 				polygons.Add(operatingPolygon);
 				Redraw();
 			}
@@ -98,13 +99,13 @@ namespace Projekt_1
 					if (curPoly.points[0].ComparePoints(point))
 					{
 						drawing = false;
-						curPoly.lines.Add(new Line(curPoly.points.Last(), curPoly.points.First()));
+						curPoly.lines.AddLast(new Line(curPoly.points.Last(), curPoly.points.First()));
 						polygons.Add(curPoly);
 						curPoly = new Polygon();
 					}
 					else
 					{
-						curPoly.lines.Add(line);
+						curPoly.lines.AddLast(line);
 						curPoly.points.Add(point);
 						point.Draw(background1.BackgroundImage as Bitmap);
 					}
@@ -141,29 +142,35 @@ namespace Projekt_1
 			// Włączenie trybu przesuwania wierzchołka
 			else if (!drawing && !userWantsToMovePolygon && !movingPolygon && !movingVertex && e.Button == MouseButtons.Left && WasVertexClicked(point))
 			{
+				// Wierzchołek zerowy jest "usztywniony"
+				if (operatingPoint == operatingPolygon.points[0])
+					return;
+
 				movingVertex = true;
 				polygons.Remove(operatingPolygon);
 				operatingPolygon.points.Remove(operatingPoint);
 				FindAdjacentPoints(operatingPoint, operatingPolygon);
-				operatingPolygon.lines = operatingPolygon.lines.Where((line) => { return line.start != operatingPoint && line.end != operatingPoint; }).ToList();
+				operatingLine = operatingPolygon.lines.Where((line) => { return line.start == operatingPoint || line.end == operatingPoint; }).First();
+                operatingPolygon.lines = new LinkedList<Line>(operatingPolygon.lines.Where((line) => { return line.start != operatingPoint && line.end != operatingPoint; }).ToList());
 			}
 			// Wyłączenie trybu przesuwania wierzchołka
 			else if (movingVertex && e.Button == MouseButtons.Left)
 			{
 				movingVertex = false;
 				operatingPolygon.points.Add(point);
-				operatingPolygon.lines.Add(new Line(point, adjacentPoints[0]));
-				operatingPolygon.lines.Add(new Line(point, adjacentPoints[1]));
+				// EXCEPTION!!!
+				operatingPolygon.lines.AddAfter(new LinkedListNode<Line>(operatingLine), new Line(point, adjacentPoints[0]));
+				operatingPolygon.lines.AddAfter(new LinkedListNode<Line>(operatingLine), new Line(point, adjacentPoints[1]));
 				polygons.Add(operatingPolygon);
 			}
 			// Tryb dodawania wierzchołka w środku krawędzi
 			else if (!drawing && !movingVertex && e.Button == MouseButtons.Left && WasEdgeClicked(point))
 			{
-				operatingPolygon.lines.Remove(operatingLine);
 				var midPoint = new Point(Math.Min(operatingLine.start.X, operatingLine.end.X) + Math.Abs(operatingLine.start.X - operatingLine.end.X) / 2, 
 					Math.Min(operatingLine.start.Y, operatingLine.end.Y) +  Math.Abs(operatingLine.start.Y - operatingLine.end.Y) / 2);
-				operatingPolygon.lines.Add(new Line(midPoint, operatingLine.end));
-				operatingPolygon.lines.Add(new Line(midPoint, operatingLine.start));
+				operatingPolygon.lines.AddBefore(new LinkedListNode<Line>(operatingLine), new Line(midPoint, operatingLine.start));
+				operatingPolygon.lines.AddBefore(new LinkedListNode<Line>(operatingLine), new Line(midPoint, operatingLine.end));
+				operatingPolygon.lines.Remove(operatingLine);
 				operatingPolygon.points.Add(midPoint);
 				Redraw();
 			}
@@ -194,8 +201,13 @@ namespace Projekt_1
 				foreach (var p in operatingPolygon.points)
 					pts.Add(new Point(p.X + xDiff, p.Y + yDiff));
 				operatingPolygon.points = pts;
-				operatingPolygon.lines.ForEach((Line line) => { line.end.X += xDiff; line.end.Y += yDiff;
-																line.start.X += xDiff; line.start.Y += yDiff; });
+				foreach (var line in operatingPolygon.lines)
+				{
+					line.end.X += xDiff;
+					line.end.Y += yDiff;
+					line.start.X += xDiff;
+					line.start.Y += yDiff;
+				}
 				Redraw();
 			}
 		}

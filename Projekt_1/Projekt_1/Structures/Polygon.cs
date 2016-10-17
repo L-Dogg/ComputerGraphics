@@ -12,7 +12,7 @@ namespace Projekt_1
 	class Polygon
 	{
 		public List<Point> points = new List<Point>();
-		public List<Line> lines = new List<Line>();
+		public LinkedList<Line> lines = new LinkedList<Line>();
 
 		private static Color horizontalColor = Color.Yellow;
 		private static Color regularColor = Color.Black;
