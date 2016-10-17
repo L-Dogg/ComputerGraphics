@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GK1.States;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,10 @@ namespace GK1
 	/// </summary>
 	public partial class MainForm : Form
 	{
+		/// <summary>
+		/// Current control state.
+		/// </summary>
+		public IState currentState { get; set; }
 		public MainForm()
 		{
 			InitializeComponent();
