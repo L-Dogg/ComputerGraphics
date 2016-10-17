@@ -75,11 +75,11 @@ namespace GK1.States
 			{
 				Algorithms.Line(MainForm.CurrentPolygon.Points.Last.Value.X, MainForm.CurrentPolygon.Points.Last.Value.Y, Point.X, Point.Y, bitmap);
 			}
-			else
-			{
-				foreach (var polygon in MainForm.Polygons)
-					polygon.Render(bitmap, g);
-			}
+
+			MainForm.CurrentPolygon.Render(bitmap, g);
+
+			foreach (var polygon in MainForm.Polygons)
+				polygon.Render(bitmap, g);
 		}
 	}
 }

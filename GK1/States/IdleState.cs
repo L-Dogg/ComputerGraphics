@@ -10,21 +10,12 @@ using System.Windows.Forms;
 
 namespace GK1.States
 {
-	enum InnerState
-	{
-		Regular,
-		DeletedVertex,
-		DeletedPolygon,
-		AddedVertex
-	}
-
 	class IdleState : IState
 	{
 		#region Private Properties
 		private MainForm MainForm { get; set; }
 		private bool DeletingPolygon { get; set; }
 		private Polygon currentPolygon { get; set; }
-		private InnerState InnerState { get; set; } = InnerState.Regular;
 		#endregion
 
 		public IdleState(MainForm mainForm)
@@ -105,22 +96,21 @@ namespace GK1.States
 				}
 				var adjacentPoints = ClickChecker.FindAdjacentPoints(clickedVertex, polygon);
 				polygon.Points.Remove(clickedVertex);
-				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex; }).First();
+				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex || line.To == clickedVertex; }).First();
 				polygon.Segments.AddAfter(new LinkedListNode<Segment>(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
 				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => { return line.From != clickedVertex && line.To != clickedVertex; }));
-
-				InnerState = InnerState.DeletedVertex;
+				
 				currentPolygon = polygon;
 			}
 			// Polygon deletion
 			else if (DeletingPolygon && (wasEdgeClicked || wasVertexClicked) && e.Button == MouseButtons.Left)
 			{
 				MainForm.Polygons.Remove(polygon);
-				InnerState = InnerState.DeletedPolygon;
 				MainForm.Render();
+				DeletingPolygon = false;
 			}
 			// Vertex addition in the middle of an edge
-			else if (!DeletingPolygon && e.Button == MouseButtons.Left && wasEdgeClicked)
+			else if (!DeletingPolygon && wasEdgeClicked && e.Button == MouseButtons.Left)
 			{
 				var midPoint = new Point(Math.Min(segment.From.X, segment.To.X) + Math.Abs(segment.From.X - segment.To.X) / 2,
 					Math.Min(segment.From.Y, segment.To.Y) + Math.Abs(segment.From.Y - segment.To.Y) / 2);
@@ -130,8 +120,13 @@ namespace GK1.States
 				polygon.Segments.Remove(segment);
 
 				polygon.Points.AddAfter(new LinkedListNode<Point>(segment.From), midPoint);
-
-				InnerState = InnerState.AddedVertex;
+				
+				MainForm.Render();
+			}
+			else if (!DeletingPolygon && wasVertexClicked && e.Button == MouseButtons.Left)
+			{
+				// TODO ADD NEW STATE!!!
+				//MainForm.CurrentState = 
 				MainForm.Render();
 			}
 		}
@@ -143,17 +138,9 @@ namespace GK1.States
 		
 		public void Render(Bitmap bitmap, Graphics g)
 		{
-			// Optimized - not drawing polygons that hasn't changed.
-			if (InnerState == InnerState.DeletedVertex || InnerState == InnerState.AddedVertex)
-			{
-				currentPolygon.Render(bitmap, g);
-				InnerState = InnerState.Regular;
-			}
-			else
-			{
-				foreach (var polygon in MainForm.Polygons)
-					polygon.Render(bitmap, g);
-			}
+			foreach (var polygon in MainForm.Polygons)
+				polygon.Render(bitmap, g);
+			
         }
 	}
 }
