@@ -56,7 +56,7 @@ namespace GK1
 		{
 			InitializeComponent();
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
-			CurrentState = new IdleState(this, background.BackgroundImage as Bitmap);
+			CurrentState = new IdleState(this);
 		}
 
 		public void SetContextMenuItems(Segment operatingLine)

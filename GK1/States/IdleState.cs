@@ -22,18 +22,16 @@ namespace GK1.States
 	{
 		#region Private Properties
 		private MainForm MainForm { get; set; }
-		private Bitmap Bitmap { get; set; }
 		private bool DeletingPolygon { get; set; }
 		private Polygon currentPolygon { get; set; }
 		private InnerState InnerState { get; set; } = InnerState.Regular;
 		#endregion
 
-		public IdleState(MainForm mainForm, Bitmap bitmap)
+		public IdleState(MainForm mainForm)
 		{
 			MainForm = mainForm;
 			MainForm.RelationContextMenu.ItemClicked += RelationContextMenu_ItemClicked;
 			MainForm.PolygonContextMenu.ItemClicked += PolygonContextMenu_ItemClicked;
-			Bitmap = bitmap;
 		}
 
 		#region Context Menu Handlers
@@ -126,10 +124,14 @@ namespace GK1.States
 			{
 				var midPoint = new Point(Math.Min(segment.From.X, segment.To.X) + Math.Abs(segment.From.X - segment.To.X) / 2,
 					Math.Min(segment.From.Y, segment.To.Y) + Math.Abs(segment.From.Y - segment.To.Y) / 2);
+
 				polygon.Segments.AddBefore(new LinkedListNode<Segment>(segment), new Segment(segment.From, midPoint));
 				polygon.Segments.AddBefore(new LinkedListNode<Segment>(segment), new Segment(midPoint, segment.To));
 				polygon.Segments.Remove(segment);
+
 				polygon.Points.AddAfter(new LinkedListNode<Point>(segment.From), midPoint);
+
+				InnerState = InnerState.AddedVertex;
 				MainForm.Render();
 			}
 		}
@@ -142,7 +144,7 @@ namespace GK1.States
 		public void Render(Bitmap bitmap, Graphics g)
 		{
 			// Optimized - not drawing polygons that hasn't changed.
-			if (InnerState == InnerState.DeletedVertex)
+			if (InnerState == InnerState.DeletedVertex || InnerState == InnerState.AddedVertex)
 			{
 				currentPolygon.Render(bitmap, g);
 				InnerState = InnerState.Regular;
