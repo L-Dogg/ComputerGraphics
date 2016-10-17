@@ -330,7 +330,7 @@ namespace Projekt_1
 		private void HorizontalProcessing()
 		{
 			FindAdjacentEdges(operatingLine, operatingPolygon);
-			if (adjacentEdges[0].relation == RelationType.Horizontal || adjacentEdges[0].relation == RelationType.Horizontal)
+			if (adjacentEdges[0].relation == RelationType.Horizontal || adjacentEdges[1].relation == RelationType.Horizontal)
 			{
 				MessageBox.Show("Nie można dodać relacji - sąsiednia krawędź również jest pozioma.");
 				return;
