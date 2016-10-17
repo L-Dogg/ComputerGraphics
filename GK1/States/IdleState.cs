@@ -78,7 +78,6 @@ namespace GK1.States
 
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			// Tryb usuwania wielokąta (LMB na dowolną część wielokąta)
 			// Tryb dodawania wierzchołka w środku krawędzi
 			Point clickedVertex;
 			Segment segment;
@@ -116,10 +115,21 @@ namespace GK1.States
 				currentPolygon = polygon;
 			}
 			// Polygon deletion
-			else if (DeletingPolygon && e.Button == MouseButtons.Left)
+			else if (DeletingPolygon && (wasEdgeClicked || wasVertexClicked) && e.Button == MouseButtons.Left)
 			{
 				MainForm.Polygons.Remove(polygon);
 				InnerState = InnerState.DeletedPolygon;
+				MainForm.Render();
+			}
+			// Vertex addition in the middle of an edge
+			else if (!DeletingPolygon && e.Button == MouseButtons.Left && wasEdgeClicked)
+			{
+				var midPoint = new Point(Math.Min(segment.From.X, segment.To.X) + Math.Abs(segment.From.X - segment.To.X) / 2,
+					Math.Min(segment.From.Y, segment.To.Y) + Math.Abs(segment.From.Y - segment.To.Y) / 2);
+				polygon.Segments.AddBefore(new LinkedListNode<Segment>(segment), new Segment(segment.From, midPoint));
+				polygon.Segments.AddBefore(new LinkedListNode<Segment>(segment), new Segment(midPoint, segment.To));
+				polygon.Segments.Remove(segment);
+				polygon.Points.AddAfter(new LinkedListNode<Point>(segment.From), midPoint);
 				MainForm.Render();
 			}
 		}
