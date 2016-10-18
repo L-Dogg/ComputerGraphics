@@ -15,12 +15,12 @@ namespace GK1.Utilities
 		/// </summary>
 		/// <param name="clicked"></param>
 		/// <param name="polygons"></param>
-		/// <param name="clickedPoint"></param>
+		/// <param name="clickedVertex"></param>
 		/// <param name="operatingPolygon"></param>
 		/// <returns>True if any of polygons' vertices was clicked.</returns>
-		public static bool WasVertexClicked(Point clicked, IEnumerable<Polygon> polygons, out Point clickedPoint, out Polygon clickedPolygon)
+		public static bool WasVertexClicked(Point clicked, IEnumerable<Polygon> polygons, out Point clickedVertex, out Polygon clickedPolygon)
 		{
-			clickedPoint = new Point(0, 0);
+			clickedVertex = new Point(0, 0);
 			clickedPolygon = null;
 
             foreach (var poly in polygons)
@@ -29,7 +29,7 @@ namespace GK1.Utilities
 				{
 					if (point.ComparePoints(clicked))
 					{
-						clickedPoint = point;
+						clickedVertex = point;
 						clickedPolygon = poly;
 						return true;
 					}

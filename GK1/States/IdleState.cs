@@ -21,6 +21,7 @@ namespace GK1.States
 		public IdleState(MainForm mainForm)
 		{
 			MainForm = mainForm;
+			MainForm.Cursor = Cursors.Default;
 			MainForm.RelationContextMenu.ItemClicked += RelationContextMenu_ItemClicked;
 			MainForm.PolygonContextMenu.ItemClicked += PolygonContextMenu_ItemClicked;
 		}
@@ -41,7 +42,7 @@ namespace GK1.States
 			// Move
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[2])
 			{
-				MainForm.CurrentState = new PolygonMoveState(); // TODO CONSTRUCTOR
+				MainForm.CurrentState = new PolygonMoveState(MainForm);
 			}
 		}
 
@@ -65,6 +66,7 @@ namespace GK1.States
 		}
 		#endregion
 
+		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
 			// Tryb dodawania wierzchołka w środku krawędzi
@@ -145,5 +147,7 @@ namespace GK1.States
 				polygon.Render(bitmap, g);
 			
         }
+
+		#endregion
 	}
 }

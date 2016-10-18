@@ -12,16 +12,19 @@ namespace GK1.States
 {
 	class DrawingState : IState
 	{
+		#region Private Properties
 		private MainForm MainForm { get; set; }
 		private Segment Segment { get; set; }
 		private Point Point { get; set; }
 		private bool Moving { get; set; }
+		#endregion
 
 		public DrawingState(MainForm mainForm)
 		{
 			MainForm = mainForm;
 		}
 
+		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
 			var point = new Point(e.X, e.Y);
@@ -81,5 +84,6 @@ namespace GK1.States
 			foreach (var polygon in MainForm.Polygons)
 				polygon.Render(bitmap, g);
 		}
+		#endregion
 	}
 }
