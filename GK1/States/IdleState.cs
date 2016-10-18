@@ -68,12 +68,14 @@ namespace GK1.States
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
 			// Tryb dodawania wierzchołka w środku krawędzi
-			Point clickedVertex;
+			Point clickedVertex = new Point(0,0);
 			Segment segment;
 			Polygon polygon;
 			var point = new Point(e.X, e.Y);
 			var wasEdgeClicked = ClickChecker.WasEdgeClicked(point, MainForm.Polygons, out segment, out polygon);
-			var wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out clickedVertex, out polygon);
+			bool wasVertexClicked = false;
+            if (!wasEdgeClicked)
+				wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out clickedVertex, out polygon);
 
 			// Context Menu
 			if (e.Button == MouseButtons.Right)
@@ -86,7 +88,7 @@ namespace GK1.States
 					MainForm.PolygonContextMenu.Show(MainForm, point);
 			}
 			// Vertex deletion
-			else if (!DeletingPolygon && Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left)
+			else if (!DeletingPolygon && wasVertexClicked && Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left)
 			{
 				if (polygon.Points.Count == 3)
 				{
@@ -96,11 +98,13 @@ namespace GK1.States
 				}
 				var adjacentPoints = ClickChecker.FindAdjacentPoints(clickedVertex, polygon);
 				polygon.Points.Remove(clickedVertex);
-				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex || line.To == clickedVertex; }).First();
-				polygon.Segments.AddAfter(new LinkedListNode<Segment>(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
+				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex || line.To == clickedVertex; }).First();				
+				polygon.Segments.AddAfter(polygon.Segments.Find(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
 				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => { return line.From != clickedVertex && line.To != clickedVertex; }));
-				
+
 				currentPolygon = polygon;
+				
+				MainForm.Render();
 			}
 			// Polygon deletion
 			else if (DeletingPolygon && (wasEdgeClicked || wasVertexClicked) && e.Button == MouseButtons.Left)
@@ -115,11 +119,11 @@ namespace GK1.States
 				var midPoint = new Point(Math.Min(segment.From.X, segment.To.X) + Math.Abs(segment.From.X - segment.To.X) / 2,
 					Math.Min(segment.From.Y, segment.To.Y) + Math.Abs(segment.From.Y - segment.To.Y) / 2);
 
-				polygon.Segments.AddBefore(new LinkedListNode<Segment>(segment), new Segment(segment.From, midPoint));
-				polygon.Segments.AddBefore(new LinkedListNode<Segment>(segment), new Segment(midPoint, segment.To));
+				polygon.Segments.AddBefore(polygon.Segments.Find(segment), new Segment(segment.From, midPoint));
+				polygon.Segments.AddBefore(polygon.Segments.Find(segment), new Segment(midPoint, segment.To));
 				polygon.Segments.Remove(segment);
 
-				polygon.Points.AddAfter(new LinkedListNode<Point>(segment.From), midPoint);
+				polygon.Points.AddAfter(polygon.Points.Find(segment.From), midPoint);
 				
 				MainForm.Render();
 			}

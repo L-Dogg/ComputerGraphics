@@ -27,7 +27,7 @@ namespace GK1.Structures
 		{
 			double distance = Math.Abs((line.To.Y - line.From.Y) * p.X - (line.To.X - line.From.X) * p.Y + line.To.X * line.From.Y - line.To.Y * line.From.X) /
 				Math.Sqrt((line.To.Y - line.From.Y) * (line.To.Y - line.From.Y) + (line.To.X - line.From.X) * (line.To.X - line.From.X));
-			if (distance < 2 * margin)
+			if (distance < 2 * margin && !p.ComparePoints(line.From) && !p.ComparePoints(line.To))
 				return p.OnRectangle(line);
 			return false;
 		}
