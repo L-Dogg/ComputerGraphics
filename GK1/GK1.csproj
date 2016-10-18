@@ -47,11 +47,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Bresenham.cs" />
-    <Compile Include="Background.cs">
+    <Compile Include="Controls\Background.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Background.Designer.cs">
+    <Compile Include="Controls\Background.Designer.cs">
       <DependentUpon>Background.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LengthMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\LengthMessageBox.Designer.cs">
+      <DependentUpon>LengthMessageBox.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -71,8 +77,11 @@
     <Compile Include="Structures\Relation.cs" />
     <Compile Include="Structures\Segment.cs" />
     <Compile Include="Utilities\ClickChecker.cs" />
-    <EmbeddedResource Include="Background.resx">
+    <EmbeddedResource Include="Controls\Background.resx">
       <DependentUpon>Background.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LengthMessageBox.resx">
+      <DependentUpon>LengthMessageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

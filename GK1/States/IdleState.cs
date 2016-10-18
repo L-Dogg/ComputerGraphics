@@ -53,33 +53,71 @@ namespace GK1.States
 			// Horizontal
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[0])
 			{
-				MainForm.HorizontalRelation = true;
+				if (AddHorizontalRelation())
+					MainForm.Render();
 			}
 			// Vertical
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[1])
 			{
-
+				if (AddVeritcalRelation())
+					MainForm.Render();
 			}
 			// Length
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[2])
 			{
-
 			}
 		}
 		#endregion
 
-		private bool AddHorizontalRelation(Polygon polygon)
+		#region Relation Processing
+		private bool AddHorizontalRelation()
 		{
-			var edges = polygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
+			if (currentPolygon == null)
+				return false;
+
+			var edges = currentPolygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
 			if (edges.Any((line) => { return line.Relation == RelationType.Horizontal; }))
 				return false;
 				
 			var point = new Point(currentSegment.From.X, currentSegment.To.Y);
-			polygon.Points.Find(currentSegment.From).Value = point;
+			currentPolygon.Points.Find(currentSegment.From).Value = point;
+			currentPolygon.Segments.First((line) => { return line.To == currentSegment.From; }).To = point;
 			currentSegment.From = point;
+			currentSegment.Relation = RelationType.Horizontal;
 
+			return true;
+		}
+
+		private bool AddVeritcalRelation()
+		{
+			if (currentPolygon == null)
+				return false;
+
+			var edges = currentPolygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
+			if (edges.Any((line) => { return line.Relation == RelationType.Vertical; }))
+				return false;
+
+			var point = new Point(currentSegment.To.X, currentSegment.From.Y);
+			currentPolygon.Points.Find(currentSegment.From).Value = point;
+			currentPolygon.Segments.First((line) => { return line.To == currentSegment.From; }).To = point;
+			currentSegment.From = point;
+			currentSegment.Relation = RelationType.Vertical;
+
+			return true;
+		}
+
+		private bool AddLengthRelation()
+		{
+			if (currentPolygon == null)
+				return false;
+
+			var edges = currentPolygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
+			if (edges.Any((line) => { return line.Relation == RelationType.Vertical; }))
+				return false;
+			
 			return false;
 		}
+		#endregion
 
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
@@ -93,6 +131,7 @@ namespace GK1.States
             if (!wasEdgeClicked)
 				wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out clickedVertex, out polygon);
 
+			currentPolygon = polygon;
 			currentSegment = segment;
 
 			// Context Menu
@@ -104,13 +143,6 @@ namespace GK1.States
 					MainForm.RelationContextMenu.Show(MainForm, point);
 				else
 					MainForm.PolygonContextMenu.Show(MainForm, point);
-			}
-			// Horizontal Relation
-			else if (!DeletingPolygon && MainForm.HorizontalRelation && wasEdgeClicked && e.Button == MouseButtons.Left)
-			{
-				AddHorizontalRelation(polygon);
-				MainForm.HorizontalRelation = false;
-				MainForm.Render();
 			}
 			// Vertex deletion
 			else if (!DeletingPolygon && wasVertexClicked && (Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left))

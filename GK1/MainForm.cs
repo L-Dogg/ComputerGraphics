@@ -1,4 +1,5 @@
-﻿using GK1.States;
+﻿using GK1.Controls;
+using GK1.States;
 using GK1.Structures;
 using System;
 using System.Collections.Generic;
@@ -48,12 +49,14 @@ namespace GK1
 		/// Idle context menu with polygon operations.
 		/// </summary>
 		public ContextMenuStrip PolygonContextMenu { get { return this.polygonContextMenu; } }
-
+		
 		/// <summary>
-		/// guwno
+		/// Length MessageBox for Length Relation user input.
 		/// </summary>
-		public bool HorizontalRelation { get; set; }
+		public Length LengthMessageBox { get; set; } = new Length()
 		#endregion
+
+		//private Graphics g;
 
 		#region Public Methods
 
@@ -61,6 +64,7 @@ namespace GK1
 		{
 			InitializeComponent();
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
+			//g = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
 		}
 
@@ -89,6 +93,7 @@ namespace GK1
 			Bitmap bmp = new Bitmap(background.Size.Width, background.Size.Height);
 			Graphics g = Graphics.FromImage(bmp);
 
+			//this.ClearBitmap(background.BackgroundImage as Bitmap, g);
 			CurrentState.Render(bmp, g);
 
 			// Cleaning:
@@ -107,6 +112,11 @@ namespace GK1
 		private void bgMouseMove(object sender, MouseEventArgs e)
 		{
 			CurrentState.MouseMove(sender, e);
+		}
+
+		private void ClearBitmap(Bitmap bmp, Graphics g)
+		{
+			g.FillRectangle(Brushes.White, 0, 0, bmp.Size.Width, bmp.Size.Height);
 		}
 		#endregion
 	}
