@@ -88,7 +88,7 @@ namespace GK1.States
 					MainForm.PolygonContextMenu.Show(MainForm, point);
 			}
 			// Vertex deletion
-			else if (!DeletingPolygon && wasVertexClicked && Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left)
+			else if (!DeletingPolygon && wasVertexClicked && (Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left))
 			{
 				if (polygon.Points.Count == 3)
 				{
@@ -101,7 +101,6 @@ namespace GK1.States
 				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex || line.To == clickedVertex; }).First();				
 				polygon.Segments.AddAfter(polygon.Segments.Find(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
 				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => { return line.From != clickedVertex && line.To != clickedVertex; }));
-
 				currentPolygon = polygon;
 				
 				MainForm.Render();
