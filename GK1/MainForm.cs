@@ -48,6 +48,11 @@ namespace GK1
 		/// Idle context menu with polygon operations.
 		/// </summary>
 		public ContextMenuStrip PolygonContextMenu { get { return this.polygonContextMenu; } }
+
+		/// <summary>
+		/// guwno
+		/// </summary>
+		public bool HorizontalRelation { get; set; }
 		#endregion
 
 		#region Public Methods

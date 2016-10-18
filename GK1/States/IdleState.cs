@@ -16,8 +16,9 @@ namespace GK1.States
 		private MainForm MainForm { get; set; }
 		private bool DeletingPolygon { get; set; }
 		private Polygon currentPolygon { get; set; }
+		private Segment currentSegment { get; set; }
 		#endregion
-
+		
 		public IdleState(MainForm mainForm)
 		{
 			MainForm = mainForm;
@@ -46,12 +47,13 @@ namespace GK1.States
 			}
 		}
 
+
 		private void RelationContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			// Horizontal
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[0])
 			{
-
+				MainForm.HorizontalRelation = true;
 			}
 			// Vertical
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[1])
@@ -66,10 +68,22 @@ namespace GK1.States
 		}
 		#endregion
 
+		private bool AddHorizontalRelation(Polygon polygon)
+		{
+			var edges = polygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
+			if (edges.Any((line) => { return line.Relation == RelationType.Horizontal; }))
+				return false;
+				
+			var point = new Point(currentSegment.From.X, currentSegment.To.Y);
+			polygon.Points.Find(currentSegment.From).Value = point;
+			currentSegment.From = point;
+
+			return false;
+		}
+
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			// Tryb dodawania wierzchołka w środku krawędzi
 			Point clickedVertex = new Point(0,0);
 			Segment segment;
 			Polygon polygon;
@@ -78,6 +92,8 @@ namespace GK1.States
 			bool wasVertexClicked = false;
             if (!wasEdgeClicked)
 				wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out clickedVertex, out polygon);
+
+			currentSegment = segment;
 
 			// Context Menu
 			if (e.Button == MouseButtons.Right)
@@ -88,6 +104,13 @@ namespace GK1.States
 					MainForm.RelationContextMenu.Show(MainForm, point);
 				else
 					MainForm.PolygonContextMenu.Show(MainForm, point);
+			}
+			// Horizontal Relation
+			else if (!DeletingPolygon && MainForm.HorizontalRelation && wasEdgeClicked && e.Button == MouseButtons.Left)
+			{
+				AddHorizontalRelation(polygon);
+				MainForm.HorizontalRelation = false;
+				MainForm.Render();
 			}
 			// Vertex deletion
 			else if (!DeletingPolygon && wasVertexClicked && (Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left))
