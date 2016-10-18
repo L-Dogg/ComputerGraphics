@@ -20,6 +20,8 @@ namespace GK1.Structures
 
 			foreach (var point in Points)
 				point.Draw(bmp);
+
+			// TODO: rysowanie pierwszego wierzchołka w innym kolorze.
 		}
 	}
 }

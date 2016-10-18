@@ -128,11 +128,10 @@ namespace GK1.States
 				
 				MainForm.Render();
 			}
-			else if (!DeletingPolygon && wasVertexClicked && e.Button == MouseButtons.Left)
+			// Vertex move
+			else if (!DeletingPolygon && (wasVertexClicked && polygon.Points.First.Value != clickedVertex) && e.Button == MouseButtons.Left)
 			{
-				// TODO ADD NEW STATE!!!
-				//MainForm.CurrentState = 
-				MainForm.Render();
+				MainForm.CurrentState = new VertexMoveState(MainForm) { Polygon = polygon, Vertex = clickedVertex };
 			}
 		}
 
