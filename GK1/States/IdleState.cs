@@ -1,4 +1,5 @@
-﻿using GK1.Structures;
+﻿using GK1.Controls;
+using GK1.Structures;
 using GK1.Utilities;
 using System;
 using System.Collections.Generic;
@@ -65,6 +66,8 @@ namespace GK1.States
 			// Length
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[2])
 			{
+				if (AddLengthRelation())
+					MainForm.Render();
 			}
 		}
 		#endregion
@@ -111,11 +114,31 @@ namespace GK1.States
 			if (currentPolygon == null)
 				return false;
 
-			var edges = currentPolygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
-			if (edges.Any((line) => { return line.Relation == RelationType.Vertical; }))
-				return false;
-			
-			return false;
+			MainForm.LengthMessageBox = new Length() { LengthTyped = currentSegment.Length };
+			MainForm.LengthMessageBox.ShowDialog();
+			var newLength = MainForm.LengthMessageBox.LengthTyped;
+
+			var point = CalculateNewCoords(currentSegment.From, currentSegment.To, newLength - currentSegment.Length);
+			currentPolygon.Points.Find(currentSegment.To).Value = point;
+			currentPolygon.Segments.First((line) => { return line.From == currentSegment.To; }).From = point;
+			currentSegment.To = point;
+			currentSegment.Relation = RelationType.Length;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Calculates new coordinates for length relation
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <param name="length">Length difference (New - Old)</param>
+		/// <returns></returns>
+		private Point CalculateNewCoords(Point a, Point b, int lengthDifference)
+		{
+			var x = (int) ((b.X - a.X) / Math.Sqrt((b.X - a.X) * (b.X - a.X) + (b.Y - a.Y) * (b.Y - a.Y)));
+			var y = (int) ((b.Y - a.Y) / Math.Sqrt((b.X - a.X) * (b.X - a.X) + (b.Y - a.Y) * (b.Y - a.Y)));
+			return new Point(b.X + lengthDifference * x, b.Y + lengthDifference * y);
 		}
 		#endregion
 

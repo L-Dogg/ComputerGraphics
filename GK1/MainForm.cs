@@ -53,7 +53,7 @@ namespace GK1
 		/// <summary>
 		/// Length MessageBox for Length Relation user input.
 		/// </summary>
-		public Length LengthMessageBox { get; set; } = new Length()
+		public Length LengthMessageBox { get; set; }
 		#endregion
 
 		//private Graphics g;

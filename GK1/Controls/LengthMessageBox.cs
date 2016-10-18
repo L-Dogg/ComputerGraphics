@@ -24,15 +24,16 @@ namespace GK1.Controls
 			int val;
 			if (int.TryParse(lengthTextBox.Text, out val))
 				LengthTyped = val;
+			this.Close();
 		}
 
 		private void lengthTextBox_TextChanged(object sender, EventArgs e)
 		{
 			int val;
 			if (!int.TryParse(lengthTextBox.Text, out val) || val <= 0)
-				okButton.Visible = false;
+				okButton.Enabled = false;
 			else
-				okButton.Visible = true;
+				okButton.Enabled = true;
 		}
 
 		private void Length_Load(object sender, EventArgs e)

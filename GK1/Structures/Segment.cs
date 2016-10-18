@@ -12,6 +12,15 @@ namespace GK1.Structures
 		public RelationType Relation { get; set; }
         public Point From { get; set; }
 		public Point To { get; set; }
+
+		public int Length
+		{
+			get
+			{
+				return (int) Math.Sqrt((From.X - To.X) * (From.X - To.X) + (From.Y - To.Y) * (From.Y - To.Y));
+			}
+		}
+
 		public Segment(Point from, Point to, RelationType relation = RelationType.None)
 		{
 			Relation = relation;

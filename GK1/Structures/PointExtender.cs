@@ -34,9 +34,14 @@ namespace GK1.Structures
 
 		public static void Draw(this Point p, Bitmap bmp)
 		{
+			p.Draw(bmp, color);
+		}
+
+		public static void Draw(this Point p, Bitmap bmp, Color col)
+		{
 			for (int i = p.X - 2; i <= p.X + 2; i++)
 				for (int j = p.Y - 2; j <= p.Y + 2; j++)
-					bmp.SetPixel(i, j, color);
+					bmp.SetPixel(i, j, col);
 		}
 
 		public static bool OnRectangle(this Point p, Segment line)

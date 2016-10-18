@@ -58,7 +58,7 @@
             this.removePolygonToolStripMenuItem,
             this.movePolygonToolStripMenuItem});
 			this.polygonContextMenu.Name = "polygonContextMenu";
-			this.polygonContextMenu.Size = new System.Drawing.Size(165, 92);
+			this.polygonContextMenu.Size = new System.Drawing.Size(165, 70);
 			// 
 			// addPolygonToolStripMenuItem
 			// 
@@ -112,7 +112,7 @@
 			this.ClientSize = new System.Drawing.Size(1057, 552);
 			this.Controls.Add(this.background);
 			this.Name = "MainForm";
-			this.Text = "Form1";
+			this.Text = "Polygon Editor";
 			this.polygonContextMenu.ResumeLayout(false);
 			this.relationContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
