@@ -129,7 +129,7 @@ namespace GK1.States
 				MainForm.Render();
 			}
 			// Vertex move
-			else if (!DeletingPolygon && (wasVertexClicked && polygon.Points.First.Value != clickedVertex) && e.Button == MouseButtons.Left)
+			else if (!DeletingPolygon /* && (wasVertexClicked && polygon.Points.First.Value != clickedVertex) */ && e.Button == MouseButtons.Left)
 			{
 				MainForm.CurrentState = new VertexMoveState(MainForm) { Polygon = polygon, Vertex = clickedVertex };
 			}

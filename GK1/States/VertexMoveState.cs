@@ -39,14 +39,14 @@ namespace GK1.States
 				Polygon.Points.AddAfter(Polygon.Points.Find(Vertex), point);
 				Polygon.Points.Remove(Vertex);
 
-				var edgeToAddAfter = Polygon.Segments.Where((line) => { return line.To == Vertex; }).First();
-				var edgeToAddBefore = Polygon.Segments.Where((line) => { return line.From == Vertex; }).First();
+				var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
+				var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
 
-				Polygon.Segments.AddAfter(Polygon.Segments.Find(edgeToAddAfter), new Segment(edgeToAddAfter.From, Vertex));
-				Polygon.Segments.AddBefore(Polygon.Segments.Find(edgeToAddBefore), new Segment(Vertex, edgeToAddBefore.To));
-				Polygon.Segments = new LinkedList<Segment>(Polygon.Segments.Where((line) => { return line.From != Vertex && line.To != Vertex; }));
-				
+				edgeToAddAfter.To = point;
+				edgeToAddBefore.From = point;
+
 				MainForm.CurrentState = new IdleState(MainForm);
+				MainForm.Render();
 			}
 		}
 
@@ -56,13 +56,11 @@ namespace GK1.States
 			Polygon.Points.AddAfter(Polygon.Points.Find(Vertex), point);
 			Polygon.Points.Remove(Vertex);
 
-			// Additional information: Sequence contains no elements NO FAJNIE JAK W KOMBAJNIE
-			var edgeToAddAfter = Polygon.Segments.Where((line) => { return line.To == Vertex; }).First();
-			var edgeToAddBefore = Polygon.Segments.Where((line) => { return line.From == Vertex; }).First();
+			var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
+			var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
 
-			Polygon.Segments.AddAfter(Polygon.Segments.Find(edgeToAddAfter), new Segment(edgeToAddAfter.From, point));
-			Polygon.Segments.AddBefore(Polygon.Segments.Find(edgeToAddBefore), new Segment(point, edgeToAddBefore.To));
-			Polygon.Segments = new LinkedList<Segment>(Polygon.Segments.Where((line) => { return line.From != Vertex && line.To != Vertex; }));
+			edgeToAddAfter.To = point;
+			edgeToAddBefore.From = point;
 
 			Vertex = point;
 
