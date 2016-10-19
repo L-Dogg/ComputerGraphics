@@ -56,7 +56,7 @@ namespace GK1
 		public Length LengthMessageBox { get; set; }
 		#endregion
 
-		//private Graphics g;
+		private Graphics g;
 
 		#region Public Methods
 
@@ -64,7 +64,7 @@ namespace GK1
 		{
 			InitializeComponent();
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
-			//g = Graphics.FromImage(background.BackgroundImage);
+			g = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
 		}
 
@@ -81,24 +81,18 @@ namespace GK1
 
 			if (operatingLine != null)
 			{
-				for (int i = 0; i < relationContextMenu.Items.Count; i++)
+				for (int i = 0; i < relationContextMenu.Items.Count - 1; i++)
 					relationContextMenu.Items[i].Enabled = (operatingLine.Relation == RelationType.None);
-			}
+				relationContextMenu.Items[3].Enabled = (operatingLine.Relation != RelationType.None);
+            }
 		}
 
 		public void Render()
 		{
-			// Preparation
-			background.BackgroundImage.Dispose();
-			Bitmap bmp = new Bitmap(background.Size.Width, background.Size.Height);
-			Graphics g = Graphics.FromImage(bmp);
-
-			//this.ClearBitmap(background.BackgroundImage as Bitmap, g);
-			CurrentState.Render(bmp, g);
-
-			// Cleaning:
-			background.BackgroundImage = bmp;
-			g.Dispose();
+			this.ClearBitmap(background.BackgroundImage as Bitmap, g);
+			CurrentState.Render(background.BackgroundImage as Bitmap, g);
+			
+			this.background.Invalidate(true);
 		}
 		#endregion
 

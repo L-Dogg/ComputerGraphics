@@ -38,6 +38,8 @@
 			this.horizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.verticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.lengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.polygonContextMenu.SuspendLayout();
 			this.relationContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -83,27 +85,40 @@
 			this.relationContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.horizontalToolStripMenuItem,
             this.verticalToolStripMenuItem,
-            this.lengthToolStripMenuItem});
+            this.lengthToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.noneToolStripMenuItem});
 			this.relationContextMenu.Name = "relationContextMenu";
-			this.relationContextMenu.Size = new System.Drawing.Size(130, 70);
+			this.relationContextMenu.Size = new System.Drawing.Size(153, 120);
 			// 
 			// horizontalToolStripMenuItem
 			// 
 			this.horizontalToolStripMenuItem.Name = "horizontalToolStripMenuItem";
-			this.horizontalToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+			this.horizontalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.horizontalToolStripMenuItem.Text = "Horizontal";
 			// 
 			// verticalToolStripMenuItem
 			// 
 			this.verticalToolStripMenuItem.Name = "verticalToolStripMenuItem";
-			this.verticalToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+			this.verticalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.verticalToolStripMenuItem.Text = "Vertical";
 			// 
 			// lengthToolStripMenuItem
 			// 
 			this.lengthToolStripMenuItem.Name = "lengthToolStripMenuItem";
-			this.lengthToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+			this.lengthToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.lengthToolStripMenuItem.Text = "Length";
+			// 
+			// noneToolStripMenuItem
+			// 
+			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.noneToolStripMenuItem.Text = "None";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// MainForm
 			// 
@@ -130,6 +145,8 @@
 		private System.Windows.Forms.ToolStripMenuItem horizontalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem verticalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem lengthToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
 	}
 }
 

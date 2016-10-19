@@ -58,7 +58,7 @@ namespace GK1.States
 					MainForm.Render();
 			}
 			// Vertical
-			if (e.ClickedItem == MainForm.RelationContextMenu.Items[1])
+			else if (e.ClickedItem == MainForm.RelationContextMenu.Items[1])
 			{
 				if (AddVeritcalRelation())
 					MainForm.Render();
@@ -69,6 +69,12 @@ namespace GK1.States
 				if (AddLengthRelation())
 					MainForm.Render();
 			}
+			else if (e.ClickedItem == MainForm.RelationContextMenu.Items[3])
+			{
+				if (AddNoneRelation())
+					MainForm.Render();
+			}
+
 		}
 		#endregion
 
@@ -124,6 +130,14 @@ namespace GK1.States
 			currentSegment.To = point;
 			currentSegment.Relation = RelationType.Length;
 
+			return true;
+		}
+
+		private bool AddNoneRelation()
+		{
+			if (currentPolygon == null)
+				return false;
+			currentSegment.Relation = RelationType.None;
 			return true;
 		}
 
