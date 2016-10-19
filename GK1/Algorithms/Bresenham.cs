@@ -50,9 +50,24 @@ namespace Bresenhams
 			for (int x = x0; x <= x1; ++x)
 			{
 				if (steep)
-					bmp.SetPixel(y, x, color);
+				{
+					if (y >= bmp.Width)
+						y = bmp.Width - 1;
+					if (x < 0)
+						x = 0;
+
+					bmp.SetPixel(y > 0 ? y : 0, x < bmp.Height ? x : bmp.Height - 1, color);
+
+				}
 				else
-					bmp.SetPixel(x, y, color);
+				{
+					if (x >= bmp.Width)
+						x = bmp.Width - 1;
+					if (y < 0)
+						y = 0;
+
+					bmp.SetPixel(x > 0 ? x : 0, y < bmp.Height ? y : bmp.Height - 1, color);
+				}
 
 				err = err - dY;
 				if (err < 0) { y += ystep; err += dX; }

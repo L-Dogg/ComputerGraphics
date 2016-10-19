@@ -46,9 +46,9 @@
 			// 
 			// background
 			// 
-			this.background.Location = new System.Drawing.Point(13, 13);
+			this.background.Location = new System.Drawing.Point(1, 2);
 			this.background.Name = "background";
-			this.background.Size = new System.Drawing.Size(1032, 527);
+			this.background.Size = new System.Drawing.Size(1056, 551);
 			this.background.TabIndex = 0;
 			this.background.KeyUp += new System.Windows.Forms.KeyEventHandler(this.background_KeyUp);
 			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bgMouseDown);
