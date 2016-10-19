@@ -39,8 +39,11 @@ namespace GK1.Structures
 
 		public static void Draw(this Point p, Bitmap bmp, Color col)
 		{
-			for (int i = (p.X - 2) > 0 ? p.X - 2 : 0; i <= ((p.X + 2) >= bmp.Width ? bmp.Width - 1 : p.X + 2); i++)
-				for (int j = (p.Y - 2) > 0 ? p.Y - 2 : 0; j <= ((p.Y + 2) >= bmp.Height ? bmp.Height - 1: p.Y + 2); j++)
+			if (p.X - 2 < 0 || p.X + 2 >= bmp.Width || p.Y - 2 < 0 || p.Y + 2 >= bmp.Height)
+				return;
+
+			for (int i = (p.X - 2); i <= (p.X + 2); i++)
+				for (int j = (p.Y - 2); j <= (p.Y + 2); j++)
 					bmp.SetPixel(i, j, col);
 		}
 

@@ -66,6 +66,7 @@ namespace GK1
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
 			g = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
+			Render();
 		}
 
 		public void SetContextMenuItems(Segment operatingLine)
@@ -91,7 +92,7 @@ namespace GK1
 		{
 			this.ClearBitmap(background.BackgroundImage as Bitmap, g);
 			CurrentState.Render(background.BackgroundImage as Bitmap, g);
-			
+
 			this.background.Invalidate(true);
 		}
 		#endregion
@@ -118,5 +119,16 @@ namespace GK1
 			g.FillRectangle(Brushes.White, 0, 0, bmp.Size.Width, bmp.Size.Height);
 		}
 		#endregion
+
+		private void MainForm_ResizeEnd(object sender, EventArgs e)
+		{
+			background.Size = new Size(this.Size.Width, this.Size.Height);
+			background.BackgroundImage.Dispose();
+			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
+			g = Graphics.FromImage(background.BackgroundImage);
+
+			//background.Invalidate(true);
+			this.Render();
+		}
 	}
 }

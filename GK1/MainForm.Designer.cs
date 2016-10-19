@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.background = new GK1.Background();
 			this.polygonContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addPolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,19 +39,10 @@
 			this.lengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.background = new GK1.Background();
 			this.polygonContextMenu.SuspendLayout();
 			this.relationContextMenu.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// background
-			// 
-			this.background.Location = new System.Drawing.Point(1, 2);
-			this.background.Name = "background";
-			this.background.Size = new System.Drawing.Size(1056, 551);
-			this.background.TabIndex = 0;
-			this.background.KeyUp += new System.Windows.Forms.KeyEventHandler(this.background_KeyUp);
-			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bgMouseDown);
-			this.background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bgMouseMove);
 			// 
 			// polygonContextMenu
 			// 
@@ -121,6 +111,16 @@
 			this.noneToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
+			// background
+			// 
+			this.background.Location = new System.Drawing.Point(0, 0);
+			this.background.Name = "background";
+			this.background.Size = new System.Drawing.Size(1057, 552);
+			this.background.TabIndex = 0;
+			this.background.KeyUp += new System.Windows.Forms.KeyEventHandler(this.background_KeyUp);
+			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bgMouseDown);
+			this.background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bgMouseMove);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,6 +129,7 @@
 			this.Controls.Add(this.background);
 			this.Name = "MainForm";
 			this.Text = "Polygon Editor";
+			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
 			this.polygonContextMenu.ResumeLayout(false);
 			this.relationContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
