@@ -108,6 +108,11 @@ namespace GK1
 			CurrentState.MouseMove(sender, e);
 		}
 
+		private void background_KeyUp(object sender, KeyEventArgs e)
+		{
+			CurrentState.KeyUp(sender, e);
+		}
+
 		private void ClearBitmap(Bitmap bmp, Graphics g)
 		{
 			g.FillRectangle(Brushes.White, 0, 0, bmp.Size.Width, bmp.Size.Height);

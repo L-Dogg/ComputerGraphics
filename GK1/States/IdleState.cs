@@ -231,6 +231,11 @@ namespace GK1.States
 		{
 			
 		}
+
+		public void KeyUp(object sender, KeyEventArgs e)
+		{
+			
+		}
 		
 		public void Render(Bitmap bitmap, Graphics g)
 		{

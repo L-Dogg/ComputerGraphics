@@ -72,6 +72,11 @@ namespace GK1.States
 			foreach (var polygon in MainForm.Polygons)
 				polygon.Render(bitmap, g);
 		}
+
+		public void KeyUp(object sender, KeyEventArgs e)
+		{
+			
+		}
 		#endregion
 	}
 }

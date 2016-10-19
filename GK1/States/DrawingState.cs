@@ -84,6 +84,16 @@ namespace GK1.States
 			foreach (var polygon in MainForm.Polygons)
 				polygon.Render(bitmap, g);
 		}
+
+		public void KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				MainForm.CurrentPolygon = new Polygon();
+				MainForm.CurrentState = new IdleState(MainForm);
+				MainForm.Render();
+			}
+		}
 		#endregion
 	}
 }

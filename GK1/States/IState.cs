@@ -17,6 +17,8 @@ namespace GK1.States
 
 		void MouseMove(object sender, MouseEventArgs e);
 
+		void KeyUp(object sender, KeyEventArgs e);
+
 		/// <summary>
 		/// Draws polygons on bitmap. Draws relation markers using graphics.
 		/// </summary>
