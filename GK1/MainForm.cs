@@ -56,7 +56,7 @@ namespace GK1
 		public Length LengthMessageBox { get; set; }
 		#endregion
 
-		private Graphics g;
+		private Graphics graphics;
 
 		#region Public Methods
 
@@ -64,7 +64,7 @@ namespace GK1
 		{
 			InitializeComponent();
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
-			g = Graphics.FromImage(background.BackgroundImage);
+			graphics = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
 			Render();
 		}
@@ -90,9 +90,9 @@ namespace GK1
 
 		public void Render()
 		{
-			this.ClearBitmap(background.BackgroundImage as Bitmap, g);
-			CurrentState.Render(background.BackgroundImage as Bitmap, g);
-
+			this.ClearBitmap(background.BackgroundImage as Bitmap, graphics);
+			CurrentState.Render(background.BackgroundImage as Bitmap, graphics);
+			
 			this.background.Invalidate(true);
 		}
 		#endregion
@@ -114,21 +114,22 @@ namespace GK1
 			CurrentState.KeyUp(sender, e);
 		}
 
+		private void MainForm_ResizeEnd(object sender, EventArgs e)
+		{
+			background.Size = new Size(this.Size.Width, this.Size.Height);
+			background.BackgroundImage.Dispose();
+			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
+			graphics = Graphics.FromImage(background.BackgroundImage);
+
+			//background.Invalidate(true);
+			this.Render();
+		}
+
 		private void ClearBitmap(Bitmap bmp, Graphics g)
 		{
 			g.FillRectangle(Brushes.White, 0, 0, bmp.Size.Width, bmp.Size.Height);
 		}
 		#endregion
 
-		private void MainForm_ResizeEnd(object sender, EventArgs e)
-		{
-			background.Size = new Size(this.Size.Width, this.Size.Height);
-			background.BackgroundImage.Dispose();
-			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
-			g = Graphics.FromImage(background.BackgroundImage);
-
-			//background.Invalidate(true);
-			this.Render();
-		}
 	}
 }

@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Relations\IRelation.cs" />
     <Compile Include="States\DrawingState.cs" />
     <Compile Include="States\IdleState.cs" />
     <Compile Include="States\IState.cs" />

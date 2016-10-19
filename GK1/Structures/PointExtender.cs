@@ -14,7 +14,7 @@ namespace GK1.Structures
 
 		public static bool ComparePoints(this Point p, Point u)
 		{
-			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.X - u.X) <= margin;
+			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
 		}
 
 		/// <summary>
@@ -49,8 +49,6 @@ namespace GK1.Structures
 
 		public static bool OnRectangle(this Point p, Segment line)
 		{
-			int margin = 5;
-
 			var minY = (line.From.Y < line.To.Y) ? line.From.Y : line.To.Y;
 			var maxY = (line.From.Y < line.To.Y) ? line.To.Y : line.From.Y;
 			var minX = (line.From.X < line.To.X) ? line.From.X : line.To.X;

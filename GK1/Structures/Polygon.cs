@@ -23,11 +23,11 @@ namespace GK1.Structures
 				
 				if (line.Relation == RelationType.Horizontal)
 				{
-					g.FillEllipse(Brushes.Red, midPoint.X, midPoint.Y - 7, 15, 15);					
+					g.FillEllipse(Brushes.Red, midPoint.X - 7, midPoint.Y - 7, 15, 15);					
 				}
 				else if (line.Relation == RelationType.Vertical)
 				{
-					g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y, 15, 15);
+					g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 				}
 
 				Algorithms.Line(line.From.X, line.From.Y, line.To.X, line.To.Y, bmp);
