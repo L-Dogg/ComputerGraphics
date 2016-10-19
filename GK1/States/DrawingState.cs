@@ -22,6 +22,7 @@ namespace GK1.States
 		public DrawingState(MainForm mainForm)
 		{
 			MainForm = mainForm;
+			MainForm.Cursor = Cursors.Cross;
 		}
 
 		#region IState
