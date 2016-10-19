@@ -69,7 +69,8 @@ namespace GK1.States
 				if (AddLengthRelation())
 					MainForm.Render();
 			}
-			else if (e.ClickedItem == MainForm.RelationContextMenu.Items[3])
+			// None
+			if (e.ClickedItem == MainForm.RelationContextMenu.Items[4])
 			{
 				if (AddNoneRelation())
 					MainForm.Render();
@@ -135,9 +136,7 @@ namespace GK1.States
 
 		private bool AddNoneRelation()
 		{
-			if (currentPolygon == null)
-				return false;
-			currentSegment.Relation = RelationType.None;
+			MainForm.CurrentSegment.Relation = RelationType.None;
 			return true;
 		}
 
@@ -165,12 +164,15 @@ namespace GK1.States
 			var point = new Point(e.X, e.Y);
 			var wasEdgeClicked = ClickChecker.WasEdgeClicked(point, MainForm.Polygons, out segment, out polygon);
 			bool wasVertexClicked = false;
-            if (!wasEdgeClicked)
+			if (!wasEdgeClicked)
 				wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out clickedVertex, out polygon);
-
-			currentPolygon = polygon;
-			currentSegment = segment;
-
+			else
+			{
+				MainForm.CurrentPolygon = polygon;
+				MainForm.CurrentSegment = segment;
+				currentSegment = segment;
+				currentPolygon = polygon;
+			}
 			// Context Menu
 			if (e.Button == MouseButtons.Right)
 			{

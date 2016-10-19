@@ -52,6 +52,11 @@ namespace GK1.States
 
 		public void MouseMove(object sender, MouseEventArgs e)
 		{
+			if (Polygon == null)
+			{
+				MainForm.CurrentState = new IdleState(MainForm);
+				MainForm.Render();
+            }
 			var point = new Point(e.X, e.Y);
 			Polygon.Points.AddAfter(Polygon.Points.Find(Vertex), point);
 			Polygon.Points.Remove(Vertex);

@@ -46,12 +46,14 @@ namespace GK1.Structures
 
 		public static bool OnRectangle(this Point p, Segment line)
 		{
+			int margin = 5;
+
 			var minY = (line.From.Y < line.To.Y) ? line.From.Y : line.To.Y;
 			var maxY = (line.From.Y < line.To.Y) ? line.To.Y : line.From.Y;
 			var minX = (line.From.X < line.To.X) ? line.From.X : line.To.X;
 			var maxX = (line.From.X < line.To.X) ? line.To.X : line.From.X;
 
-			if (p.Y <= maxY && p.Y >= minY && p.X <= maxX && p.X >= minX)
+			if (p.Y <= (maxY + margin) && (p.Y >= minY - margin) && (p.X <= maxX + margin) && (p.X >= minX - margin))
 				return true;
 			return false;
 		}
