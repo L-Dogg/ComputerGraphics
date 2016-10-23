@@ -37,18 +37,17 @@ namespace GK1.States
 
 				if (polygon.Points.Count != 0)
 				{
-					Segment = new Segment(polygon.Points.Last.Value, point);
-
+					// Finish drawing 
 					if (polygon.Points.First.Value.ComparePoints(point))
 					{
-						MainForm.CurrentState = new IdleState(MainForm);
-						polygon.Segments.AddLast(new Segment(polygon.Points.Last(), polygon.Points.First()));
+						polygon.Segments.AddLast(new Segment(polygon.Points.Last.Value, polygon.Points.First.Value));
 						MainForm.Polygons.Add(polygon);
 						MainForm.CurrentPolygon = new Polygon();
+						MainForm.CurrentState = new IdleState(MainForm);
 					}
 					else
 					{
-						polygon.Segments.AddLast(Segment);
+						polygon.Segments.AddLast(new Segment(polygon.Points.Last.Value, point));
 						polygon.Points.AddLast(point);
 						MainForm.Render();
 					}

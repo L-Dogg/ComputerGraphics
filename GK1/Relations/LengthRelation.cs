@@ -19,11 +19,7 @@ namespace GK1.Relations
 		{
 			if (!Check(segment, polygon, length))
 				return false;
-
-			//MainForm.LengthMessageBox = new Length() { LengthTyped = segment.Length };
-			//MainForm.LengthMessageBox.ShowDialog();
-			//var newLength = MainForm.LengthMessageBox.LengthTyped;
-
+			
 			var point = segment.To;
 			CalculateNewCoords(segment, length);
 			polygon.Points.Find(point).Value = segment.To;

@@ -97,8 +97,12 @@ namespace GK1.States
 
 		private bool AddLengthRelation()
 		{
+
+			MainForm.LengthMessageBox = new Length() { LengthTyped = MainForm.CurrentSegment.Length };
+			MainForm.LengthMessageBox.ShowDialog();
+
 			MainForm.CurrentSegment.Relation = lengthRelation;
-			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
+			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon, MainForm.LengthMessageBox.LengthTyped);
 		}
 
 		private bool AddNoneRelation()
@@ -192,7 +196,7 @@ namespace GK1.States
 				MainForm.Render();
 			}
 			// Vertex move
-			else if (!DeletingPolygon /* && (wasVertexClicked && polygon.Points.First.Value != clickedVertex) */ && e.Button == MouseButtons.Left)
+			else if (!DeletingPolygon && wasVertexClicked /* && polygon.Points.First.Value != clickedVertex */ && e.Button == MouseButtons.Left)
 			{
 				MainForm.CurrentState = new VertexMoveState(MainForm) { Polygon = polygon, Vertex = clickedVertex };
 			}
