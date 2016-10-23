@@ -14,6 +14,27 @@ namespace GK1.Structures
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
 		private static Font font = new Font("Arial", 7);
 
+		public bool Apply(Point startPoint)
+		{
+			var forwardIterator = Segments.Find(Segments.First(line => line.From == startPoint));
+			var backwardIterator = forwardIterator.Previous;
+			
+			while (true)
+			{
+				if ((Points.Count % 2 == 0 && forwardIterator == backwardIterator) ||
+					(Points.Count % 2 != 0 && forwardIterator.Next == backwardIterator.Previous))
+					return true;
+
+				if (forwardIterator.Value.Relation.Apply(forwardIterator.Value, this, forwardIterator.Value.Length) ||
+					backwardIterator.Value.Relation.Apply(backwardIterator.Value, this, backwardIterator.Value.Length))
+					return false;
+
+				forwardIterator = forwardIterator.Next;
+				backwardIterator = backwardIterator.Previous;
+            }
+			
+		}
+
 		public void Render(Bitmap bmp, Graphics g)
 		{
 			foreach (var line in Segments)

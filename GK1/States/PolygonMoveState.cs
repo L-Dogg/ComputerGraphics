@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace GK1.States
 {
+	// TODO: can't move out of state!!!
 	class PolygonMoveState : IState
 	{
 		#region Private Properties

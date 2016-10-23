@@ -32,6 +32,7 @@ namespace GK1.States
 		}
 
 		#region Context Menu Handlers
+		// TODO: double triggered
 		private void PolygonContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			// Add
@@ -51,7 +52,7 @@ namespace GK1.States
 			}
 		}
 
-
+		// TODO: double triggered
 		private void RelationContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			// Horizontal
@@ -97,7 +98,6 @@ namespace GK1.States
 
 		private bool AddLengthRelation()
 		{
-
 			MainForm.LengthMessageBox = new Length() { LengthTyped = MainForm.CurrentSegment.Length };
 			MainForm.LengthMessageBox.ShowDialog();
 
