@@ -237,7 +237,8 @@ namespace GK1.States
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			
+			if (DeletingPolygon && e.KeyCode == Keys.Escape)
+				DeletingPolygon = false;
 		}
 		
 		public void Render(Bitmap bitmap, Graphics g)
