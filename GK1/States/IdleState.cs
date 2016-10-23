@@ -1,12 +1,11 @@
 ﻿using GK1.Controls;
+using GK1.Relations;
 using GK1.Structures;
 using GK1.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GK1.States
@@ -18,8 +17,12 @@ namespace GK1.States
 		private bool DeletingPolygon { get; set; }
 		private Polygon currentPolygon { get; set; }
 		private Segment currentSegment { get; set; }
+		private static NoneRelation noneRelation = new NoneRelation();
+		private static HorizontalRelation horizontalRelation = new HorizontalRelation();
+		private static VerticalRelation verticalRelation = new VerticalRelation();
+		private static LengthRelation lengthRelation = new LengthRelation();
 		#endregion
-		
+
 		public IdleState(MainForm mainForm)
 		{
 			MainForm = mainForm;
@@ -82,62 +85,26 @@ namespace GK1.States
 		#region Relation Processing
 		private bool AddHorizontalRelation()
 		{
-			if (currentPolygon == null)
-				return false;
-
-			var edges = currentPolygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
-			if (edges.Any((line) => { return line.Relation == RelationType.Horizontal; }))
-				return false;
-				
-			var point = new Point(currentSegment.From.X, currentSegment.To.Y);
-			currentPolygon.Points.Find(currentSegment.From).Value = point;
-			currentPolygon.Segments.First((line) => { return line.To == currentSegment.From; }).To = point;
-			currentSegment.From = point;
-			currentSegment.Relation = RelationType.Horizontal;
-
-			return true;
+			MainForm.CurrentSegment.Relation = horizontalRelation;
+			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
 		}
 
 		private bool AddVeritcalRelation()
 		{
-			if (currentPolygon == null)
-				return false;
-
-			var edges = currentPolygon.Segments.Where((line) => { return line.From == currentSegment.To || line.To == currentSegment.From; });
-			if (edges.Any((line) => { return line.Relation == RelationType.Vertical; }))
-				return false;
-
-			var point = new Point(currentSegment.To.X, currentSegment.From.Y);
-			currentPolygon.Points.Find(currentSegment.From).Value = point;
-			currentPolygon.Segments.First((line) => { return line.To == currentSegment.From; }).To = point;
-			currentSegment.From = point;
-			currentSegment.Relation = RelationType.Vertical;
-
-			return true;
+			MainForm.CurrentSegment.Relation = verticalRelation;
+			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
 		}
 
 		private bool AddLengthRelation()
 		{
-			if (currentPolygon == null)
-				return false;
-
-			MainForm.LengthMessageBox = new Length() { LengthTyped = currentSegment.Length };
-			MainForm.LengthMessageBox.ShowDialog();
-			var newLength = MainForm.LengthMessageBox.LengthTyped;
-
-			var point = currentSegment.To;
-			CalculateNewCoords(currentSegment, newLength);
-			currentPolygon.Points.Find(point).Value = currentSegment.To;
-			currentPolygon.Segments.First((line) => { return line.From == point; }).From = currentSegment.To;
-			currentSegment.Relation = RelationType.Length;
-
-			return true;
+			MainForm.CurrentSegment.Relation = lengthRelation;
+			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
 		}
 
 		private bool AddNoneRelation()
 		{
-			MainForm.CurrentSegment.Relation = RelationType.None;
-			return true;
+			MainForm.CurrentSegment.Relation = noneRelation;
+			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
 		}
 
 		/// <summary>
@@ -174,6 +141,7 @@ namespace GK1.States
 				currentSegment = segment;
 				currentPolygon = polygon;
 			}
+
 			// Context Menu
 			if (e.Button == MouseButtons.Right)
 			{

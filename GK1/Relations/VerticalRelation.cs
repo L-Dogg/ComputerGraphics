@@ -7,7 +7,7 @@ namespace GK1.Relations
 {
 	class VerticalRelation : IRelation
 	{
-		public RelationType RelationType
+		public RelationType Type
 		{
 			get { return RelationType.Vertical; }
 		}
@@ -21,7 +21,7 @@ namespace GK1.Relations
 			polygon.Points.Find(segment.From).Value = point;
 			polygon.Segments.First((line) => { return line.To == segment.From; }).To = point;
 			segment.From = point;
-			segment.Relation = RelationType.Vertical;
+			segment.Relation = this;
 
 			return true;
 		}
@@ -32,7 +32,7 @@ namespace GK1.Relations
 				return false;
 
 			var edges = polygon.Segments.Where((line) => { return line.From == segment.To || line.To == segment.From; });
-			if (edges.Any((line) => { return line.Relation == RelationType.Vertical; }))
+			if (edges.Any((line) => { return line.Relation.Type == RelationType.Vertical; }))
 				return false;
 
 			return true;

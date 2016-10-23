@@ -83,8 +83,8 @@ namespace GK1
 			if (operatingLine != null)
 			{
 				for (int i = 0; i < relationContextMenu.Items.Count - 1; i++)
-					relationContextMenu.Items[i].Enabled = (operatingLine.Relation == RelationType.None);
-				relationContextMenu.Items[3].Enabled = (operatingLine.Relation != RelationType.None);
+					relationContextMenu.Items[i].Enabled = (operatingLine.Relation.Type == RelationType.None);
+				relationContextMenu.Items[3].Enabled = (operatingLine.Relation.Type != RelationType.None);
             }
 		}
 

@@ -10,7 +10,7 @@ namespace GK1.Relations
 {
 	class LengthRelation : IRelation
 	{
-		public RelationType RelationType
+		public RelationType Type
 		{
 			get { return RelationType.Length; }
 		}
@@ -28,7 +28,7 @@ namespace GK1.Relations
 			CalculateNewCoords(segment, length);
 			polygon.Points.Find(point).Value = segment.To;
 			polygon.Segments.First((line) => { return line.From == point; }).From = segment.To;
-			segment.Relation = RelationType.Length;
+			segment.Relation = this;
 
 			return true;
 		}

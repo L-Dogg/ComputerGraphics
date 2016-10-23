@@ -21,18 +21,18 @@ namespace GK1.Structures
 				var midPoint = new Point(Math.Min(line.From.X, line.To.X) + Math.Abs(line.From.X - line.To.X) / 2,
 					Math.Min(line.From.Y, line.To.Y) + Math.Abs(line.From.Y - line.To.Y) / 2);
 				
-				if (line.Relation == RelationType.Horizontal)
+				if (line.Relation.Type == RelationType.Horizontal)
 				{
 					g.FillEllipse(Brushes.Red, midPoint.X - 7, midPoint.Y - 7, 15, 15);					
 				}
-				else if (line.Relation == RelationType.Vertical)
+				else if (line.Relation.Type == RelationType.Vertical)
 				{
 					g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 				}
 
 				Algorithms.Line(line.From.X, line.From.Y, line.To.X, line.To.Y, bmp);
 				
-				if (line.Relation == RelationType.Length)
+				if (line.Relation.Type == RelationType.Length)
 				{
 					g.FillRectangle(Brushes.Wheat, midPoint.X - 7, midPoint.Y - 7, 18, 12);
 					g.DrawString(line.Length.ToString(), font, Brushes.Black, new Point(midPoint.X - 9, midPoint.Y - 7));

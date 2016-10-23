@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GK1.Relations;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace GK1.Structures
 {
 	public class Segment
 	{
-		public RelationType Relation { get; set; }
+		public IRelation Relation { get; set; }
         public Point From { get; set; }
 		public Point To { get; set; }
 
@@ -21,9 +22,9 @@ namespace GK1.Structures
 			}
 		}
 
-		public Segment(Point from, Point to, RelationType relation = RelationType.None)
+		public Segment(Point from, Point to)
 		{
-			Relation = relation;
+			Relation = new NoneRelation();
 			From = from;
 			To = to;
 		}

@@ -2,9 +2,9 @@
 
 namespace GK1.Relations
 {
-	interface IRelation
+	public interface IRelation
 	{
-		RelationType RelationType { get; }
+		RelationType Type { get; }
 		bool Apply(Segment segment, Polygon polygon, int length = 0);
 		bool Check(Segment segment, Polygon polygon, int length = 0);
 	}
