@@ -19,5 +19,10 @@ namespace GK1.Relations
 			segment.Relation = RelationType.None;
 			return true;
 		}
+
+		public bool Check(Segment segment, Polygon polygon, int length = 0)
+		{
+			return true;
+		}
 	}
 }

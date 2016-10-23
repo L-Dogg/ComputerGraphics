@@ -17,7 +17,7 @@ namespace GK1.Relations
 
 		public bool Apply(Segment segment, Polygon polygon, int length)
 		{
-			if (polygon == null)
+			if (!Check(segment, polygon, length))
 				return false;
 
 			//MainForm.LengthMessageBox = new Length() { LengthTyped = segment.Length };
@@ -31,6 +31,11 @@ namespace GK1.Relations
 			segment.Relation = RelationType.Length;
 
 			return true;
+		}
+
+		public bool Check(Segment segment, Polygon polygon, int length = 0)
+		{
+			return true;	
 		}
 
 		/// <summary>
