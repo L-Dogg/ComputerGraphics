@@ -16,7 +16,7 @@ namespace GK1.States
 		#region Private Properties
 		private MainForm MainForm { get; set; }
 		private Polygon Polygon { get; set; }
-		private Point Vertex { get; set; }
+		private Vertex Vertex { get; set; }
 		private bool Moving { get; set; }
 		#endregion
 
@@ -30,9 +30,9 @@ namespace GK1.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			var point = new Point(e.X, e.Y);
+			var point = new Vertex(e.X, e.Y);
 			Polygon polygon;
-			Point vertex;
+			Vertex vertex;
 			var wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out vertex, out polygon);
 
 			if (!Moving && wasVertexClicked && e.Button == MouseButtons.Left)
@@ -56,17 +56,17 @@ namespace GK1.States
 			var xDiff = e.X - Vertex.X;
 			var yDiff = e.Y - Vertex.Y;
 
-			Vertex = new Point(Vertex.X + xDiff, Vertex.Y + yDiff);
+			Vertex = new Vertex(Vertex.X + xDiff, Vertex.Y + yDiff);
 
-			var pts = new LinkedList<Point>();
-			foreach (var p in Polygon.Points)
-				pts.AddLast(new Point(p.X + xDiff, p.Y + yDiff));
-			Polygon.Points = pts;
+			var pts = new LinkedList<Vertex>();
+			foreach (var p in Polygon.Vertices)
+				pts.AddLast(new Vertex(p.X + xDiff, p.Y + yDiff));
+			Polygon.Vertices = pts;
 
 			foreach (var line in Polygon.Segments)
 			{
-				line.To = new Point(line.To.X + xDiff, line.To.Y + yDiff);
-				line.From = new Point(line.From.X + xDiff, line.From.Y + yDiff);
+				line.To = new Vertex(line.To.X + xDiff, line.To.Y + yDiff);
+				line.From = new Vertex(line.From.X + xDiff, line.From.Y + yDiff);
 			}
 
 			MainForm.Render();	

@@ -17,7 +17,7 @@ namespace GK1.States
 		#endregion
 
 		#region Public Properties
-		public Point Vertex { get; set; }
+		public Vertex Vertex { get; set; }
 		public Polygon Polygon { get; set; }
 		#endregion
 
@@ -30,14 +30,14 @@ namespace GK1.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			var point = new Point(e.X, e.Y);
+			var point = new Vertex(e.X, e.Y);
 			
 			if (e.Button == MouseButtons.Left)
 			{
 				MainForm.CurrentState = new IdleState(MainForm);
 
-				Polygon.Points.AddAfter(Polygon.Points.Find(Vertex), point);
-				Polygon.Points.Remove(Vertex);
+				Polygon.Vertices.AddAfter(Polygon.Vertices.Find(Vertex), point);
+				Polygon.Vertices.Remove(Vertex);
 
 				var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
 				var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
@@ -57,9 +57,9 @@ namespace GK1.States
 				MainForm.CurrentState = new IdleState(MainForm);
 				MainForm.Render();
             }
-			var point = new Point(e.X, e.Y);
-			Polygon.Points.AddAfter(Polygon.Points.Find(Vertex), point);
-			Polygon.Points.Remove(Vertex);
+			var point = new Vertex(e.X, e.Y);
+			Polygon.Vertices.AddAfter(Polygon.Vertices.Find(Vertex), point);
+			Polygon.Vertices.Remove(Vertex);
 
 			var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
 			var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });

@@ -17,6 +17,11 @@ namespace GK1.Structures
 			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
 		}
 
+		public static bool ComparePoints(this Point p, Vertex u)
+		{
+			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
+		}
+
 		/// <summary>
 		/// TODO: joy division :(((
 		/// </summary>

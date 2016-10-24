@@ -20,8 +20,8 @@ namespace GK1.Relations
 			if (!Check(segment, polygon))
 				return false;
 
-			var point = new Point(segment.From.X, segment.To.Y);
-			polygon.Points.Find(segment.From).Value = point;
+			var point = new Vertex(segment.From.X, segment.To.Y);
+			polygon.Vertices.Find(segment.From).Value = point;
 			polygon.Segments.First((line) => { return line.To == segment.From; }).To = point;
 			segment.From = point;
 			segment.Relation = this;

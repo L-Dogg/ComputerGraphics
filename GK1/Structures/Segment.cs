@@ -11,8 +11,8 @@ namespace GK1.Structures
 	public class Segment
 	{
 		public IRelation Relation { get; set; }
-        public Point From { get; set; }
-		public Point To { get; set; }
+        public Vertex From { get; set; }
+		public Vertex To { get; set; }
 
 		public int Length
 		{
@@ -22,7 +22,7 @@ namespace GK1.Structures
 			}
 		}
 
-		public Segment(Point from, Point to)
+		public Segment(Vertex from, Vertex to)
 		{
 			Relation = new NoneRelation();
 			From = from;

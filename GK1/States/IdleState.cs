@@ -123,17 +123,17 @@ namespace GK1.States
 			var dy = seg.To.Y - seg.From.Y;
 
 			var scale = Math.Sqrt((double)(newLen * newLen) / (double)(dX * dX + dy * dy));
-			seg.To = new Point((int)(seg.From.X + dX * scale), (int)(seg.From.Y + dy * scale));
+			seg.To = new Vertex((int)(seg.From.X + dX * scale), (int)(seg.From.Y + dy * scale));
 		}
 		#endregion
 
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			Point clickedVertex = new Point(0,0);
+			Vertex clickedVertex = new Vertex(0,0);
 			Segment segment;
 			Polygon polygon;
-			var point = new Point(e.X, e.Y);
+			var point = new Vertex(e.X, e.Y);
 			var wasEdgeClicked = ClickChecker.WasEdgeClicked(point, MainForm.Polygons, out segment, out polygon);
 			bool wasVertexClicked = false;
 			if (!wasEdgeClicked)
@@ -152,21 +152,21 @@ namespace GK1.States
 				MainForm.SetContextMenuItems(segment);
 
 				if (wasEdgeClicked)
-					MainForm.RelationContextMenu.Show(MainForm, point);
+					MainForm.RelationContextMenu.Show(MainForm, new Point(point.X, point.Y));
 				else
-					MainForm.PolygonContextMenu.Show(MainForm, point);
+					MainForm.PolygonContextMenu.Show(MainForm, new Point(point.X, point.Y));
 			}
 			// Vertex deletion
 			else if (!DeletingPolygon && wasVertexClicked && (Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left))
 			{
-				if (polygon.Points.Count == 3)
+				if (polygon.Vertices.Count == 3)
 				{
 					MainForm.Polygons.Remove(polygon);
 					MainForm.Render();
 					return;
 				}
 				var adjacentPoints = ClickChecker.FindAdjacentPoints(clickedVertex, polygon);
-				polygon.Points.Remove(clickedVertex);
+				polygon.Vertices.Remove(clickedVertex);
 				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex || line.To == clickedVertex; }).First();				
 				polygon.Segments.AddAfter(polygon.Segments.Find(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
 				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => { return line.From != clickedVertex && line.To != clickedVertex; }));
@@ -184,14 +184,14 @@ namespace GK1.States
 			// Vertex addition in the middle of an edge
 			else if (!DeletingPolygon && wasEdgeClicked && e.Button == MouseButtons.Left)
 			{
-				var midPoint = new Point(Math.Min(segment.From.X, segment.To.X) + Math.Abs(segment.From.X - segment.To.X) / 2,
+				var midPoint = new Vertex(Math.Min(segment.From.X, segment.To.X) + Math.Abs(segment.From.X - segment.To.X) / 2,
 					Math.Min(segment.From.Y, segment.To.Y) + Math.Abs(segment.From.Y - segment.To.Y) / 2);
 
 				polygon.Segments.AddBefore(polygon.Segments.Find(segment), new Segment(segment.From, midPoint));
 				polygon.Segments.AddBefore(polygon.Segments.Find(segment), new Segment(midPoint, segment.To));
 				polygon.Segments.Remove(segment);
 
-				polygon.Points.AddAfter(polygon.Points.Find(segment.From), midPoint);
+				polygon.Vertices.AddAfter(polygon.Vertices.Find(segment.From), midPoint);
 				
 				MainForm.Render();
 			}

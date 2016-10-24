@@ -28,43 +28,44 @@ namespace GK1.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			var point = new Point(e.X, e.Y);
+			var point = new Vertex(e.X, e.Y);
 			var polygon = MainForm.CurrentPolygon;
 
-            if (e.Button == MouseButtons.Left)
+			if (e.Button != MouseButtons.Left)
+				return;
+			
+			Moving = false;
+
+			if (polygon.Vertices.Count != 0)
 			{
-				Moving = false;
-
-				if (polygon.Points.Count != 0)
+				// Finish drawing 
+				if (polygon.Vertices.First.Value.ComparePoints(point))
 				{
-					// Finish drawing 
-					if (polygon.Points.First.Value.ComparePoints(point))
-					{
-						polygon.Segments.AddLast(new Segment(polygon.Points.Last.Value, polygon.Points.First.Value));
-						MainForm.Polygons.Add(polygon);
-						MainForm.CurrentPolygon = new Polygon();
-						MainForm.CurrentState = new IdleState(MainForm);
-					}
-					else
-					{
-						polygon.Segments.AddLast(new Segment(polygon.Points.Last.Value, point));
-						polygon.Points.AddLast(point);
-						MainForm.Render();
-					}
-
-					MainForm.Render();
+					polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, polygon.Vertices.First.Value));
+					MainForm.Polygons.Add(polygon);
+					MainForm.CurrentPolygon = new Polygon();
+					MainForm.CurrentState = new IdleState(MainForm);
 				}
 				else
 				{
-					polygon.Points.AddLast(point);
+					polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, point));
+					polygon.Vertices.AddLast(point);
 					MainForm.Render();
 				}
+
+				MainForm.Render();
 			}
+			else
+			{
+				polygon.Vertices.AddLast(point);
+				MainForm.Render();
+			}
+			
 		}
 
 		public void MouseMove(object sender, MouseEventArgs e)
 		{
-			if (MainForm.CurrentPolygon.Points.Count > 0)
+			if (MainForm.CurrentPolygon.Vertices.Count > 0)
 			{
 				Moving = true;
 				Point = new Point(e.X, e.Y);
@@ -76,7 +77,7 @@ namespace GK1.States
 		{
 			if (Moving)
 			{
-				Algorithms.Line(MainForm.CurrentPolygon.Points.Last.Value.X, MainForm.CurrentPolygon.Points.Last.Value.Y, Point.X, Point.Y, bitmap);
+				Algorithms.Line(MainForm.CurrentPolygon.Vertices.Last.Value.X, MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.X, Point.Y, bitmap);
 			}
 
 			MainForm.CurrentPolygon.Render(bitmap, g);

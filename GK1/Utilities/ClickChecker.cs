@@ -18,14 +18,14 @@ namespace GK1.Utilities
 		/// <param name="clickedVertex"></param>
 		/// <param name="operatingPolygon"></param>
 		/// <returns>True if any of polygons' vertices was clicked.</returns>
-		public static bool WasVertexClicked(Point clicked, IEnumerable<Polygon> polygons, out Point clickedVertex, out Polygon clickedPolygon)
+		public static bool WasVertexClicked(Vertex clicked, IEnumerable<Polygon> polygons, out Vertex clickedVertex, out Polygon clickedPolygon)
 		{
-			clickedVertex = new Point(0, 0);
+			clickedVertex = null;
 			clickedPolygon = null;
 
             foreach (var poly in polygons)
 			{
-				foreach (var point in poly.Points)
+				foreach (var point in poly.Vertices)
 				{
 					if (point.ComparePoints(clicked))
 					{
@@ -38,7 +38,7 @@ namespace GK1.Utilities
 			return false;
 		}
 
-		public static bool WasEdgeClicked(Point clicked, IEnumerable<Polygon> polygons, out Segment clickedSegment, out Polygon clickedPolygon)
+		public static bool WasEdgeClicked(Vertex clicked, IEnumerable<Polygon> polygons, out Segment clickedSegment, out Polygon clickedPolygon)
 		{
 			clickedSegment = null;
 			clickedPolygon = null;
@@ -58,9 +58,9 @@ namespace GK1.Utilities
 			return false;
 		}
 
-		public static Point[] FindAdjacentPoints(Point p, Polygon poly)
+		public static Vertex[] FindAdjacentPoints(Vertex p, Polygon poly)
 		{
-			var adjacentPoints = new Point[2];
+			var adjacentPoints = new Vertex[2];
 			int i = 0;
 
 			foreach (var line in poly.Segments)

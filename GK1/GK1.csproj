@@ -81,6 +81,7 @@
     <Compile Include="Structures\Polygon.cs" />
     <Compile Include="Structures\Relation.cs" />
     <Compile Include="Structures\Segment.cs" />
+    <Compile Include="Structures\Vertex.cs" />
     <Compile Include="Utilities\ClickChecker.cs" />
     <EmbeddedResource Include="Controls\Background.resx">
       <DependentUpon>Background.cs</DependentUpon>
