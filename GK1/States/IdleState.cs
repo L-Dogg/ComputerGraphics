@@ -121,8 +121,11 @@ namespace GK1.States
 
 		private bool AddLengthRelation()
 		{
-			MainForm.LengthMessageBox = new Length() { LengthTyped = MainForm.CurrentSegment.Length };
+			MainForm.LengthMessageBox = new Length(MainForm.CurrentSegment.Length);
 			MainForm.LengthMessageBox.ShowDialog();
+
+			if (!MainForm.LengthMessageBox.wasOK)
+				return false;
 
 			MainForm.CurrentPolygon.SaveVertices();
 			MainForm.CurrentSegment.Relation = lengthRelation;

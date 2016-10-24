@@ -30,6 +30,7 @@
 		{
 			this.lengthTextBox = new System.Windows.Forms.TextBox();
 			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// lengthTextBox
@@ -42,7 +43,7 @@
 			// 
 			// okButton
 			// 
-			this.okButton.Location = new System.Drawing.Point(75, 38);
+			this.okButton.Location = new System.Drawing.Point(29, 38);
 			this.okButton.Name = "okButton";
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 1;
@@ -50,18 +51,28 @@
 			this.okButton.UseVisualStyleBackColor = true;
 			this.okButton.Click += new System.EventHandler(this.button1_Click);
 			// 
+			// cancelButton
+			// 
+			this.cancelButton.Location = new System.Drawing.Point(110, 38);
+			this.cancelButton.Name = "cancelButton";
+			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.TabIndex = 2;
+			this.cancelButton.Text = "Cancel";
+			this.cancelButton.UseVisualStyleBackColor = true;
+			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+			// 
 			// Length
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(227, 64);
+			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.lengthTextBox);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "Length";
 			this.Text = "Length";
-			this.Load += new System.EventHandler(this.Length_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -71,5 +82,6 @@
 
 		private System.Windows.Forms.TextBox lengthTextBox;
 		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Button cancelButton;
 	}
 }

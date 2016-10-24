@@ -13,10 +13,17 @@ namespace GK1.Controls
 	public partial class Length : Form
 	{
 		public int LengthTyped { get; set; }
-
+		public bool wasOK { get; set; }
 		public Length()
 		{
 			InitializeComponent();
+			this.ControlBox = false;
+		}
+
+		public Length(int length) : this()
+		{
+			LengthTyped = length;
+			this.lengthTextBox.Text = length.ToString();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -24,6 +31,7 @@ namespace GK1.Controls
 			int val;
 			if (int.TryParse(lengthTextBox.Text, out val))
 				LengthTyped = val;
+			wasOK = true;
 			this.Close();
 		}
 
@@ -36,9 +44,10 @@ namespace GK1.Controls
 				okButton.Enabled = true;
 		}
 
-		private void Length_Load(object sender, EventArgs e)
+		private void cancelButton_Click(object sender, EventArgs e)
 		{
-			lengthTextBox.Text = LengthTyped.ToString();
+			wasOK = false;
+			this.Close();
 		}
 	}
 }
