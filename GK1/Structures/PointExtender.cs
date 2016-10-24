@@ -21,13 +21,7 @@ namespace GK1.Structures
 		{
 			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
 		}
-
-		/// <summary>
-		/// TODO: joy division :(((
-		/// </summary>
-		/// <param name="p"></param>
-		/// <param name="line"></param>
-		/// <returns></returns>
+		
 		public static bool IsCloseToLine(this Point p, Segment line)
 		{
 			double distance = Math.Abs((line.To.Y - line.From.Y) * p.X - (line.To.X - line.From.X) * p.Y + line.To.X * line.From.Y - line.To.Y * line.From.X) /

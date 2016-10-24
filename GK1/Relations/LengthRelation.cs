@@ -10,28 +10,27 @@ namespace GK1.Relations
 {
 	class LengthRelation : IRelation
 	{
+		private static int margin = 8;
+
 		public RelationType Type
 		{
 			get { return RelationType.Length; }
 		}
 
 		public bool Apply(Segment segment, Polygon polygon, int length)
-		{
-			if (!Check(segment, polygon, length))
-				return false;
-			
+		{			
 			var point = segment.To;
 			CalculateNewCoords(segment, length);
 			polygon.Vertices.Find(point).Value = segment.To;
 			polygon.Segments.First((line) => { return line.From == point; }).From = segment.To;
 			segment.Relation = this;
-
+			segment.DesiredLength = length;
 			return true;
 		}
 
 		public bool Check(Segment segment, Polygon polygon, int length = 0)
 		{
-			return length > 0;
+			return Math.Abs(segment.DesiredLength - segment.Length) <= margin;
 		}
 
 		/// <summary>
@@ -46,7 +45,8 @@ namespace GK1.Relations
 			var dy = seg.To.Y - seg.From.Y;
 
 			var scale = Math.Sqrt((double)(newLen * newLen) / (double)(dX * dX + dy * dy));
-			seg.To = new Vertex((int)(seg.From.X + dX * scale), (int)(seg.From.Y + dy * scale));
+			seg.To.X = (int)(seg.From.X + dX * scale);
+			seg.To.Y = (int)(seg.From.Y + dy * scale);
 		}
 	}
 }

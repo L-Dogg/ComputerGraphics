@@ -14,26 +14,72 @@ namespace GK1.Structures
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
 		private static Font font = new Font("Arial", 7);
 
-		public bool Apply(Vertex startPoint)
+		private bool Check(LinkedListNode<Segment> node)
 		{
-			var forwardIterator = Segments.Find(Segments.First(line => line.From == startPoint));
-			var backwardIterator = forwardIterator.Previous;
-			
-			while (true)
+			SaveVertices();
+
+            var forward = Segments.First;
+			var backward = Segments.Last;
+
+			while (forward != null && forward != node)
 			{
-				if ((Vertices.Count % 2 == 0 && forwardIterator == backwardIterator) ||
-					(Vertices.Count % 2 != 0 && forwardIterator.Next == backwardIterator.Previous))
+				forward.Value.Relation.Apply(forward.Value, this, forward.Value.DesiredLength > 0 ? forward.Value.DesiredLength : 0);
+				forward = forward.Next;
+			}
+			while (backward != null && backward != node.Next)
+			{
+				backward.Value.Relation.Apply(backward.Value, this, backward.Value.DesiredLength > 0 ? backward.Value.DesiredLength : 0);
+				backward = backward.Previous;
+			}
+
+			foreach(var seg in Segments)
+			{
+				if (!seg.Relation.Check(seg, this))
+				{
+					LoadVertices();
+					return false;
+                }
+			}
+			
+			ClearVertices();
+
+			return true;
+		}
+
+		public bool Apply()
+		{
+			var iter = Segments.First;
+			while(iter != null)
+			{
+				if (Check(iter))
 					return true;
 
-				if (forwardIterator.Value.Relation.Apply(forwardIterator.Value, this, forwardIterator.Value.Length) ||
-					backwardIterator.Value.Relation.Apply(backwardIterator.Value, this, backwardIterator.Value.Length))
-					return false;
+				iter = iter.Next;
+			}
 
-				forwardIterator = forwardIterator.Next;
-				backwardIterator = backwardIterator.Previous;
-            }
-			
+			return false;
+
 		}
+
+		#region Vertices Stacks Operations
+		public void SaveVertices()
+		{
+			foreach (var v in Vertices)
+				v.Previous.Push(new Point(v.X, v.Y));
+		}
+
+		public void LoadVertices()
+		{
+			foreach (var v in Vertices)
+				v.LoadPrevious();
+		}
+
+		public void ClearVertices()
+		{
+			foreach (var v in Vertices)
+				v.Previous.Clear();
+		}
+		#endregion
 
 		public void Render(Bitmap bmp, Graphics g)
 		{

@@ -10,6 +10,7 @@ namespace GK1.Structures
 {
 	public class Segment
 	{
+		public int DesiredLength { get; set; } = 0;
 		public IRelation Relation { get; set; }
         public Vertex From { get; set; }
 		public Vertex To { get; set; }

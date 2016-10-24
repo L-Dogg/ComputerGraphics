@@ -17,6 +17,7 @@ namespace GK1.Relations
 		public bool Apply(Segment segment, Polygon polygon, int length = 0)
 		{
 			segment.Relation = this;
+			segment.DesiredLength = 0;
 			return true;
 		}
 

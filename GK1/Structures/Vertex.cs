@@ -9,10 +9,10 @@ namespace GK1.Structures
 {
 	public class Vertex
 	{
-		private static int margin = 5;
+		private static int margin = 8;
 
 		private Point p;
-
+		public Stack<Point> Previous { get; set; }
 		public int X
 		{
 			get { return p.X; }
@@ -27,8 +27,36 @@ namespace GK1.Structures
 		public Vertex(int x, int y)
 		{
 			p = new Point(x, y);
+			Previous = new Stack<Point>();
 		}
 
+		public void LoadPrevious()
+		{
+			if (Previous.Count > 0)
+				p = Previous.Pop();		
+		}
+
+		public static bool operator ==(Vertex v1, Vertex v2)
+		{
+			return v1.ComparePoints(v2);
+		}
+
+		public static bool operator !=(Vertex v1, Vertex v2)
+		{
+			return !v1.ComparePoints(v2);
+		}
+		
+		public override bool Equals(object obj)
+		{
+			if (obj == null || !(obj is Vertex))
+			{
+				return false;
+			}
+
+			var v2 = obj as Vertex;
+			return ComparePoints(v2);
+		}
+		
 		#region Backward Compatibility
 		public bool ComparePoints(Vertex u)
 		{

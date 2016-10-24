@@ -14,7 +14,12 @@ namespace GK1.Relations
 
 		public bool Apply(Segment segment, Polygon polygon, int length = 0)
 		{
-			if (!Check(segment, polygon))
+
+			if (polygon == null)
+				return false;
+
+			var edges = polygon.Segments.Where((line) => { return line.From == segment.To || line.To == segment.From; });
+			if (edges.Any((line) => { return line.Relation.Type == RelationType.Vertical; }))
 				return false;
 
 			var point = new Vertex(segment.To.X, segment.From.Y);
@@ -28,14 +33,7 @@ namespace GK1.Relations
 
 		public bool Check(Segment segment, Polygon polygon, int length = 0)
 		{
-			if (polygon == null)
-				return false;
-
-			var edges = polygon.Segments.Where((line) => { return line.From == segment.To || line.To == segment.From; });
-			if (edges.Any((line) => { return line.Relation.Type == RelationType.Vertical; }))
-				return false;
-
-			return true;
+			return segment.From.X == segment.To.X;
 		}
 	}
 }

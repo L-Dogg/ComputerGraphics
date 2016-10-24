@@ -21,23 +21,25 @@ namespace GK1.States
 		private static HorizontalRelation horizontalRelation = new HorizontalRelation();
 		private static VerticalRelation verticalRelation = new VerticalRelation();
 		private static LengthRelation lengthRelation = new LengthRelation();
+		private static string ErrorMessage = "Cannot add relation";
 		#endregion
 
 		public IdleState(MainForm mainForm)
 		{
 			MainForm = mainForm;
 			MainForm.Cursor = Cursors.Default;
-			MainForm.RelationContextMenu.ItemClicked += RelationContextMenu_ItemClicked;
+            MainForm.RelationContextMenu.ItemClicked += RelationContextMenu_ItemClicked;
 			MainForm.PolygonContextMenu.ItemClicked += PolygonContextMenu_ItemClicked;
 		}
 
 		#region Context Menu Handlers
-		// TODO: double triggered
 		private void PolygonContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			// Add
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[0])
 			{
+				MainForm.RelationContextMenu.ItemClicked -= RelationContextMenu_ItemClicked;
+				MainForm.PolygonContextMenu.ItemClicked -= PolygonContextMenu_ItemClicked;
 				MainForm.CurrentState = new DrawingState(MainForm);
 			}
 			// Remove
@@ -48,11 +50,12 @@ namespace GK1.States
 			// Move
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[2])
 			{
+				MainForm.RelationContextMenu.ItemClicked -= RelationContextMenu_ItemClicked;
+				MainForm.PolygonContextMenu.ItemClicked -= PolygonContextMenu_ItemClicked;
 				MainForm.CurrentState = new PolygonMoveState(MainForm);
 			}
 		}
-
-		// TODO: double triggered
+		
 		private void RelationContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			// Horizontal
@@ -86,14 +89,33 @@ namespace GK1.States
 		#region Relation Processing
 		private bool AddHorizontalRelation()
 		{
+			MainForm.CurrentPolygon.SaveVertices();
 			MainForm.CurrentSegment.Relation = horizontalRelation;
-			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
+			
+			var retVal = MainForm.CurrentPolygon.Apply();
+			if (!retVal)
+			{
+				MainForm.CurrentPolygon.LoadVertices();
+				MainForm.CurrentSegment.Relation = noneRelation;
+				MessageBox.Show(ErrorMessage);
+			}
+
+			return retVal;
 		}
 
 		private bool AddVeritcalRelation()
 		{
+			MainForm.CurrentPolygon.SaveVertices();
 			MainForm.CurrentSegment.Relation = verticalRelation;
-			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
+			var retVal = MainForm.CurrentPolygon.Apply();
+			if (!retVal)
+			{
+				MainForm.CurrentPolygon.LoadVertices();
+				MainForm.CurrentSegment.Relation = noneRelation;
+				MessageBox.Show(ErrorMessage);
+			}
+
+			return retVal;
 		}
 
 		private bool AddLengthRelation()
@@ -101,8 +123,17 @@ namespace GK1.States
 			MainForm.LengthMessageBox = new Length() { LengthTyped = MainForm.CurrentSegment.Length };
 			MainForm.LengthMessageBox.ShowDialog();
 
+			MainForm.CurrentPolygon.SaveVertices();
 			MainForm.CurrentSegment.Relation = lengthRelation;
-			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon, MainForm.LengthMessageBox.LengthTyped);
+			var retVal = MainForm.CurrentPolygon.Apply();
+			if (!retVal)
+			{
+				MainForm.CurrentPolygon.LoadVertices();
+				MainForm.CurrentSegment.Relation = noneRelation;
+				MessageBox.Show(ErrorMessage);
+			}
+
+			return retVal;
 		}
 
 		private bool AddNoneRelation()
@@ -110,6 +141,25 @@ namespace GK1.States
 			MainForm.CurrentSegment.Relation = noneRelation;
 			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
 		}
+
+		//private bool AddRelation(RelationType relationType)
+		//{
+		//	MainForm.CurrentPolygon.SaveVertices();
+		//	switch (relationType)
+		//	{
+		//		case RelationType.None:
+		//			MainForm.CurrentSegment.Relation = noneRelation;
+		//			return true;
+		//			break;
+		//		case RelationType.Horizontal:
+		//			break;
+		//		case RelationType.Vertical:
+		//			break;
+		//		case RelationType.Length:
+		//			break;
+		//	}
+		//	return true;
+		//}
 
 		/// <summary>
 		/// Calculates new coordinates of seg.To for length relation
@@ -178,7 +228,10 @@ namespace GK1.States
 			else if (DeletingPolygon && (wasEdgeClicked || wasVertexClicked) && e.Button == MouseButtons.Left)
 			{
 				MainForm.Polygons.Remove(polygon);
-				MainForm.Render();
+				if (polygon == MainForm.CurrentPolygon)
+					MainForm.CurrentPolygon = new Polygon();
+
+                MainForm.Render();
 				DeletingPolygon = false;
 			}
 			// Vertex addition in the middle of an edge
@@ -198,7 +251,10 @@ namespace GK1.States
 			// Vertex move
 			else if (!DeletingPolygon && wasVertexClicked /* && polygon.Points.First.Value != clickedVertex */ && e.Button == MouseButtons.Left)
 			{
-				MainForm.CurrentState = new VertexMoveState(MainForm) { Polygon = polygon, Vertex = clickedVertex };
+
+				MainForm.RelationContextMenu.ItemClicked -= RelationContextMenu_ItemClicked;
+				MainForm.PolygonContextMenu.ItemClicked -= PolygonContextMenu_ItemClicked;
+				MainForm.CurrentState = new VertexMoveState(MainForm, polygon, clickedVertex);
 			}
 		}
 
@@ -218,7 +274,7 @@ namespace GK1.States
 			foreach (var polygon in MainForm.Polygons)
 				polygon.Render(bitmap, g);
         }
-
+		
 		#endregion
 	}
 }

@@ -21,10 +21,14 @@ namespace GK1.States
 		public Polygon Polygon { get; set; }
 		#endregion
 
-		public VertexMoveState(MainForm mainForm)
+		public VertexMoveState(MainForm mainForm, Polygon polygon, Vertex vertex)
 		{
 			MainForm = mainForm;
 			MainForm.Cursor = Cursors.NoMove2D;
+			Polygon = polygon;
+			Vertex = vertex;
+
+			Polygon.SaveVertices();
 		}
 
 		#region IState
@@ -35,9 +39,8 @@ namespace GK1.States
 			if (e.Button == MouseButtons.Left)
 			{
 				MainForm.CurrentState = new IdleState(MainForm);
-
-				Polygon.Vertices.AddAfter(Polygon.Vertices.Find(Vertex), point);
-				Polygon.Vertices.Remove(Vertex);
+				
+				Polygon.Vertices.Find(Vertex).Value = point;
 
 				var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
 				var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
@@ -57,19 +60,26 @@ namespace GK1.States
 				MainForm.CurrentState = new IdleState(MainForm);
 				MainForm.Render();
             }
+
 			var point = new Vertex(e.X, e.Y);
-			Polygon.Vertices.AddAfter(Polygon.Vertices.Find(Vertex), point);
-			Polygon.Vertices.Remove(Vertex);
 
-			var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
-			var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
+			Polygon.Vertices.Find(Vertex).Value = point;
 
-			edgeToAddAfter.To = point;
-			edgeToAddBefore.From = point;
+			if (!Polygon.Apply())
+			{
+				Polygon.LoadVertices();
+			}
+			else
+			{
+				var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
+				var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
 
-			Vertex = point;
+				edgeToAddAfter.To = point;
+				edgeToAddBefore.From = point;
 
-			MainForm.Render();
+				Vertex = point;
+				MainForm.Render();
+			}
 		}
 
 		public void Render(Bitmap bitmap, Graphics g)
