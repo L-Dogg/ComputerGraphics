@@ -86,6 +86,7 @@ namespace GK1.States
 		}
 		#endregion
 
+		// TODO: move to one method with relationtype as an argument
 		#region Relation Processing
 		private bool AddHorizontalRelation()
 		{
@@ -125,6 +126,8 @@ namespace GK1.States
 
 			MainForm.CurrentPolygon.SaveVertices();
 			MainForm.CurrentSegment.Relation = lengthRelation;
+			MainForm.CurrentSegment.DesiredLength = MainForm.LengthMessageBox.LengthTyped;
+
 			var retVal = MainForm.CurrentPolygon.Apply();
 			if (!retVal)
 			{
@@ -161,20 +164,6 @@ namespace GK1.States
 		//	return true;
 		//}
 
-		/// <summary>
-		/// Calculates new coordinates of seg.To for length relation
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <param name="length">New length</param>
-		private void CalculateNewCoords(Segment seg, int newLen)
-		{
-			var dX = seg.To.X - seg.From.X;
-			var dy = seg.To.Y - seg.From.Y;
-
-			var scale = Math.Sqrt((double)(newLen * newLen) / (double)(dX * dX + dy * dy));
-			seg.To = new Vertex((int)(seg.From.X + dX * scale), (int)(seg.From.Y + dy * scale));
-		}
 		#endregion
 
 		#region IState

@@ -19,10 +19,9 @@ namespace GK1.Relations
 
 		public bool Apply(Segment segment, Polygon polygon, int length)
 		{			
-			var point = segment.To;
+			var point = new Vertex(segment.To.X, segment.To.Y);
 			CalculateNewCoords(segment, length);
-			polygon.Vertices.Find(point).Value = segment.To;
-			polygon.Segments.First((line) => { return line.From == point; }).From = segment.To;
+			//polygon.Segments.First((line) => { return line.From == point; }).From = segment.To;
 			segment.Relation = this;
 			segment.DesiredLength = length;
 			return true;
