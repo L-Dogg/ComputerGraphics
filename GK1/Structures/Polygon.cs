@@ -23,12 +23,12 @@ namespace GK1.Structures
 
 			while (forward != null && forward != node)
 			{
-				forward.Value.Relation.Apply(forward.Value, this, forward.Value.DesiredLength > 0 ? forward.Value.DesiredLength : 0);
+				forward.Value.Relation.Apply(forward.Value, this, forward.Value.DesiredLength > 0 ? forward.Value.DesiredLength : 0, true);
 				forward = forward.Next;
 			}
 			while (backward != null && backward != node.Next)
 			{
-				backward.Value.Relation.Apply(backward.Value, this, backward.Value.DesiredLength > 0 ? backward.Value.DesiredLength : 0);
+				backward.Value.Relation.Apply(backward.Value, this, backward.Value.DesiredLength > 0 ? backward.Value.DesiredLength : 0, false);
 				backward = backward.Previous;
 			}
 

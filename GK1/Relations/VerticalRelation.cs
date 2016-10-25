@@ -12,7 +12,7 @@ namespace GK1.Relations
 			get { return RelationType.Vertical; }
 		}
 
-		public bool Apply(Segment segment, Polygon polygon, int length = 0)
+		public bool Apply(Segment segment, Polygon polygon, int length = 0, bool forward = true)
 		{
 
 			if (polygon == null)
@@ -22,13 +22,26 @@ namespace GK1.Relations
 			if (edges.Any((line) => { return line.Relation.Type == RelationType.Vertical; }))
 				return false;
 
-			var point = new Vertex(segment.To.X, segment.From.Y);
-			polygon.Vertices.Find(segment.From).Value = point;
-			polygon.Segments.First((line) => { return line.To == segment.From; }).To = point;
-			segment.From = point;
-			segment.Relation = this;
+			if (forward)
+			{
+				var point = new Vertex(segment.From.X, segment.To.Y);
+				polygon.Vertices.Find(segment.To).Value = point;
+				polygon.Segments.First((line) => { return line.From == segment.To; }).From = point;
+				segment.To = point;
+				segment.Relation = this;
 
-			return true;
+				return true;
+			}
+			else
+			{
+				var point = new Vertex(segment.To.X, segment.From.Y);
+				polygon.Vertices.Find(segment.From).Value = point;
+				polygon.Segments.First((line) => { return line.To == segment.From; }).To = point;
+				segment.From = point;
+				segment.Relation = this;
+				return true;
+			}
+
 		}
 
 		public bool Check(Segment segment, Polygon polygon, int length = 0)

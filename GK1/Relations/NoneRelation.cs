@@ -14,7 +14,7 @@ namespace GK1.Relations
 			get { return RelationType.None; }
 		}
 
-		public bool Apply(Segment segment, Polygon polygon, int length = 0)
+		public bool Apply(Segment segment, Polygon polygon, int length = 0, bool forward = true)
 		{
 			segment.Relation = this;
 			segment.DesiredLength = 0;

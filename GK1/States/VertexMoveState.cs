@@ -63,8 +63,9 @@ namespace GK1.States
 
 			var point = new Vertex(e.X, e.Y);
 
-			Polygon.Vertices.Find(Vertex).Value = point;
-
+			// TODO exception przy przesuwaniu wierzcholka z relacja pozioma
+			//Polygon.Vertices.Find(Vertex).Value = point;
+			
 			if (!Polygon.Apply())
 			{
 				Polygon.LoadVertices();

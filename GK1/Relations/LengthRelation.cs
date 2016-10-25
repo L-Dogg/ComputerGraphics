@@ -17,11 +17,11 @@ namespace GK1.Relations
 			get { return RelationType.Length; }
 		}
 
-		public bool Apply(Segment segment, Polygon polygon, int length)
-		{			
-			var point = new Vertex(segment.To.X, segment.To.Y);
-			CalculateNewCoords(segment, length);
-			//polygon.Segments.First((line) => { return line.From == point; }).From = segment.To;
+		public bool Apply(Segment segment, Polygon polygon, int length, bool forward)
+		{
+
+			CalculateNewCoords(segment, length, forward);
+			
 			segment.Relation = this;
 			segment.DesiredLength = length;
 			return true;
@@ -38,14 +38,26 @@ namespace GK1.Relations
 		/// <param name="a"></param>
 		/// <param name="b"></param>
 		/// <param name="length">New length</param>
-		private void CalculateNewCoords(Segment seg, int newLen)
+		private void CalculateNewCoords(Segment seg, int newLen, bool forward)
 		{
-			var dX = seg.To.X - seg.From.X;
-			var dy = seg.To.Y - seg.From.Y;
+			if (forward)
+			{
+				var dX = seg.To.X - seg.From.X;
+				var dy = seg.To.Y - seg.From.Y;
 
-			var scale = Math.Sqrt((double)(newLen * newLen) / (double)(dX * dX + dy * dy));
-			seg.To.X = (int)(seg.From.X + dX * scale);
-			seg.To.Y = (int)(seg.From.Y + dy * scale);
+				var scale = Math.Sqrt((double)(newLen * newLen) / (double)(dX * dX + dy * dy));
+				seg.To.X = (int)(seg.From.X + dX * scale);
+				seg.To.Y = (int)(seg.From.Y + dy * scale);
+			}
+			else
+			{
+				var dX = seg.From.X - seg.To.X;
+				var dy = seg.From.Y - seg.To.Y;
+
+				var scale = Math.Sqrt((double)(newLen * newLen) / (double)(dX * dX + dy * dy));
+				seg.From.X = (int)(seg.To.X + dX * scale);
+				seg.From.Y = (int)(seg.To.Y + dy * scale);
+			}
 		}
 	}
 }
