@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using GK1.Structures;
-using System.Drawing;
 
 namespace GK1.Relations
 {
 	class HorizontalRelation : IRelation
 	{
-		public RelationType Type
-		{
-			get	{ return RelationType.Horizontal; }
-		}
-
+		public RelationType Type => RelationType.Horizontal;
+		
 		public bool Apply(Segment segment, Polygon polygon, int length = 0, bool forward = true)
 		{
 			if (polygon == null)
@@ -26,18 +18,18 @@ namespace GK1.Relations
 
 			if (forward)
 			{
-				var point = new Vertex(segment.To.X, segment.From.Y);
-				polygon.Vertices.Find(segment.To).Value = point;
-				polygon.Segments.First((line) => { return line.From == segment.To; }).From = point;
-				segment.To = point;
+				//var point = new Vertex(segment.To.X, segment.From.Y);
+				//polygon.Vertices.Find(segment.To).Value = point;
+				//polygon.Segments.First((line) => { return line.From == segment.To; }).From = point;
+				segment.To.Y = segment.From.Y;
 				segment.Relation = this;
 			}
 			else
 			{
-				var point = new Vertex(segment.From.X, segment.To.Y);
-				polygon.Vertices.Find(segment.From).Value = point;
-				polygon.Segments.First((line) => { return line.To == segment.From; }).To = point;
-				segment.From = point;
+				//var point = new Vertex(segment.From.X, segment.To.Y);
+				//polygon.Vertices.Find(segment.From).Value = point;
+				//polygon.Segments.First((line) => { return line.To == segment.From; }).To = point;
+				segment.From.Y = segment.To.Y;
 				segment.Relation = this;
 			}
 

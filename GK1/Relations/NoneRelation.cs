@@ -9,11 +9,8 @@ namespace GK1.Relations
 {
 	class NoneRelation : IRelation
 	{
-		public RelationType Type
-		{
-			get { return RelationType.None; }
-		}
-
+		public RelationType Type => RelationType.None;
+		
 		public bool Apply(Segment segment, Polygon polygon, int length = 0, bool forward = true)
 		{
 			segment.Relation = this;

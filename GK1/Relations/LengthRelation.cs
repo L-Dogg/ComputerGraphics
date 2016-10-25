@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GK1.Structures;
-using System.Drawing;
 
 namespace GK1.Relations
 {
 	class LengthRelation : IRelation
 	{
-		private static int margin = 8;
+		private static int margin = 2;
 
-		public RelationType Type
-		{
-			get { return RelationType.Length; }
-		}
-
+		public RelationType Type => RelationType.Length;
+		
 		public bool Apply(Segment segment, Polygon polygon, int length, bool forward)
 		{
 

@@ -102,7 +102,7 @@ namespace GK1.Structures
 				if (line.Relation.Type == RelationType.Length)
 				{
 					g.FillRectangle(Brushes.Wheat, midPoint.X - 7, midPoint.Y - 7, 18, 12);
-					g.DrawString(line.Length.ToString(), font, Brushes.Black, new Point(midPoint.X - 9, midPoint.Y - 7));
+					g.DrawString(line.DesiredLength.ToString(), font, Brushes.Black, new Point(midPoint.X - 9, midPoint.Y - 7));
 				}
 			}
 

@@ -38,15 +38,10 @@ namespace GK1.States
 			
 			if (e.Button == MouseButtons.Left)
 			{
-				MainForm.CurrentState = new IdleState(MainForm);
-				
-				Polygon.Vertices.Find(Vertex).Value = point;
+				Vertex.X = e.X;
+				Vertex.Y = e.Y;
 
-				var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
-				var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
-
-				edgeToAddAfter.To = point;
-				edgeToAddBefore.From = point;
+				Polygon.Apply();
 
 				MainForm.CurrentState = new IdleState(MainForm);
 				MainForm.Render();
@@ -62,23 +57,16 @@ namespace GK1.States
             }
 
 			var point = new Vertex(e.X, e.Y);
-
-			// TODO exception przy przesuwaniu wierzcholka z relacja pozioma
-			//Polygon.Vertices.Find(Vertex).Value = point;
 			
+			Vertex.Previous.Push(new Point(Vertex.X, Vertex.Y));
+			Vertex.X = e.X;
+			Vertex.Y = e.Y;
 			if (!Polygon.Apply())
 			{
 				Polygon.LoadVertices();
 			}
 			else
 			{
-				var edgeToAddAfter = Polygon.Segments.First((line) => { return line.To == Vertex; });
-				var edgeToAddBefore = Polygon.Segments.First((line) => { return line.From == Vertex; });
-
-				edgeToAddAfter.To = point;
-				edgeToAddBefore.From = point;
-
-				Vertex = point;
 				MainForm.Render();
 			}
 		}

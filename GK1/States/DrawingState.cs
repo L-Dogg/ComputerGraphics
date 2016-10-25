@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace GK1.States
 {
+	// TODO BUG NA DRUGIM POLYGONIE
 	class DrawingState : IState
 	{
 		#region Private Properties

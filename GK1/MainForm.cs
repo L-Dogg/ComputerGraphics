@@ -114,7 +114,6 @@ namespace GK1
 			CurrentState.KeyUp(sender, e);
 		}
 
-		// TODO: fix resize using maximize button
 		private void MainForm_ResizeEnd(object sender, EventArgs e)
 		{
 			background.Size = new Size(this.Size.Width, this.Size.Height);

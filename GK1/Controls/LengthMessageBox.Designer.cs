@@ -35,17 +35,19 @@
 			// 
 			// lengthTextBox
 			// 
-			this.lengthTextBox.Location = new System.Drawing.Point(64, 12);
+			this.lengthTextBox.Location = new System.Drawing.Point(85, 15);
+			this.lengthTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.lengthTextBox.Name = "lengthTextBox";
-			this.lengthTextBox.Size = new System.Drawing.Size(100, 20);
+			this.lengthTextBox.Size = new System.Drawing.Size(132, 22);
 			this.lengthTextBox.TabIndex = 0;
 			this.lengthTextBox.TextChanged += new System.EventHandler(this.lengthTextBox_TextChanged);
 			// 
 			// okButton
 			// 
-			this.okButton.Location = new System.Drawing.Point(29, 38);
+			this.okButton.Location = new System.Drawing.Point(39, 47);
+			this.okButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(100, 28);
 			this.okButton.TabIndex = 1;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
@@ -53,9 +55,11 @@
 			// 
 			// cancelButton
 			// 
-			this.cancelButton.Location = new System.Drawing.Point(110, 38);
+			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancelButton.Location = new System.Drawing.Point(147, 47);
+			this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(100, 28);
 			this.cancelButton.TabIndex = 2;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
@@ -63,12 +67,15 @@
 			// 
 			// Length
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AcceptButton = this.okButton;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(227, 64);
+			this.CancelButton = this.cancelButton;
+			this.ClientSize = new System.Drawing.Size(303, 79);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.lengthTextBox);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "Length";
