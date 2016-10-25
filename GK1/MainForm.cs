@@ -114,6 +114,7 @@ namespace GK1
 			CurrentState.KeyUp(sender, e);
 		}
 
+		// TODO: fix resize using maximize button
 		private void MainForm_ResizeEnd(object sender, EventArgs e)
 		{
 			background.Size = new Size(this.Size.Width, this.Size.Height);
@@ -125,11 +126,15 @@ namespace GK1
 			this.Render();
 		}
 
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			MainForm_ResizeEnd(sender, e);
+		}
+
 		private void ClearBitmap(Bitmap bmp, Graphics g)
 		{
 			g.FillRectangle(Brushes.White, 0, 0, bmp.Size.Width, bmp.Size.Height);
 		}
 		#endregion
-
 	}
 }

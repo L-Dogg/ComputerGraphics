@@ -130,6 +130,7 @@
 			this.Name = "MainForm";
 			this.Text = "Polygon Editor";
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.polygonContextMenu.ResumeLayout(false);
 			this.relationContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
