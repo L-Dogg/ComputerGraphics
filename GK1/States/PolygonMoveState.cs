@@ -51,20 +51,13 @@ namespace GK1.States
 
 			var xDiff = e.X - Vertex.X;
 			var yDiff = e.Y - Vertex.Y;
-
-			Vertex = new Vertex(Vertex.X + xDiff, Vertex.Y + yDiff);
-
-			var pts = new LinkedList<Vertex>();
+			
 			foreach (var p in Polygon.Vertices)
-				pts.AddLast(new Vertex(p.X + xDiff, p.Y + yDiff));
-			Polygon.Vertices = pts;
-
-			foreach (var line in Polygon.Segments)
 			{
-				line.To = new Vertex(line.To.X + xDiff, line.To.Y + yDiff);
-				line.From = new Vertex(line.From.X + xDiff, line.From.Y + yDiff);
+				p.X = p.X + xDiff;
+				p.Y = p.Y + yDiff;
 			}
-
+			
 			MainForm.Render();	
 		}
 
@@ -76,7 +69,12 @@ namespace GK1.States
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			
+			if (e.KeyCode != Keys.Escape)
+				return;
+
+			MainForm.CurrentPolygon = new Polygon();
+			MainForm.CurrentState = new IdleState(MainForm);
+			MainForm.Render();
 		}
 
 		#endregion

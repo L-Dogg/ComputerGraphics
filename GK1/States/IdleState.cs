@@ -10,18 +10,18 @@ using System.Windows.Forms;
 
 namespace GK1.States
 {
-	class IdleState : IState
+	public class IdleState : IState
 	{
 		#region Private Properties
 		private MainForm MainForm { get; set; }
 		private bool DeletingPolygon { get; set; }
 		private Polygon currentPolygon { get; set; }
 		private Segment currentSegment { get; set; }
-		private static NoneRelation noneRelation = new NoneRelation();
-		private static HorizontalRelation horizontalRelation = new HorizontalRelation();
-		private static VerticalRelation verticalRelation = new VerticalRelation();
-		private static LengthRelation lengthRelation = new LengthRelation();
-		private static string ErrorMessage = "Cannot add relation";
+		private static readonly NoneRelation NoneRelation = new NoneRelation();
+		private static readonly HorizontalRelation HorizontalRelation = new HorizontalRelation();
+		private static readonly VerticalRelation VerticalRelation = new VerticalRelation();
+		private static readonly LengthRelation LengthRelation = new LengthRelation();
+		private static readonly string ErrorMessage = "Cannot add relation";
 		#endregion
 
 		public IdleState(MainForm mainForm)
@@ -94,23 +94,23 @@ namespace GK1.States
 			switch (relationType)
 			{
 				case RelationType.None:
-					MainForm.CurrentSegment.Relation = noneRelation;
+					MainForm.CurrentSegment.Relation = NoneRelation;
 					break;
 				case RelationType.Horizontal:
-					MainForm.CurrentSegment.Relation = horizontalRelation;
+					MainForm.CurrentSegment.Relation = HorizontalRelation;
 					break;
 				case RelationType.Vertical:
-					MainForm.CurrentSegment.Relation = verticalRelation;
+					MainForm.CurrentSegment.Relation = VerticalRelation;
 					break;
 				case RelationType.Length:
 					MainForm.LengthMessageBox = new Length(MainForm.CurrentSegment.Length);
 					MainForm.LengthMessageBox.ShowDialog();
 
-					if (!MainForm.LengthMessageBox.wasOK)
+					if (!MainForm.LengthMessageBox.WasOK)
 						return false;
 
 					MainForm.CurrentSegment.DesiredLength = MainForm.LengthMessageBox.LengthTyped;
-					MainForm.CurrentSegment.Relation = lengthRelation;
+					MainForm.CurrentSegment.Relation = LengthRelation;
 					break;
 			}
 
@@ -118,7 +118,7 @@ namespace GK1.States
 			if (!retVal)
 			{
 				MainForm.CurrentPolygon.LoadVertices();
-				MainForm.CurrentSegment.Relation = noneRelation;
+				MainForm.CurrentSegment.Relation = NoneRelation;
 				MessageBox.Show(ErrorMessage);
 			}
 

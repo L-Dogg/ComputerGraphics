@@ -7,12 +7,9 @@ namespace GK1.States
 	public class VertexMoveState : IState
 	{
 		#region Private Properties
-		private MainForm MainForm { get; set; }
-		#endregion
-
-		#region Public Properties
-		public Vertex Vertex { get; set; }
-		public Polygon Polygon { get; set; }
+		private MainForm MainForm { get; }
+		private Vertex Vertex { get; }
+		private Polygon Polygon { get; }
 		#endregion
 
 		public VertexMoveState(MainForm mainForm, Polygon polygon, Vertex vertex)

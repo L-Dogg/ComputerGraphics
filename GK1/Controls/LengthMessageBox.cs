@@ -12,9 +12,9 @@ namespace GK1.Controls
 {
 	public partial class Length : Form
 	{
-		public int LengthTyped { get; set; }
-		public bool wasOK { get; set; }
-		public Length()
+		public int LengthTyped { get; private set; }
+		public bool WasOK { get; private set; }
+		private Length()
 		{
 			InitializeComponent();
 			this.ControlBox = false;
@@ -31,7 +31,7 @@ namespace GK1.Controls
 			int val;
 			if (int.TryParse(lengthTextBox.Text, out val))
 				LengthTyped = val;
-			wasOK = true;
+			WasOK = true;
 			this.Close();
 		}
 
@@ -46,7 +46,7 @@ namespace GK1.Controls
 
 		private void cancelButton_Click(object sender, EventArgs e)
 		{
-			wasOK = false;
+			WasOK = false;
 			this.Close();
 		}
 	}
