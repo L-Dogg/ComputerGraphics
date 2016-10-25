@@ -1,16 +1,10 @@
 ﻿using GK1.Structures;
-using GK1.Utilities;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GK1.States
 {
-	class VertexMoveState : IState
+	public class VertexMoveState : IState
 	{
 		#region Private Properties
 		private MainForm MainForm { get; set; }
@@ -34,18 +28,16 @@ namespace GK1.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			var point = new Vertex(e.X, e.Y);
-			
-			if (e.Button == MouseButtons.Left)
-			{
-				Vertex.X = e.X;
-				Vertex.Y = e.Y;
+			if (e.Button != MouseButtons.Left)
+				return;
 
-				Polygon.Apply();
+			Vertex.X = e.X;
+			Vertex.Y = e.Y;
 
-				MainForm.CurrentState = new IdleState(MainForm);
-				MainForm.Render();
-			}
+			Polygon.Apply();
+
+			MainForm.CurrentState = new IdleState(MainForm);
+			MainForm.Render();
 		}
 
 		public void MouseMove(object sender, MouseEventArgs e)
@@ -54,13 +46,13 @@ namespace GK1.States
 			{
 				MainForm.CurrentState = new IdleState(MainForm);
 				MainForm.Render();
-            }
-
-			var point = new Vertex(e.X, e.Y);
+				return;
+			}
 			
 			Vertex.Previous.Push(new Point(Vertex.X, Vertex.Y));
 			Vertex.X = e.X;
 			Vertex.Y = e.Y;
+
 			if (!Polygon.Apply())
 			{
 				Polygon.LoadVertices();

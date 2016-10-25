@@ -6,7 +6,7 @@ namespace GK1.Structures
 {
 	public class Vertex
 	{
-		private static int margin = 8;
+		private static readonly int margin = 8;
 
 		private Point p;
 		public Stack<Point> Previous { get; set; }

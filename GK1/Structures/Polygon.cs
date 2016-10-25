@@ -1,5 +1,4 @@
-﻿using Bresenhams;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -97,7 +96,7 @@ namespace GK1.Structures
 					g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 				}
 
-				Algorithms.Line(line.From.X, line.From.Y, line.To.X, line.To.Y, bmp);
+				Algorithms.Algorithms.Line(line.From.X, line.From.Y, line.To.X, line.To.Y, bmp);
 				
 				if (line.Relation.Type == RelationType.Length)
 				{

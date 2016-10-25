@@ -130,14 +130,17 @@ namespace GK1.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			Vertex clickedVertex = new Vertex(0,0);
+			var clickedVertex = new Vertex(0,0);
 			Segment segment;
 			Polygon polygon;
 			var point = new Vertex(e.X, e.Y);
 			var wasEdgeClicked = ClickChecker.WasEdgeClicked(point, MainForm.Polygons, out segment, out polygon);
-			bool wasVertexClicked = false;
+			var wasVertexClicked = false;
+
 			if (!wasEdgeClicked)
+			{
 				wasVertexClicked = ClickChecker.WasVertexClicked(point, MainForm.Polygons, out clickedVertex, out polygon);
+			}
 			else
 			{
 				MainForm.CurrentPolygon = polygon;
@@ -167,9 +170,9 @@ namespace GK1.States
 				}
 				var adjacentPoints = ClickChecker.FindAdjacentPoints(clickedVertex, polygon);
 				polygon.Vertices.Remove(clickedVertex);
-				var edgeToAddAfter = polygon.Segments.Where((line) => { return line.From == clickedVertex || line.To == clickedVertex; }).First();				
+				var edgeToAddAfter = polygon.Segments.First(line => line.From == clickedVertex || line.To == clickedVertex);				
 				polygon.Segments.AddAfter(polygon.Segments.Find(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
-				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => { return line.From != clickedVertex && line.To != clickedVertex; }));
+				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => line.From != clickedVertex && line.To != clickedVertex));
 				currentPolygon = polygon;
 				
 				MainForm.Render();

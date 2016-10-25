@@ -3,15 +3,14 @@ using GK1.Structures;
 
 namespace GK1.Relations
 {
-	class LengthRelation : IRelation
+	public class LengthRelation : IRelation
 	{
-		private static int margin = 2;
+		private static readonly int margin = 2;
 
 		public RelationType Type => RelationType.Length;
 		
 		public bool Apply(Segment segment, Polygon polygon, int length, bool forward)
 		{
-
 			CalculateNewCoords(segment, length, forward);
 			
 			segment.Relation = this;
@@ -27,9 +26,6 @@ namespace GK1.Relations
 		/// <summary>
 		/// Calculates new coordinates of seg.To for length relation
 		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <param name="length">New length</param>
 		private void CalculateNewCoords(Segment seg, int newLen, bool forward)
 		{
 			if (forward)

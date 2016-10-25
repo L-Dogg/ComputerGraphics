@@ -7,7 +7,7 @@ using GK1.Structures;
 
 namespace GK1.Relations
 {
-	class NoneRelation : IRelation
+	public class NoneRelation : IRelation
 	{
 		public RelationType Type => RelationType.None;
 		

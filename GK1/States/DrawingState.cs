@@ -1,21 +1,14 @@
-﻿using Bresenhams;
-using GK1.Structures;
-using System;
-using System.Collections.Generic;
+﻿using GK1.Structures;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GK1.States
 {
 	// TODO BUG NA DRUGIM POLYGONIE
-	class DrawingState : IState
+	public class DrawingState : IState
 	{
 		#region Private Properties
 		private MainForm MainForm { get; set; }
-		private Segment Segment { get; set; }
 		private Point Point { get; set; }
 		private bool Moving { get; set; }
 		#endregion
@@ -63,19 +56,19 @@ namespace GK1.States
 
 		public void MouseMove(object sender, MouseEventArgs e)
 		{
-			if (MainForm.CurrentPolygon.Vertices.Count > 0)
-			{
-				Moving = true;
-				Point = new Point(e.X, e.Y);
-				MainForm.Render();
-			}
+			if (MainForm.CurrentPolygon.Vertices.Count == 0)
+				return;
+
+			Moving = true;
+			Point = new Point(e.X, e.Y);
+			MainForm.Render();
 		}
 
 		public void Render(Bitmap bitmap, Graphics g)
 		{
 			if (Moving)
 			{
-				Algorithms.Line(MainForm.CurrentPolygon.Vertices.Last.Value.X, MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.X, Point.Y, bitmap);
+				Algorithms.Algorithms.Line(MainForm.CurrentPolygon.Vertices.Last.Value.X, MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.X, Point.Y, bitmap);
 			}
 
 			MainForm.CurrentPolygon.Render(bitmap, g);
@@ -86,12 +79,12 @@ namespace GK1.States
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Escape)
-			{
-				MainForm.CurrentPolygon = new Polygon();
-				MainForm.CurrentState = new IdleState(MainForm);
-				MainForm.Render();
-			}
+			if (e.KeyCode != Keys.Escape)
+				return;
+
+			MainForm.CurrentPolygon = new Polygon();
+			MainForm.CurrentState = new IdleState(MainForm);
+			MainForm.Render();
 		}
 		#endregion
 	}

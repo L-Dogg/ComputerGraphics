@@ -1,17 +1,13 @@
 ﻿using GK1.Structures;
 using GK1.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GK1.States
 {
 	// TODO: can't move out of state!!!
-	class PolygonMoveState : IState
+	public class PolygonMoveState : IState
 	{
 		#region Private Properties
 		private MainForm MainForm { get; set; }

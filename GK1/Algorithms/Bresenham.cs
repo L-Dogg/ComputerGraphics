@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Bresenhams
+namespace GK1.Algorithms
 {
 	/// <summary>
 	/// The Bresenham algorithm collection
@@ -40,7 +40,7 @@ namespace Bresenhams
 		/// <param name="y1">The end y</param>
 		/// <param name="bmp">Bitmap to draw on</param>
 		/// <param name="color">Pixel color</param>
-		public static void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
+		private static void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
 		{
 			bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
 			if (steep) { Swap<int>(ref x0, ref y0); Swap<int>(ref x1, ref y1); }
