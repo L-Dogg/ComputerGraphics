@@ -51,16 +51,13 @@ namespace GK1.States
 				{
 					polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, point));
 					polygon.Vertices.AddLast(point);
-					MainForm.Render();
 				}
-
-				MainForm.Render();
 			}
 			else
 			{
 				polygon.Vertices.AddLast(point);
-				MainForm.Render();
 			}
+			MainForm.Render();
 			
 		}
 

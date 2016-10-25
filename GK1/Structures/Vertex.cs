@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GK1.Structures
 {
@@ -56,7 +53,12 @@ namespace GK1.Structures
 			var v2 = obj as Vertex;
 			return ComparePoints(v2);
 		}
-		
+
+		public override int GetHashCode()
+		{
+			return p.GetHashCode();
+		}
+
 		#region Backward Compatibility
 		public bool ComparePoints(Vertex u)
 		{

@@ -199,7 +199,7 @@ namespace GK1.States
 				MainForm.Render();
 			}
 			// Vertex move
-			else if (!DeletingPolygon && wasVertexClicked /* && polygon.Points.First.Value != clickedVertex */ && e.Button == MouseButtons.Left)
+			else if (!DeletingPolygon && wasVertexClicked && polygon.Vertices.First.Value != clickedVertex && e.Button == MouseButtons.Left)
 			{
 
 				MainForm.RelationContextMenu.ItemClicked -= RelationContextMenu_ItemClicked;
