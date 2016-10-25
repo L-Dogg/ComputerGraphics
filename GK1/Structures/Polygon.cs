@@ -73,7 +73,7 @@ namespace GK1.Structures
 				v.LoadPrevious();
 		}
 
-		public void ClearVertices()
+		private void ClearVertices()
 		{
 			foreach (var v in Vertices)
 				v.Previous.Clear();

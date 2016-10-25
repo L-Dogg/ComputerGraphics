@@ -9,7 +9,7 @@ namespace GK1.Structures
 		private static readonly int margin = 8;
 
 		private Point p;
-		public Stack<Point> Previous { get; set; }
+		public Stack<Point> Previous { get; }
 		public int X
 		{
 			get { return p.X; }

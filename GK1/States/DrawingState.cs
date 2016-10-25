@@ -22,11 +22,11 @@ namespace GK1.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-			var point = new Vertex(e.X, e.Y);
-			var polygon = MainForm.CurrentPolygon;
 
 			if (e.Button != MouseButtons.Left)
 				return;
+			var point = new Vertex(e.X, e.Y);
+			var polygon = MainForm.CurrentPolygon;
 			
 			Moving = false;
 
