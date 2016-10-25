@@ -61,75 +61,58 @@ namespace GK1.States
 			// Horizontal
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[0])
 			{
-				if (AddHorizontalRelation())
+				if (AddRelation(RelationType.Horizontal))
 					MainForm.Render();
 			}
 			// Vertical
 			else if (e.ClickedItem == MainForm.RelationContextMenu.Items[1])
 			{
-				if (AddVeritcalRelation())
+				if (AddRelation(RelationType.Vertical))
 					MainForm.Render();
 			}
 			// Length
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[2])
 			{
-				if (AddLengthRelation())
+				if (AddRelation(RelationType.Length))
 					MainForm.Render();
 			}
 			// None
 			if (e.ClickedItem == MainForm.RelationContextMenu.Items[4])
 			{
-				if (AddNoneRelation())
+				if (AddRelation(RelationType.None))
 					MainForm.Render();
 			}
 
 		}
 		#endregion
-
-		// TODO: move to one method with relationtype as an argument
+				
 		#region Relation Processing
-		private bool AddHorizontalRelation()
+		
+		private bool AddRelation(RelationType relationType)
 		{
 			MainForm.CurrentPolygon.SaveVertices();
-			MainForm.CurrentSegment.Relation = horizontalRelation;
-			
-			var retVal = MainForm.CurrentPolygon.Apply();
-			if (!retVal)
+			switch (relationType)
 			{
-				MainForm.CurrentPolygon.LoadVertices();
-				MainForm.CurrentSegment.Relation = noneRelation;
-				MessageBox.Show(ErrorMessage);
+				case RelationType.None:
+					MainForm.CurrentSegment.Relation = noneRelation;
+					break;
+				case RelationType.Horizontal:
+					MainForm.CurrentSegment.Relation = horizontalRelation;
+					break;
+				case RelationType.Vertical:
+					MainForm.CurrentSegment.Relation = verticalRelation;
+					break;
+				case RelationType.Length:
+					MainForm.LengthMessageBox = new Length(MainForm.CurrentSegment.Length);
+					MainForm.LengthMessageBox.ShowDialog();
+
+					if (!MainForm.LengthMessageBox.wasOK)
+						return false;
+
+					MainForm.CurrentSegment.DesiredLength = MainForm.LengthMessageBox.LengthTyped;
+					MainForm.CurrentSegment.Relation = lengthRelation;
+					break;
 			}
-
-			return retVal;
-		}
-
-		private bool AddVeritcalRelation()
-		{
-			MainForm.CurrentPolygon.SaveVertices();
-			MainForm.CurrentSegment.Relation = verticalRelation;
-			var retVal = MainForm.CurrentPolygon.Apply();
-			if (!retVal)
-			{
-				MainForm.CurrentPolygon.LoadVertices();
-				MainForm.CurrentSegment.Relation = noneRelation;
-				MessageBox.Show(ErrorMessage);
-			}
-
-			return retVal;
-		}
-
-		private bool AddLengthRelation()
-		{
-			MainForm.LengthMessageBox = new Length(MainForm.CurrentSegment.Length);
-			MainForm.LengthMessageBox.ShowDialog();
-
-			if (!MainForm.LengthMessageBox.wasOK)
-				return false;
-
-			MainForm.CurrentPolygon.SaveVertices();
-			MainForm.CurrentSegment.Relation = lengthRelation;
-			MainForm.CurrentSegment.DesiredLength = MainForm.LengthMessageBox.LengthTyped;
 
 			var retVal = MainForm.CurrentPolygon.Apply();
 			if (!retVal)
@@ -141,31 +124,6 @@ namespace GK1.States
 
 			return retVal;
 		}
-
-		private bool AddNoneRelation()
-		{
-			MainForm.CurrentSegment.Relation = noneRelation;
-			return MainForm.CurrentSegment.Relation.Apply(MainForm.CurrentSegment, MainForm.CurrentPolygon);
-		}
-
-		//private bool AddRelation(RelationType relationType)
-		//{
-		//	MainForm.CurrentPolygon.SaveVertices();
-		//	switch (relationType)
-		//	{
-		//		case RelationType.None:
-		//			MainForm.CurrentSegment.Relation = noneRelation;
-		//			return true;
-		//			break;
-		//		case RelationType.Horizontal:
-		//			break;
-		//		case RelationType.Vertical:
-		//			break;
-		//		case RelationType.Length:
-		//			break;
-		//	}
-		//	return true;
-		//}
 
 		#endregion
 
