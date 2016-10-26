@@ -68,7 +68,15 @@ namespace GK1.States
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			
+			if (e.KeyCode == Keys.Escape)
+			{
+				if (!Polygon.Apply())
+				{
+					Polygon.LoadVertices();
+				}
+				MainForm.CurrentState = new IdleState(MainForm);
+				MainForm.Render();
+			}
 		}
 		#endregion
 	}

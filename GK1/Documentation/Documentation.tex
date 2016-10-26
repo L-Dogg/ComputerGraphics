@@ -13,15 +13,16 @@
 \section{Polecenia}
 \begin{enumerate}
 	\item \textbf{Dodanie wielokąta} - PPM\footnote{Prawy Przycisk Myszy} $\rightarrow$ Add polygon \newline
-	Do momentu zakończenia rysowania (poprzez zamknięcie wielokąta, klikając na pierwszy, oznaczony na niebiesko, wierzchołek)) lub wciśnięcia przycisku Esc okno znajduje się w trybie rysowania.
+	Program przechodzi w tryb rysowania. Do momentu zakończenia rysowania (poprzez zamknięcie wielokąta, klikając na pierwszy, oznaczony na niebiesko, wierzchołek)) lub wciśnięcia przycisku Esc okno znajduje się w trybie rysowania.
+	\item \textbf{Tryb wspomagania relacji przy rysowaniu} - klawisz F12 w trybie rysowania włącza lub wyłącza tryb wspomagania relacji (o aktualnym stanie użytkownik jest powiadamiany MessageBoxem). Zalecane jest ustawienie tej opcji przed rozpoczęciem rysowania wielokąta.
 	\item \textbf{Usunięcie wielokąta} - PPM $\rightarrow$ Remove polygon.
 	Do momentu wybrania usuwanego wielokąta lub wciśnięcia przycisku Esc okno znajduje się w trybie usuwania.
-	\item \textbf{Przejscie do trybu przesuwania wielokąta} - PPM $\rightarrow$ Move polygon. \newline
+	\item \textbf{Przejście do trybu przesuwania wielokąta} - PPM $\rightarrow$ Move polygon. \newline
 	Aby przesunąć wielokąt, należy kliknąć LPM\footnote{Lewy Przycisk Myszy} na dowolny jego wierzchołek. Wielokąt będzie przesuwany do momentu kolejnego kliknięcia LPM lub wciśnięcia przycisku Esc.
 	\item \textbf{Dodawanie wierzchołka w środku wybranej krawędzi} - kliknięcie LPM na wybraną krawędź.
 	\item \textbf{Usunięcie wierzchołka} - kliknięcie na wybranym wierzchołku LPM trzymając jednocześnie przycisk Ctrl. Usunięcie wierzchołka w trójkącie powoduje usunięcie całego trójkąta (nie dopuszczamy istnienia pojedynczych odcinków na bitmapie).
-	\item \textbf{Przesuwanie wierzchołka} - kliknięcie LPM na wybranym wierzchołku uaktywnia stan przesuwania wierzchołka. Jest on przesuwany aż do kolejnego kliknięcia.
-	\item \textbf{Dodanie relacji} - kliknięcie PPM na wybranej krawędzi a następnie wybór jednego z typów relacji (gdzie None oznacza brak relacji dla krawędzi). W przypadku wybrania relacji długości wyswietla się okno dialogowe, pozwalające wpisać oczekiwaną długość.
+	\item \textbf{Przesuwanie wierzchołka} - kliknięcie LPM na wybranym wierzchołku uaktywnia stan przesuwania wierzchołka. Jest on przesuwany aż do kolejnego kliknięcia lub wciśnięcia Esc.
+	\item \textbf{Dodanie relacji} - kliknięcie PPM na wybranej krawędzi a następnie wybór jednego z typów relacji (gdzie None oznacza brak relacji dla krawędzi). W przypadku wybrania relacji długości wyświetla się okno dialogowe, pozwalające wpisać oczekiwaną długość.
 \end{enumerate}
 \section{Algorytmy zastosowane do relacji}
 Zastosowano algorytm propagowania relacji w przód i w tył przy pomocy iterowania po liście krawędzi. Przed próbą zastosowania relacji dla krawędzi, zapisywane są obecne stany wierzchołków. Jeżeli zarówno nowe, jak i wszystkie dotychczasowe ograniczenia mogą być zastosowane, to zapisywany jest nowy stan wielokąta. W przeciwnym wypadku przywracany jest stan sprzed prób aplikowania nowej relacji.
