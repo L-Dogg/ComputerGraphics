@@ -9,10 +9,11 @@ namespace GK1.Structures
 {
 	public class Polygon
 	{
-		public LinkedList<Vertex> Vertices	{ get; set; } = new LinkedList<Vertex>();
+		public LinkedList<Vertex> Vertices	{ get; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
-		private static Font font = new Font("Arial", 7);
+		private static readonly Font font = new Font("Arial", 7);
 
+		#region Relations
 		private bool Check(LinkedListNode<Segment> node)
 		{
 			SaveVertices();
@@ -59,6 +60,7 @@ namespace GK1.Structures
 			return false;
 
 		}
+		#endregion
 
 		#region Vertices Stacks Operations
 		public void SaveVertices()
