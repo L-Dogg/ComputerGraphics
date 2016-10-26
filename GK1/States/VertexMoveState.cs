@@ -54,10 +54,8 @@ namespace GK1.States
 			{
 				Polygon.LoadVertices();
 			}
-			else
-			{
-				MainForm.Render();
-			}
+			MainForm.Render();
+			
 		}
 
 		public void Render(Bitmap bitmap, Graphics g)

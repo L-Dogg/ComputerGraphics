@@ -16,7 +16,7 @@ namespace GK1.States
 
 
 		#region Lab part
-		private bool ToggleRelationHelper { get; set; } = false;
+		private static bool ToggleRelationHelper { get; set; } = false;
 		private static readonly string RelationHelperMessage = "Relation helper is: ";
 		private static readonly int margin = 3;
 		#endregion
@@ -46,34 +46,50 @@ namespace GK1.States
 				{
 					polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, polygon.Vertices.First.Value));
 					MainForm.Polygons.Add(polygon);
+
+					point = MainForm.CurrentPolygon.Vertices.First.Value;
+
+					if (ToggleRelationHelper)
+					{
+						// Horizontal
+						if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - point.Y) <= margin)
+						{
+							polygon.Vertices.Last.Value.Y = point.Y;
+							polygon.Segments.Last.Value.Relation = new HorizontalRelation();
+						}
+						// Vertical
+						else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - point.X) <= margin)
+						{
+							polygon.Vertices.Last.Value.X = point.X;
+							polygon.Segments.Last.Value.Relation = new VerticalRelation();
+						}
+					}
+
+					MainForm.CurrentPolygon = new Polygon();
+					MainForm.CurrentState = new IdleState(MainForm);
 				}
 				else
 				{
 					polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, point));
 					polygon.Vertices.AddLast(point);
-				}
 
-				if (ToggleRelationHelper)
-				{
-					// Horizontal
-					if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.Y - point.Y) <= margin)
+					if (ToggleRelationHelper)
 					{
-						polygon.Vertices.Last.Value.Y = polygon.Vertices.Last.Previous.Value.Y;
-						polygon.Segments.Last.Value.Relation = new HorizontalRelation();
-					}
-					// Vertical
-					else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.X - point.X) <= margin)
-					{
-						polygon.Vertices.Last.Value.X = polygon.Vertices.Last.Previous.Value.X;
-						polygon.Segments.Last.Value.Relation = new VerticalRelation();
-					}
+						// Horizontal
+						if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.Y - point.Y) <= margin)
+						{
+							polygon.Vertices.Last.Value.Y = polygon.Vertices.Last.Previous.Value.Y;
+							polygon.Segments.Last.Value.Relation = new HorizontalRelation();
+						}
+						// Vertical
+						else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.X - point.X) <= margin)
+						{
+							polygon.Vertices.Last.Value.X = polygon.Vertices.Last.Previous.Value.X;
+							polygon.Segments.Last.Value.Relation = new VerticalRelation();
+						}
+					} 
 				}
-
-				if (polygon.Vertices.First.Value.ComparePoints(point))
-				{
-					MainForm.CurrentPolygon = new Polygon();
-					MainForm.CurrentState = new IdleState(MainForm);
-				}
+				
             }
 			else
 			{
@@ -134,7 +150,7 @@ namespace GK1.States
 			}
 			else if(e.KeyCode == Keys.F12)
 			{
-				this.ToggleRelationHelper = !this.ToggleRelationHelper;
+				ToggleRelationHelper = !ToggleRelationHelper;
 				MessageBox.Show(RelationHelperMessage + (ToggleRelationHelper ? "ON" : "OFF"));
 			}
 		}
