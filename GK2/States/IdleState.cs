@@ -75,11 +75,7 @@ namespace GK2.States
 			if (e.Button == MouseButtons.Right)
 			{
 				MainForm.SetContextMenuItems(segment);
-
-				if (wasEdgeClicked)
-					MainForm.RelationContextMenu.Show(MainForm, new Point(point.X, point.Y));
-				else
-					MainForm.PolygonContextMenu.Show(MainForm, new Point(point.X, point.Y));
+				MainForm.PolygonContextMenu.Show(MainForm, new Point(point.X, point.Y));
 			}
 			// Vertex deletion
 			else if (!DeletingPolygon && wasVertexClicked && (Control.ModifierKeys == Keys.Control && e.Button == MouseButtons.Left))
