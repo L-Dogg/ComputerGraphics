@@ -18,7 +18,7 @@ namespace GK1.States
 		#region Lab part
 		private static bool ToggleRelationHelper { get; set; } = false;
 		private static readonly string RelationHelperMessage = "Relation helper is: ";
-		private static readonly int margin = 3;
+		private static readonly int Margin = 3;
 		#endregion
 		#endregion
 
@@ -52,13 +52,13 @@ namespace GK1.States
 					if (ToggleRelationHelper)
 					{
 						// Horizontal
-						if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - point.Y) <= margin)
+						if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - point.Y) <= Margin)
 						{
 							polygon.Vertices.Last.Value.Y = point.Y;
 							polygon.Segments.Last.Value.Relation = new HorizontalRelation();
 						}
 						// Vertical
-						else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - point.X) <= margin)
+						else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - point.X) <= Margin)
 						{
 							polygon.Vertices.Last.Value.X = point.X;
 							polygon.Segments.Last.Value.Relation = new VerticalRelation();
@@ -76,13 +76,13 @@ namespace GK1.States
 					if (ToggleRelationHelper)
 					{
 						// Horizontal
-						if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.Y - point.Y) <= margin)
+						if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.Y - point.Y) <= Margin)
 						{
 							polygon.Vertices.Last.Value.Y = polygon.Vertices.Last.Previous.Value.Y;
 							polygon.Segments.Last.Value.Relation = new HorizontalRelation();
 						}
 						// Vertical
-						else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.X - point.X) <= margin)
+						else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Previous.Value.X - point.X) <= Margin)
 						{
 							polygon.Vertices.Last.Value.X = polygon.Vertices.Last.Previous.Value.X;
 							polygon.Segments.Last.Value.Relation = new VerticalRelation();
@@ -121,12 +121,12 @@ namespace GK1.States
 						Math.Min(MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.Y) + Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) / 2);
 
 					// Horizontal
-					if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) <= margin)
+					if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) <= Margin)
 					{
 						g.FillEllipse(Brushes.Red, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 					}
 					// Vertical
-					else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - Point.X) <= margin)
+					else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - Point.X) <= Margin)
 					{
 						g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 					}

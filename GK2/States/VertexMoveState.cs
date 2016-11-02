@@ -18,8 +18,6 @@ namespace GK2.States
 			MainForm.Cursor = Cursors.NoMove2D;
 			Polygon = polygon;
 			Vertex = vertex;
-
-			Polygon.SaveVertices();
 		}
 
 		#region IState

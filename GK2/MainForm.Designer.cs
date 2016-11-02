@@ -75,8 +75,8 @@ namespace GK2
 			this.background.Size = new System.Drawing.Size(1409, 679);
 			this.background.TabIndex = 0;
 			this.background.KeyUp += new System.Windows.Forms.KeyEventHandler(this.background_KeyUp);
-			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bgMouseDown);
-			this.background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bgMouseMove);
+			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BgMouseDown);
+			this.background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BgMouseMove);
 			// 
 			// MainForm
 			// 

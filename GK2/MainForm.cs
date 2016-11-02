@@ -47,7 +47,7 @@ namespace GK2
 		
 		#endregion
 
-		private Graphics graphics;
+		private Graphics _graphics;
 
 		#region Public Methods
 
@@ -55,7 +55,7 @@ namespace GK2
 		{
 			InitializeComponent();
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
-			graphics = Graphics.FromImage(background.BackgroundImage);
+			_graphics = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
 			Render();
 		}
@@ -74,8 +74,8 @@ namespace GK2
 
 		public void Render()
 		{
-			this.ClearBitmap(background.BackgroundImage as Bitmap, graphics);
-			CurrentState.Render(background.BackgroundImage as Bitmap, graphics);
+			this.ClearBitmap(background.BackgroundImage as Bitmap, _graphics);
+			CurrentState.Render(background.BackgroundImage as Bitmap, _graphics);
 			
 			this.background.Invalidate(true);
 		}
@@ -83,12 +83,12 @@ namespace GK2
 
 		#region Private Methods
 
-		private void bgMouseDown(object sender, MouseEventArgs e)
+		private void BgMouseDown(object sender, MouseEventArgs e)
 		{
 			CurrentState.MouseDown(sender, e);
 		}
 
-		private void bgMouseMove(object sender, MouseEventArgs e)
+		private void BgMouseMove(object sender, MouseEventArgs e)
 		{
 			CurrentState.MouseMove(sender, e);
 		}
@@ -100,10 +100,13 @@ namespace GK2
 
 		private void MainForm_ResizeEnd(object sender, EventArgs e)
 		{
+			if (background.BackgroundImage == null)
+				return;
+
 			background.Size = new Size(this.Size.Width, this.Size.Height);
 			background.BackgroundImage.Dispose();
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
-			graphics = Graphics.FromImage(background.BackgroundImage);
+			_graphics = Graphics.FromImage(background.BackgroundImage);
 
 			//background.Invalidate(true);
 			this.Render();

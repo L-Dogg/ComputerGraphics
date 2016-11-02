@@ -18,7 +18,7 @@ namespace GK2.States
 		#region Lab part
 		private static bool ToggleRelationHelper { get; set; } = false;
 		private static readonly string RelationHelperMessage = "Relation helper is: ";
-		private static readonly int margin = 3;
+		private static readonly int Margin = 3;
 		#endregion
 		#endregion
 
@@ -31,7 +31,6 @@ namespace GK2.States
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
-
 			if (e.Button != MouseButtons.Left)
 				return;
 			var point = new Vertex(e.X, e.Y);
@@ -46,6 +45,7 @@ namespace GK2.States
 				{
 					polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, polygon.Vertices.First.Value));
 					MainForm.Polygons.Add(polygon);
+					polygon.Finished = true;
 					MainForm.CurrentPolygon = new Polygon();
 					MainForm.CurrentState = new IdleState(MainForm);
 				}
@@ -86,12 +86,12 @@ namespace GK2.States
 						Math.Min(MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.Y) + Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) / 2);
 
 					// Horizontal
-					if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) <= margin)
+					if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) <= Margin)
 					{
 						g.FillEllipse(Brushes.Red, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 					}
 					// Vertical
-					else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - Point.X) <= margin)
+					else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - Point.X) <= Margin)
 					{
 						g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y - 7, 15, 15);
 					}

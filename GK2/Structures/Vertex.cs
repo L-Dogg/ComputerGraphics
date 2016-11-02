@@ -6,31 +6,31 @@ namespace GK2.Structures
 {
 	public class Vertex
 	{
-		private static readonly int margin = 8;
+		private static readonly int Margin = 8;
 
-		private Point p;
+		private Point _p;
 		public Stack<Point> Previous { get; }
 		public int X
 		{
-			get { return p.X; }
-			set { p = new Point(value, p.Y); }
+			get { return _p.X; }
+			set { _p = new Point(value, _p.Y); }
 		}
 		public int Y
 		{
-            get { return p.Y; }
-			set { p = new Point(p.X, value); }
+            get { return _p.Y; }
+			set { _p = new Point(_p.X, value); }
 		}
 
 		public Vertex(int x, int y)
 		{
-			p = new Point(x, y);
+			_p = new Point(x, y);
 			Previous = new Stack<Point>();
 		}
 
 		public void LoadPrevious()
 		{
 			if (Previous.Count > 0)
-				p = Previous.Pop();		
+				_p = Previous.Pop();		
 		}
 
 		public static bool operator ==(Vertex v1, Vertex v2)
@@ -56,33 +56,33 @@ namespace GK2.Structures
 
 		public override int GetHashCode()
 		{
-			return p.GetHashCode();
+			return _p.GetHashCode();
 		}
 
 		#region Backward Compatibility
 		public bool ComparePoints(Vertex u)
 		{
-			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
+			return Math.Abs(_p.X - u.X) <= Margin && Math.Abs(_p.Y - u.Y) <= Margin;
 		}
 
 		public bool IsCloseToLine(Segment line)
 		{
-			return p.IsCloseToLine(line);
+			return _p.IsCloseToLine(line);
 		}
 
 		public void Draw(Bitmap bmp)
 		{
-			p.Draw(bmp, Color.Red);
+			_p.Draw(bmp, Color.Red);
 		}
 
 		public void Draw(Bitmap bmp, Color col)
 		{
-			p.Draw(bmp, col);
+			_p.Draw(bmp, col);
 		}
 
 		public bool OnRectangle(Segment line)
 		{
-			return p.OnRectangle(line);
+			return _p.OnRectangle(line);
 		}
 		#endregion
 	}

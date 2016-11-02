@@ -15,8 +15,8 @@ namespace GK2.States
 		#region Private Properties
 		private MainForm MainForm { get; set; }
 		private bool DeletingPolygon { get; set; }
-		private Polygon currentPolygon { get; set; }
-		private Segment currentSegment { get; set; }
+		private Polygon CurrentPolygon { get; set; }
+		private Segment CurrentSegment { get; set; }
 		#endregion
 
 		public IdleState(MainForm mainForm)
@@ -67,8 +67,8 @@ namespace GK2.States
 			{
 				MainForm.CurrentPolygon = polygon;
 				MainForm.CurrentSegment = segment;
-				currentSegment = segment;
-				currentPolygon = polygon;
+				CurrentSegment = segment;
+				CurrentPolygon = polygon;
 			}
 
 			// Context Menu
@@ -91,7 +91,7 @@ namespace GK2.States
 				var edgeToAddAfter = polygon.Segments.First(line => line.From == clickedVertex || line.To == clickedVertex);				
 				polygon.Segments.AddAfter(polygon.Segments.Find(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
 				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => line.From != clickedVertex && line.To != clickedVertex));
-				currentPolygon = polygon;
+				CurrentPolygon = polygon;
 				
 				MainForm.Render();
 			}

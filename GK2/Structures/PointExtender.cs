@@ -9,31 +9,31 @@ namespace GK2.Structures
 {
 	public static class PointExtender
 	{
-		private static int margin = 5;
-		private static Color color = Color.Red;
+		private static int _margin = 5;
+		private static Color _color = Color.Red;
 
 		public static bool ComparePoints(this Point p, Point u)
 		{
-			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
+			return Math.Abs(p.X - u.X) <= _margin && Math.Abs(p.Y - u.Y) <= _margin;
 		}
 
 		public static bool ComparePoints(this Point p, Vertex u)
 		{
-			return Math.Abs(p.X - u.X) <= margin && Math.Abs(p.Y - u.Y) <= margin;
+			return Math.Abs(p.X - u.X) <= _margin && Math.Abs(p.Y - u.Y) <= _margin;
 		}
 		
 		public static bool IsCloseToLine(this Point p, Segment line)
 		{
 			double distance = Math.Abs((line.To.Y - line.From.Y) * p.X - (line.To.X - line.From.X) * p.Y + line.To.X * line.From.Y - line.To.Y * line.From.X) /
 				Math.Sqrt((line.To.Y - line.From.Y) * (line.To.Y - line.From.Y) + (line.To.X - line.From.X) * (line.To.X - line.From.X));
-			if (distance < 2 * margin && !p.ComparePoints(line.From) && !p.ComparePoints(line.To))
+			if (distance < 2 * _margin && !p.ComparePoints(line.From) && !p.ComparePoints(line.To))
 				return p.OnRectangle(line);
 			return false;
 		}
 
 		public static void Draw(this Point p, Bitmap bmp)
 		{
-			p.Draw(bmp, color);
+			p.Draw(bmp, _color);
 		}
 
 		public static void Draw(this Point p, Bitmap bmp, Color col)
@@ -53,7 +53,7 @@ namespace GK2.Structures
 			var minX = (line.From.X < line.To.X) ? line.From.X : line.To.X;
 			var maxX = (line.From.X < line.To.X) ? line.To.X : line.From.X;
 
-			if (p.Y <= (maxY + margin) && (p.Y >= minY - margin) && (p.X <= maxX + margin) && (p.X >= minX - margin))
+			if (p.Y <= (maxY + _margin) && (p.Y >= minY - _margin) && (p.X <= maxX + _margin) && (p.X >= minX - _margin))
 				return true;
 			return false;
 		}

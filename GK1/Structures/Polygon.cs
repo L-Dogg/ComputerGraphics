@@ -11,7 +11,7 @@ namespace GK1.Structures
 	{
 		public LinkedList<Vertex> Vertices	{ get; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
-		private static readonly Font font = new Font("Arial", 7);
+		private static readonly Font Font = new Font("Arial", 7);
 
 		#region Relations
 		private bool Check(LinkedListNode<Segment> node)
@@ -103,7 +103,7 @@ namespace GK1.Structures
 				if (line.Relation.Type == RelationType.Length)
 				{
 					g.FillRectangle(Brushes.Wheat, midPoint.X - 7, midPoint.Y - 7, 18, 12);
-					g.DrawString(line.DesiredLength.ToString(), font, Brushes.Black, new Point(midPoint.X - 9, midPoint.Y - 7));
+					g.DrawString(line.DesiredLength.ToString(), Font, Brushes.Black, new Point(midPoint.X - 9, midPoint.Y - 7));
 				}
 			}
 

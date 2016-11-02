@@ -5,7 +5,7 @@ namespace GK1.Relations
 {
 	public class LengthRelation : IRelation
 	{
-		private static readonly int margin = 2;
+		private static readonly int Margin = 2;
 
 		public RelationType Type => RelationType.Length;
 		
@@ -20,7 +20,7 @@ namespace GK1.Relations
 
 		public bool Check(Segment segment, Polygon polygon, int length = 0)
 		{
-			return Math.Abs(segment.DesiredLength - segment.Length) <= margin;
+			return Math.Abs(segment.DesiredLength - segment.Length) <= Margin;
 		}
 
 		/// <summary>

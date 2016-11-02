@@ -15,8 +15,8 @@ namespace GK1.States
 		#region Private Properties
 		private MainForm MainForm { get; set; }
 		private bool DeletingPolygon { get; set; }
-		private Polygon currentPolygon { get; set; }
-		private Segment currentSegment { get; set; }
+		private Polygon CurrentPolygon { get; set; }
+		private Segment CurrentSegment { get; set; }
 		private static readonly NoneRelation NoneRelation = new NoneRelation();
 		private static readonly HorizontalRelation HorizontalRelation = new HorizontalRelation();
 		private static readonly VerticalRelation VerticalRelation = new VerticalRelation();
@@ -106,7 +106,7 @@ namespace GK1.States
 					MainForm.LengthMessageBox = new Length(MainForm.CurrentSegment.Length);
 					MainForm.LengthMessageBox.ShowDialog();
 
-					if (!MainForm.LengthMessageBox.WasOK)
+					if (!MainForm.LengthMessageBox.WasOk)
 						return false;
 
 					MainForm.CurrentSegment.DesiredLength = MainForm.LengthMessageBox.LengthTyped;
@@ -145,8 +145,8 @@ namespace GK1.States
 			{
 				MainForm.CurrentPolygon = polygon;
 				MainForm.CurrentSegment = segment;
-				currentSegment = segment;
-				currentPolygon = polygon;
+				CurrentSegment = segment;
+				CurrentPolygon = polygon;
 			}
 
 			// Context Menu
@@ -173,7 +173,7 @@ namespace GK1.States
 				var edgeToAddAfter = polygon.Segments.First(line => line.From == clickedVertex || line.To == clickedVertex);				
 				polygon.Segments.AddAfter(polygon.Segments.Find(edgeToAddAfter), new Segment(adjacentPoints[0], adjacentPoints[1]));
 				polygon.Segments = new LinkedList<Segment>(polygon.Segments.Where((line) => line.From != clickedVertex && line.To != clickedVertex));
-				currentPolygon = polygon;
+				CurrentPolygon = polygon;
 				
 				MainForm.Render();
 			}
