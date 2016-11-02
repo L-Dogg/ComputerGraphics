@@ -17,6 +17,7 @@ namespace GK2.States
 			MainForm = mainForm;
 			MainForm.Cursor = Cursors.NoMove2D;
 			Polygon = polygon;
+			Polygon.Finished = true;
 			Vertex = vertex;
 		}
 
@@ -42,7 +43,6 @@ namespace GK2.States
 				return;
 			}
 			
-			Vertex.Previous.Push(new Point(Vertex.X, Vertex.Y));
 			Vertex.X = e.X;
 			Vertex.Y = e.Y;
             

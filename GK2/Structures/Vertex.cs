@@ -9,7 +9,6 @@ namespace GK2.Structures
 		private static readonly int Margin = 8;
 
 		private Point _p;
-		public Stack<Point> Previous { get; }
 		public int X
 		{
 			get { return _p.X; }
@@ -24,13 +23,6 @@ namespace GK2.Structures
 		public Vertex(int x, int y)
 		{
 			_p = new Point(x, y);
-			Previous = new Stack<Point>();
-		}
-
-		public void LoadPrevious()
-		{
-			if (Previous.Count > 0)
-				_p = Previous.Pop();		
 		}
 
 		public static bool operator ==(Vertex v1, Vertex v2)

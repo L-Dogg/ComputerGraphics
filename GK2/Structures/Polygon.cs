@@ -13,8 +13,7 @@ namespace GK2.Structures
 		public LinkedList<Vertex> Vertices	{ get; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
 		public bool Finished { private get; set; } = false;
-		private static readonly Font Font = new Font("Arial", 7);
-
+		
 		private Dictionary<int, List<Segment>> _edgeTable = new Dictionary<int, List<Segment>>();
 		
 		private void GenerateEdgeTable()
@@ -51,7 +50,7 @@ namespace GK2.Structures
 
 				activeEt.Sort((s1, s2) => s1.Xmin.CompareTo(s2.Xmin));
 				FillPixels(activeEt, color, bmp, y);
-				
+								
 				y++;
 
 				foreach (var segment in activeEt)
@@ -70,6 +69,7 @@ namespace GK2.Structures
 		{
 		    if (Finished)
 		    {
+				SetAllXmins();
                 GenerateEdgeTable();
                 FillPolygon(Color.BlueViolet, bmp);
 		    }
@@ -84,6 +84,12 @@ namespace GK2.Structures
 				point.Draw(bmp);
 
 			Vertices.First.Value.Draw(bmp, Color.Blue);
+		}
+
+		public void SetAllXmins()
+		{
+			foreach (var seg in Segments)
+				seg.Xmin = seg.StartXmin;
 		}
 	}
 }

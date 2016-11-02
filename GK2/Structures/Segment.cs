@@ -19,7 +19,7 @@ namespace GK2.Structures
 		public double Xmin { get; set; }
 		
 		public double StartXmin { get; }
-		public double DxDy => Math.Round(((double)(To.X - From.X))/(To.Y - From.Y));
+		public double DxDy => ((double)(To.X - From.X))/(To.Y - From.Y);
 
 		//public int Length => (int) Math.Sqrt((From.X - To.X) * (From.X - To.X) + (From.Y - To.Y) * (From.Y - To.Y));
 		//public int DesiredLength { get; set; } = 0;
