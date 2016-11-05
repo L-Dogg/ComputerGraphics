@@ -29,6 +29,7 @@ namespace GK2.States
 
 			Vertex.X = e.X;
 			Vertex.Y = e.Y;
+			Polygon.SetMovedXmin(Vertex);
 
 			MainForm.CurrentState = new IdleState(MainForm);
 			MainForm.Render();
@@ -45,7 +46,8 @@ namespace GK2.States
 			
 			Vertex.X = e.X;
 			Vertex.Y = e.Y;
-            
+			Polygon.SetMovedXmin(Vertex);
+
 			MainForm.Render();
 			
 		}

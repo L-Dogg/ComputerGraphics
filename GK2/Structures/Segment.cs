@@ -18,7 +18,7 @@ namespace GK2.Structures
 	    public int Ymin => Math.Min(From.Y, To.Y);
 		public double Xmin { get; set; }
 		
-		public double StartXmin { get; }
+		public double StartXmin => (Ymin == From.Y) ? From.X : To.X;
 		public double DxDy => ((double)(To.X - From.X))/(To.Y - From.Y);
 
 		//public int Length => (int) Math.Sqrt((From.X - To.X) * (From.X - To.X) + (From.Y - To.Y) * (From.Y - To.Y));
@@ -28,7 +28,7 @@ namespace GK2.Structures
 	    {
 			From = from;
 			To = to;
-		    Xmin = StartXmin = (Ymin == From.Y) ? From.X : To.X;
+		    Xmin = StartXmin;
 	    }
 	}
 }

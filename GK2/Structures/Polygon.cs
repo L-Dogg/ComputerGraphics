@@ -69,7 +69,6 @@ namespace GK2.Structures
 		{
 		    if (Finished)
 		    {
-				SetAllXmins();
                 GenerateEdgeTable();
                 FillPolygon(Color.BlueViolet, bmp);
 		    }
@@ -86,10 +85,13 @@ namespace GK2.Structures
 			Vertices.First.Value.Draw(bmp, Color.Blue);
 		}
 
-		public void SetAllXmins()
+		public void SetMovedXmin(Vertex v)
 		{
-			foreach (var seg in Segments)
+			var changedSegments = Segments.Where(segment => segment.From == v || segment.To == v);
+			foreach (var seg in changedSegments)
+			{
 				seg.Xmin = seg.StartXmin;
+			}
 		}
 	}
 }
