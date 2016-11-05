@@ -72,6 +72,7 @@
     <Compile Include="Structures\Segment.cs" />
     <Compile Include="Structures\Vertex.cs" />
     <Compile Include="Utilities\ClickChecker.cs" />
+    <Compile Include="Utilities\DirectBitmap.cs" />
     <EmbeddedResource Include="Controls\Background.resx">
       <DependentUpon>Background.cs</DependentUpon>
     </EmbeddedResource>

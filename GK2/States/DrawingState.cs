@@ -3,6 +3,7 @@ using GK2.Structures;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using GK2.Utilities;
 
 namespace GK2.States
 {
@@ -13,13 +14,6 @@ namespace GK2.States
 		private MainForm MainForm { get; set; }
 		private Point Point { get; set; }
 		private static bool Moving { get; set; }
-
-
-		#region Lab part
-		private static bool ToggleRelationHelper { get; set; } = false;
-		private static readonly string RelationHelperMessage = "Relation helper is: ";
-		private static readonly int Margin = 3;
-		#endregion
 		#endregion
 
 		public DrawingState(MainForm mainForm)
@@ -74,28 +68,10 @@ namespace GK2.States
 			MainForm.Render();
 		}
 
-		public void Render(Bitmap bitmap, Graphics g)
+		public void Render(DirectBitmap bitmap, Graphics g)
 		{
 			if (Moving)
 			{
-
-				if (ToggleRelationHelper)
-				{
-
-					var midPoint = new Point(Math.Min(MainForm.CurrentPolygon.Vertices.Last.Value.X, Point.X) + Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - Point.X) / 2,
-						Math.Min(MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.Y) + Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) / 2);
-
-					// Horizontal
-					if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.Y - Point.Y) <= Margin)
-					{
-						g.FillEllipse(Brushes.Red, midPoint.X - 7, midPoint.Y - 7, 15, 15);
-					}
-					// Vertical
-					else if (Math.Abs(MainForm.CurrentPolygon.Vertices.Last.Value.X - Point.X) <= Margin)
-					{
-						g.FillEllipse(Brushes.Green, midPoint.X - 7, midPoint.Y - 7, 15, 15);
-					}
-                }
 				Algorithms.Algorithms.Line(MainForm.CurrentPolygon.Vertices.Last.Value.X, MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.X, Point.Y, bitmap);
 			}
 
@@ -107,17 +83,11 @@ namespace GK2.States
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Escape)
-			{
-				MainForm.CurrentPolygon = new Polygon();
-				MainForm.CurrentState = new IdleState(MainForm);
-				MainForm.Render();
-			}
-			else if(e.KeyCode == Keys.F12)
-			{
-				ToggleRelationHelper = !ToggleRelationHelper;
-				MessageBox.Show(RelationHelperMessage + (ToggleRelationHelper ? "ON" : "OFF"));
-			}
+			if (e.KeyCode != Keys.Escape)
+				return;
+			MainForm.CurrentPolygon = new Polygon();
+			MainForm.CurrentState = new IdleState(MainForm);
+			MainForm.Render();
 		}
 		#endregion
 	}

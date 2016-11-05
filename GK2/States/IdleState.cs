@@ -138,7 +138,7 @@ namespace GK2.States
 				DeletingPolygon = false;
 		}
 		
-		public void Render(Bitmap bitmap, Graphics g)
+		public void Render(DirectBitmap bitmap, Graphics g)
 		{
 			foreach (var polygon in MainForm.Polygons)
 				polygon.Render(bitmap, g);

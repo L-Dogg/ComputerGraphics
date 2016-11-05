@@ -6,12 +6,13 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GK2.Utilities;
 
 namespace GK2.Structures
 {
 	public class Polygon
 	{
-		public static Bitmap DefaultFillTexture { get; set; }
+		public static DirectBitmap DefaultFillTexture { get; set; }
 		public static Color DefaultLightColor { get; set; } = Color.FromArgb(127, 127, 255);
 
 
@@ -35,7 +36,7 @@ namespace GK2.Structures
 
 	    }
 
-		private void FillPolygon(Color color, Bitmap bmp)
+		private void FillPolygon(Color color, DirectBitmap bmp)
 		{
 			var activeEt = new List<Segment>();
 			var edgeTableElements = Segments.Count;
@@ -63,17 +64,21 @@ namespace GK2.Structures
 			}
 		}
 
-		private static void FillPixels(IReadOnlyList<Segment> segments, Color color, Bitmap bmp, int y)
+		private static void FillPixels(IReadOnlyList<Segment> segments, Color color, DirectBitmap directBmp, int y)
 		{
 			for (var i = 0; i < segments.Count() / 2; i++)
-				for (var x = segments[2 * i].Xmin; x <= segments[2 * i + 1].Xmin; x++)
-					bmp.SetPixel((int)x, y, DefaultFillTexture.GetPixel(((int) x) % DefaultFillTexture.Width , y % DefaultFillTexture.Height));
+				for (var x = segments[2*i].Xmin; x <= segments[2*i + 1].Xmin; x++)
+				{
+					//bmp.SetPixel((int)x, y, DefaultFillTexture.GetPixel(((int) x) % DefaultFillTexture.Width , y % DefaultFillTexture.Height));
+					directBmp.Bits[(int) x + y * directBmp.Width] =
+						DefaultFillTexture.Bits[((int) x) % DefaultFillTexture.Width + (y % DefaultFillTexture.Height) * DefaultFillTexture.Width];
+				}
 		}
 
-		public void Render(Bitmap bmp, Graphics g)
+		public void Render(DirectBitmap bmp, Graphics g)
 		{
 		    if (Finished)
-		    {
+		    {		
                 GenerateEdgeTable();
                 FillPolygon(Color.BlueViolet, bmp);
 		    }

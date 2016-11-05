@@ -1,6 +1,7 @@
 ﻿using GK2.Structures;
 using System.Drawing;
 using System.Windows.Forms;
+using GK2.Utilities;
 
 namespace GK2.States
 {
@@ -52,7 +53,7 @@ namespace GK2.States
 			
 		}
 
-		public void Render(Bitmap bitmap, Graphics g)
+		public void Render(DirectBitmap bitmap, Graphics g)
 		{
 			foreach (var polygon in MainForm.Polygons)
 				polygon.Render(bitmap, g);

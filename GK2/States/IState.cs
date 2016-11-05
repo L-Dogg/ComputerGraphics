@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GK2.Utilities;
 
 namespace GK2.States
 {
@@ -24,6 +25,6 @@ namespace GK2.States
 		/// </summary>
 		/// <param name="bitmap">Bitmap to draw on.</param>
 		/// <param name="g">Graphics for relation drawing.</param>
-		void Render(Bitmap bitmap, Graphics g);
+		void Render(DirectBitmap bitmap, Graphics g);
 	}
 }

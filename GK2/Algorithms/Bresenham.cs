@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
+using GK2.Utilities;
 
 namespace GK2.Algorithms
 {
@@ -12,12 +14,12 @@ namespace GK2.Algorithms
 			rhs = temp;
 		}
 		
-		public static void Line(int x0, int y0, int x1, int y1, Bitmap bmp)
+		public static void Line(int x0, int y0, int x1, int y1, DirectBitmap bmp)
 		{
 			Line(x0, y0, x1, y1, bmp, Color.Black);
 		}
 		
-		private static void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
+		private static void Line(int x0, int y0, int x1, int y1, DirectBitmap bmp, Color color)
 		{
 			var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
 			if (steep)
@@ -41,7 +43,9 @@ namespace GK2.Algorithms
 					if (y >= bmp.Width || x < 0)
                         break;
 
-					bmp.SetPixel(y > 0 ? y : 0, x < bmp.Height ? x : bmp.Height - 1, color);
+					//bmp.SetPixel(y > 0 ? y : 0, x < bmp.Height ? x : bmp.Height - 1, color);
+					if ((y > 0 ? y : 0) * bmp.Width + (x < bmp.Height ? x : bmp.Height - 1) < bmp.Bits.Length)
+						bmp.Bits[(y > 0 ? y : 0)*bmp.Width + (x < bmp.Height ? x : bmp.Height - 1)] = color.ToArgb();
 				}
 				else
 				{
@@ -49,7 +53,9 @@ namespace GK2.Algorithms
 					if (x >= bmp.Width || y < 0)
 						break;
 
-					bmp.SetPixel(x > 0 ? x : 0, y < bmp.Height ? y : bmp.Height - 1, color);
+					//bmp.SetPixel(x > 0 ? x : 0, y < bmp.Height ? y : bmp.Height - 1, color);
+					if ((y < bmp.Height ? y : bmp.Height - 1) * bmp.Width + (x > 0 ? x : 0) < bmp.Bits.Length)
+						bmp.Bits[(y < bmp.Height ? y : bmp.Height - 1)*bmp.Width + (x > 0 ? x : 0)] = color.ToArgb();
 				}
 				err = err - dY;
 

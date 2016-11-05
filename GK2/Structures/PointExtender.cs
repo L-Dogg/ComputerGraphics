@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GK2.Utilities;
 
 namespace GK2.Structures
 {
@@ -31,19 +32,19 @@ namespace GK2.Structures
 			return false;
 		}
 
-		public static void Draw(this Point p, Bitmap bmp)
+		public static void Draw(this Point p, DirectBitmap bmp)
 		{
 			p.Draw(bmp, _color);
 		}
 
-		public static void Draw(this Point p, Bitmap bmp, Color col)
+		public static void Draw(this Point p, DirectBitmap bmp, Color col)
 		{
 			if (p.X - 2 < 0 || p.X + 2 >= bmp.Width || p.Y - 2 < 0 || p.Y + 2 >= bmp.Height)
 				return;
 
-			for (int i = (p.X - 2); i <= (p.X + 2); i++)
-				for (int j = (p.Y - 2); j <= (p.Y + 2); j++)
-					bmp.SetPixel(i, j, col);
+			for (var i = (p.X - 2); i <= (p.X + 2); i++)
+				for (var j = (p.Y - 2); j <= (p.Y + 2); j++)
+					bmp.Bits[i + j*bmp.Width] = col.ToArgb();
 		}
 
 		public static bool OnRectangle(this Point p, Segment line)
@@ -53,9 +54,7 @@ namespace GK2.Structures
 			var minX = (line.From.X < line.To.X) ? line.From.X : line.To.X;
 			var maxX = (line.From.X < line.To.X) ? line.To.X : line.From.X;
 
-			if (p.Y <= (maxY + _margin) && (p.Y >= minY - _margin) && (p.X <= maxX + _margin) && (p.X >= minX - _margin))
-				return true;
-			return false;
+			return p.Y <= (maxY + _margin) && (p.Y >= minY - _margin) && (p.X <= maxX + _margin) && (p.X >= minX - _margin);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using GK2.Utilities;
 
 namespace GK2.Structures
 {
@@ -62,12 +63,12 @@ namespace GK2.Structures
 			return _p.IsCloseToLine(line);
 		}
 
-		public void Draw(Bitmap bmp)
+		public void Draw(DirectBitmap bmp)
 		{
 			_p.Draw(bmp, Color.Red);
 		}
 
-		public void Draw(Bitmap bmp, Color col)
+		public void Draw(DirectBitmap bmp, Color col)
 		{
 			_p.Draw(bmp, col);
 		}

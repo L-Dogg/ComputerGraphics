@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GK2.Utilities;
 
 namespace GK2
 {
@@ -49,8 +50,9 @@ namespace GK2
 
 		#region Private Fields
 		private Graphics _graphics;
-		private ColorDialog colorDialog = new ColorDialog();
-		private OpenFileDialog openFileDialog = new OpenFileDialog() { Title = "Open bitmap", Filter = "bmp files (*.bmp)|*.bmp"};
+		private DirectBitmap _directBitmap;
+		private readonly ColorDialog _colorDialog = new ColorDialog();
+		private readonly OpenFileDialog _openFileDialog = new OpenFileDialog() { Title = "Open bitmap", Filter = "bmp files (*.bmp)|*.bmp"};
 		#endregion
 
 		#region Public Methods
@@ -58,8 +60,10 @@ namespace GK2
 		public MainForm()
 		{
 			InitializeComponent();
-			Polygon.DefaultFillTexture = (Bitmap) Image.FromFile("../../Resources/pepe.bmp");
-			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
+			var pepe = new Bitmap("../../Resources/pepe.bmp");
+            Polygon.DefaultFillTexture = DirectBitmap.FromBitmap(pepe);
+			_directBitmap =	new DirectBitmap(background.Size.Width, background.Size.Height);
+			background.BackgroundImage = _directBitmap.Bitmap;
 			_graphics = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
 			Render();
@@ -80,7 +84,7 @@ namespace GK2
 		public void Render()
 		{
 			this.ClearBitmap(background.BackgroundImage as Bitmap, _graphics);
-			CurrentState.Render(background.BackgroundImage as Bitmap, _graphics);
+			CurrentState.Render(_directBitmap, _graphics);
 			
 			this.background.Invalidate(true);
 		}
@@ -107,13 +111,12 @@ namespace GK2
 		{
 			if (background.BackgroundImage == null)
 				return;
-
-			background.Size = new Size(this.Size.Width, this.Size.Height);
-			background.BackgroundImage.Dispose();
-			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
+			
+			_directBitmap.Dispose();
+			_directBitmap = new DirectBitmap(background.Size.Width, background.Size.Height);
+			background.BackgroundImage = _directBitmap.Bitmap;
 			_graphics = Graphics.FromImage(background.BackgroundImage);
 
-			//background.Invalidate(true);
 			this.Render();
 		}
 
@@ -129,19 +132,19 @@ namespace GK2
 
 		private void textureButton_Click(object sender, EventArgs e)
 		{
-			var result = openFileDialog.ShowDialog();
+			var result = _openFileDialog.ShowDialog();
 			if (result != DialogResult.OK)
 				return;
-			Polygon.DefaultFillTexture = new Bitmap(openFileDialog.FileName);
+			Polygon.DefaultFillTexture = DirectBitmap.FromBitmap(new Bitmap(_openFileDialog.FileName));
 			this.Render();
 		}
 
 		private void colorButton_Click(object sender, EventArgs e)
 		{
-			var result = colorDialog.ShowDialog();
+			var result = _colorDialog.ShowDialog();
 			if (result != DialogResult.OK)
 				return;
-			Polygon.DefaultLightColor = colorDialog.Color;
+			Polygon.DefaultLightColor = _colorDialog.Color;
 			this.Render();
 		}
 		#endregion
