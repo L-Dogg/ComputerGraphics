@@ -5,11 +5,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace GK2.Structures
 {
 	public class Polygon
 	{
+		public static Bitmap DefaultFillTexture { get; set; }
+		public static Color DefaultLightColor { get; set; } = Color.FromArgb(127, 127, 255);
+
+
 		public LinkedList<Vertex> Vertices	{ get; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
 		public bool Finished { private get; set; } = false;
@@ -62,7 +67,7 @@ namespace GK2.Structures
 		{
 			for (var i = 0; i < segments.Count() / 2; i++)
 				for (var x = segments[2 * i].Xmin; x <= segments[2 * i + 1].Xmin; x++)
-					bmp.SetPixel((int)x, y, color);
+					bmp.SetPixel((int)x, y, DefaultFillTexture.GetPixel(((int) x) % DefaultFillTexture.Width , y % DefaultFillTexture.Height));
 		}
 
 		public void Render(Bitmap bmp, Graphics g)

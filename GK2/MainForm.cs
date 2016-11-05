@@ -44,23 +44,28 @@ namespace GK2
 		/// Idle context menu with polygon operations.
 		/// </summary>
 		public ContextMenuStrip PolygonContextMenu => this.polygonContextMenu;
-		
+
 		#endregion
 
+		#region Private Fields
 		private Graphics _graphics;
+		private ColorDialog colorDialog = new ColorDialog();
+		private OpenFileDialog openFileDialog = new OpenFileDialog() { Title = "Open bitmap", Filter = "bmp files (*.bmp)|*.bmp"};
+		#endregion
 
 		#region Public Methods
 
 		public MainForm()
 		{
 			InitializeComponent();
+			Polygon.DefaultFillTexture = (Bitmap) Image.FromFile("../../Resources/pepe.bmp");
 			background.BackgroundImage = new Bitmap(background.Size.Width, background.Size.Height);
 			_graphics = Graphics.FromImage(background.BackgroundImage);
 			CurrentState = new IdleState(this);
 			Render();
 		}
 
-		public void SetContextMenuItems(Segment operatingLine)
+		public void SetContextMenuItems()
 		{
 			if (Polygons.Count == 0)
 			{
@@ -120,6 +125,24 @@ namespace GK2
 		private void ClearBitmap(Bitmap bmp, Graphics g)
 		{
 			g.FillRectangle(Brushes.White, 0, 0, bmp.Size.Width, bmp.Size.Height);
+		}
+
+		private void textureButton_Click(object sender, EventArgs e)
+		{
+			var result = openFileDialog.ShowDialog();
+			if (result != DialogResult.OK)
+				return;
+			Polygon.DefaultFillTexture = new Bitmap(openFileDialog.FileName);
+			this.Render();
+		}
+
+		private void colorButton_Click(object sender, EventArgs e)
+		{
+			var result = colorDialog.ShowDialog();
+			if (result != DialogResult.OK)
+				return;
+			Polygon.DefaultLightColor = colorDialog.Color;
+			this.Render();
 		}
 		#endregion
 	}

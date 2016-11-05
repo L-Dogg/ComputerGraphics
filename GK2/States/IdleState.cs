@@ -74,7 +74,7 @@ namespace GK2.States
 			// Context Menu
 			if (e.Button == MouseButtons.Right)
 			{
-				MainForm.SetContextMenuItems(segment);
+				MainForm.SetContextMenuItems();
 				MainForm.PolygonContextMenu.Show(MainForm, new Point(point.X, point.Y));
 			}
 			// Vertex deletion

@@ -35,8 +35,14 @@ namespace GK2
 			this.addPolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.movePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.colorButton = new System.Windows.Forms.Button();
+			this.textureButton = new System.Windows.Forms.Button();
+			this.normalVectorGroupbox = new System.Windows.Forms.GroupBox();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.background = new GK2.Controls.Background();
 			this.polygonContextMenu.SuspendLayout();
+			this.normalVectorGroupbox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// polygonContextMenu
@@ -47,32 +53,85 @@ namespace GK2
             this.removePolygonToolStripMenuItem,
             this.movePolygonToolStripMenuItem});
 			this.polygonContextMenu.Name = "polygonContextMenu";
-			this.polygonContextMenu.Size = new System.Drawing.Size(198, 82);
+			this.polygonContextMenu.Size = new System.Drawing.Size(165, 70);
 			// 
 			// addPolygonToolStripMenuItem
 			// 
 			this.addPolygonToolStripMenuItem.Name = "addPolygonToolStripMenuItem";
-			this.addPolygonToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+			this.addPolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.addPolygonToolStripMenuItem.Text = "Add polygon";
 			// 
 			// removePolygonToolStripMenuItem
 			// 
 			this.removePolygonToolStripMenuItem.Name = "removePolygonToolStripMenuItem";
-			this.removePolygonToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+			this.removePolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.removePolygonToolStripMenuItem.Text = "Remove polygon";
 			// 
 			// movePolygonToolStripMenuItem
 			// 
 			this.movePolygonToolStripMenuItem.Name = "movePolygonToolStripMenuItem";
-			this.movePolygonToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+			this.movePolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.movePolygonToolStripMenuItem.Text = "Move polygon";
+			// 
+			// colorButton
+			// 
+			this.colorButton.Location = new System.Drawing.Point(1075, 47);
+			this.colorButton.Name = "colorButton";
+			this.colorButton.Size = new System.Drawing.Size(92, 23);
+			this.colorButton.TabIndex = 1;
+			this.colorButton.Text = "Light color";
+			this.colorButton.UseVisualStyleBackColor = true;
+			this.colorButton.Click += new System.EventHandler(this.colorButton_Click);
+			// 
+			// textureButton
+			// 
+			this.textureButton.Location = new System.Drawing.Point(1075, 95);
+			this.textureButton.Name = "textureButton";
+			this.textureButton.Size = new System.Drawing.Size(92, 23);
+			this.textureButton.TabIndex = 2;
+			this.textureButton.Text = "Texture";
+			this.textureButton.UseVisualStyleBackColor = true;
+			this.textureButton.Click += new System.EventHandler(this.textureButton_Click);
+			// 
+			// normalVectorGroupbox
+			// 
+			this.normalVectorGroupbox.Controls.Add(this.radioButton2);
+			this.normalVectorGroupbox.Controls.Add(this.radioButton1);
+			this.normalVectorGroupbox.Location = new System.Drawing.Point(1075, 155);
+			this.normalVectorGroupbox.Name = "normalVectorGroupbox";
+			this.normalVectorGroupbox.Size = new System.Drawing.Size(92, 100);
+			this.normalVectorGroupbox.TabIndex = 3;
+			this.normalVectorGroupbox.TabStop = false;
+			this.normalVectorGroupbox.Text = "Light Vector";
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.AutoSize = true;
+			this.radioButton1.Checked = true;
+			this.radioButton1.Location = new System.Drawing.Point(7, 20);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(61, 17);
+			this.radioButton1.TabIndex = 0;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "(0, 0, 1)";
+			this.radioButton1.UseVisualStyleBackColor = true;
+			// 
+			// radioButton2
+			// 
+			this.radioButton2.AutoSize = true;
+			this.radioButton2.Location = new System.Drawing.Point(7, 44);
+			this.radioButton2.Name = "radioButton2";
+			this.radioButton2.Size = new System.Drawing.Size(92, 17);
+			this.radioButton2.TabIndex = 1;
+			this.radioButton2.Text = "animatedPoint";
+			this.radioButton2.UseVisualStyleBackColor = true;
 			// 
 			// background
 			// 
 			this.background.Location = new System.Drawing.Point(0, 0);
-			this.background.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.background.Margin = new System.Windows.Forms.Padding(4);
 			this.background.Name = "background";
-			this.background.Size = new System.Drawing.Size(1409, 679);
+			this.background.Size = new System.Drawing.Size(1057, 552);
 			this.background.TabIndex = 0;
 			this.background.KeyUp += new System.Windows.Forms.KeyEventHandler(this.background_KeyUp);
 			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BgMouseDown);
@@ -80,16 +139,21 @@ namespace GK2
 			// 
 			// MainForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1409, 679);
+			this.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.ClientSize = new System.Drawing.Size(1179, 552);
+			this.Controls.Add(this.normalVectorGroupbox);
+			this.Controls.Add(this.textureButton);
+			this.Controls.Add(this.colorButton);
 			this.Controls.Add(this.background);
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.Name = "MainForm";
 			this.Text = "Polygon Editor";
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.polygonContextMenu.ResumeLayout(false);
+			this.normalVectorGroupbox.ResumeLayout(false);
+			this.normalVectorGroupbox.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -101,6 +165,11 @@ namespace GK2
 		private System.Windows.Forms.ToolStripMenuItem addPolygonToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem removePolygonToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem movePolygonToolStripMenuItem;
+		private System.Windows.Forms.Button colorButton;
+		private System.Windows.Forms.Button textureButton;
+		private System.Windows.Forms.GroupBox normalVectorGroupbox;
+		private System.Windows.Forms.RadioButton radioButton2;
+		private System.Windows.Forms.RadioButton radioButton1;
 	}
 }
 
