@@ -35,15 +35,23 @@ namespace GK2
 			this.addPolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.movePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.colorButton = new System.Windows.Forms.Button();
+			this.lightColorButton = new System.Windows.Forms.Button();
 			this.textureButton = new System.Windows.Forms.Button();
 			this.normalVectorGroupbox = new System.Windows.Forms.GroupBox();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.background = new GK2.Controls.Background();
 			this.label1 = new System.Windows.Forms.Label();
+			this.polygonFillColorButton = new System.Windows.Forms.Button();
+			this.ligthLabel = new System.Windows.Forms.Label();
+			this.fillColorLabel = new System.Windows.Forms.Label();
+			this.fillTypeGroupbox = new System.Windows.Forms.GroupBox();
+			this.colorRadiobutton = new System.Windows.Forms.RadioButton();
+			this.textureRadiobutton = new System.Windows.Forms.RadioButton();
+			this.bumpMapRadiobutton = new System.Windows.Forms.RadioButton();
+			this.background = new GK2.Controls.Background();
 			this.polygonContextMenu.SuspendLayout();
 			this.normalVectorGroupbox.SuspendLayout();
+			this.fillTypeGroupbox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// polygonContextMenu
@@ -74,15 +82,15 @@ namespace GK2
 			this.movePolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.movePolygonToolStripMenuItem.Text = "Move polygon";
 			// 
-			// colorButton
+			// lightColorButton
 			// 
-			this.colorButton.Location = new System.Drawing.Point(1075, 47);
-			this.colorButton.Name = "colorButton";
-			this.colorButton.Size = new System.Drawing.Size(99, 23);
-			this.colorButton.TabIndex = 1;
-			this.colorButton.Text = "Light color";
-			this.colorButton.UseVisualStyleBackColor = true;
-			this.colorButton.Click += new System.EventHandler(this.colorButton_Click);
+			this.lightColorButton.BackColor = System.Drawing.SystemColors.Window;
+			this.lightColorButton.Location = new System.Drawing.Point(1075, 47);
+			this.lightColorButton.Name = "lightColorButton";
+			this.lightColorButton.Size = new System.Drawing.Size(34, 23);
+			this.lightColorButton.TabIndex = 1;
+			this.lightColorButton.UseVisualStyleBackColor = false;
+			this.lightColorButton.Click += new System.EventHandler(this.colorButton_Click);
 			// 
 			// textureButton
 			// 
@@ -99,9 +107,9 @@ namespace GK2
 			this.normalVectorGroupbox.BackColor = System.Drawing.SystemColors.Window;
 			this.normalVectorGroupbox.Controls.Add(this.radioButton2);
 			this.normalVectorGroupbox.Controls.Add(this.radioButton1);
-			this.normalVectorGroupbox.Location = new System.Drawing.Point(1075, 155);
+			this.normalVectorGroupbox.Location = new System.Drawing.Point(1075, 235);
 			this.normalVectorGroupbox.Name = "normalVectorGroupbox";
-			this.normalVectorGroupbox.Size = new System.Drawing.Size(99, 100);
+			this.normalVectorGroupbox.Size = new System.Drawing.Size(99, 75);
 			this.normalVectorGroupbox.TabIndex = 3;
 			this.normalVectorGroupbox.TabStop = false;
 			this.normalVectorGroupbox.Text = "Light Vector";
@@ -128,6 +136,89 @@ namespace GK2
 			this.radioButton1.Text = "(0, 0, 1)";
 			this.radioButton1.UseVisualStyleBackColor = true;
 			// 
+			// label1
+			// 
+			this.label1.BackColor = System.Drawing.SystemColors.Window;
+			this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.label1.Location = new System.Drawing.Point(1067, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(2, 552);
+			this.label1.TabIndex = 4;
+			// 
+			// polygonFillColorButton
+			// 
+			this.polygonFillColorButton.BackColor = System.Drawing.SystemColors.Window;
+			this.polygonFillColorButton.Location = new System.Drawing.Point(1133, 47);
+			this.polygonFillColorButton.Name = "polygonFillColorButton";
+			this.polygonFillColorButton.Size = new System.Drawing.Size(34, 23);
+			this.polygonFillColorButton.TabIndex = 5;
+			this.polygonFillColorButton.UseVisualStyleBackColor = false;
+			this.polygonFillColorButton.Click += new System.EventHandler(this.polygonButton_Click);
+			// 
+			// ligthLabel
+			// 
+			this.ligthLabel.AutoSize = true;
+			this.ligthLabel.BackColor = System.Drawing.SystemColors.Window;
+			this.ligthLabel.Location = new System.Drawing.Point(1075, 28);
+			this.ligthLabel.Name = "ligthLabel";
+			this.ligthLabel.Size = new System.Drawing.Size(30, 13);
+			this.ligthLabel.TabIndex = 6;
+			this.ligthLabel.Text = "Light";
+			// 
+			// fillColorLabel
+			// 
+			this.fillColorLabel.AutoSize = true;
+			this.fillColorLabel.BackColor = System.Drawing.SystemColors.Window;
+			this.fillColorLabel.Location = new System.Drawing.Point(1132, 28);
+			this.fillColorLabel.Name = "fillColorLabel";
+			this.fillColorLabel.Size = new System.Drawing.Size(25, 13);
+			this.fillColorLabel.TabIndex = 7;
+			this.fillColorLabel.Text = "  Fill";
+			// 
+			// fillTypeGroupbox
+			// 
+			this.fillTypeGroupbox.Controls.Add(this.bumpMapRadiobutton);
+			this.fillTypeGroupbox.Controls.Add(this.textureRadiobutton);
+			this.fillTypeGroupbox.Controls.Add(this.colorRadiobutton);
+			this.fillTypeGroupbox.Location = new System.Drawing.Point(1075, 124);
+			this.fillTypeGroupbox.Name = "fillTypeGroupbox";
+			this.fillTypeGroupbox.Size = new System.Drawing.Size(99, 94);
+			this.fillTypeGroupbox.TabIndex = 8;
+			this.fillTypeGroupbox.TabStop = false;
+			this.fillTypeGroupbox.Text = "Fill";
+			// 
+			// colorRadiobutton
+			// 
+			this.colorRadiobutton.AutoSize = true;
+			this.colorRadiobutton.Location = new System.Drawing.Point(7, 20);
+			this.colorRadiobutton.Name = "colorRadiobutton";
+			this.colorRadiobutton.Size = new System.Drawing.Size(49, 17);
+			this.colorRadiobutton.TabIndex = 0;
+			this.colorRadiobutton.Text = "Color";
+			this.colorRadiobutton.UseVisualStyleBackColor = true;
+			// 
+			// textureRadiobutton
+			// 
+			this.textureRadiobutton.AutoSize = true;
+			this.textureRadiobutton.Checked = true;
+			this.textureRadiobutton.Location = new System.Drawing.Point(7, 43);
+			this.textureRadiobutton.Name = "textureRadiobutton";
+			this.textureRadiobutton.Size = new System.Drawing.Size(61, 17);
+			this.textureRadiobutton.TabIndex = 1;
+			this.textureRadiobutton.TabStop = true;
+			this.textureRadiobutton.Text = "Texture";
+			this.textureRadiobutton.UseVisualStyleBackColor = true;
+			// 
+			// bumpMapRadiobutton
+			// 
+			this.bumpMapRadiobutton.AutoSize = true;
+			this.bumpMapRadiobutton.Location = new System.Drawing.Point(7, 66);
+			this.bumpMapRadiobutton.Name = "bumpMapRadiobutton";
+			this.bumpMapRadiobutton.Size = new System.Drawing.Size(75, 17);
+			this.bumpMapRadiobutton.TabIndex = 3;
+			this.bumpMapRadiobutton.Text = "Bump map";
+			this.bumpMapRadiobutton.UseVisualStyleBackColor = true;
+			// 
 			// background
 			// 
 			this.background.BackColor = System.Drawing.Color.White;
@@ -141,25 +232,20 @@ namespace GK2
 			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BgMouseDown);
 			this.background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BgMouseMove);
 			// 
-			// label1
-			// 
-			this.label1.BackColor = System.Drawing.SystemColors.Window;
-			this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.label1.Location = new System.Drawing.Point(1067, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(2, 552);
-			this.label1.TabIndex = 4;
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(1179, 552);
+			this.Controls.Add(this.fillTypeGroupbox);
+			this.Controls.Add(this.fillColorLabel);
+			this.Controls.Add(this.ligthLabel);
+			this.Controls.Add(this.polygonFillColorButton);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.normalVectorGroupbox);
 			this.Controls.Add(this.textureButton);
-			this.Controls.Add(this.colorButton);
+			this.Controls.Add(this.lightColorButton);
 			this.Controls.Add(this.background);
 			this.Name = "MainForm";
 			this.Text = "Polygon Editor";
@@ -168,7 +254,10 @@ namespace GK2
 			this.polygonContextMenu.ResumeLayout(false);
 			this.normalVectorGroupbox.ResumeLayout(false);
 			this.normalVectorGroupbox.PerformLayout();
+			this.fillTypeGroupbox.ResumeLayout(false);
+			this.fillTypeGroupbox.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -179,12 +268,19 @@ namespace GK2
 		private System.Windows.Forms.ToolStripMenuItem addPolygonToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem removePolygonToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem movePolygonToolStripMenuItem;
-		private System.Windows.Forms.Button colorButton;
+		private System.Windows.Forms.Button lightColorButton;
 		private System.Windows.Forms.Button textureButton;
 		private System.Windows.Forms.GroupBox normalVectorGroupbox;
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button polygonFillColorButton;
+		private System.Windows.Forms.Label ligthLabel;
+		private System.Windows.Forms.Label fillColorLabel;
+		private System.Windows.Forms.GroupBox fillTypeGroupbox;
+		private System.Windows.Forms.RadioButton colorRadiobutton;
+		private System.Windows.Forms.RadioButton textureRadiobutton;
+		private System.Windows.Forms.RadioButton bumpMapRadiobutton;
 	}
 }
 

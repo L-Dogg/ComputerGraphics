@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using GK2.Utilities;
@@ -18,10 +19,10 @@ namespace GK2.Algorithms
 		{
 			Line(x0, y0, x1, y1, bmp, Color.Black);
 		}
-		
+
 		private static void Line(int x0, int y0, int x1, int y1, DirectBitmap bmp, Color color)
 		{
-			var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
+			var steep = Math.Abs(y0 - y1) >= Math.Abs(x0 - x1);
 			if (steep)
 			{
 				Swap(ref x0, ref y0);
@@ -32,40 +33,48 @@ namespace GK2.Algorithms
 				Swap(ref x0, ref x1);
 				Swap(ref y0, ref y1);
 			}
-
-			int dX = (x1 - x0), dY = Math.Abs(y1 - y0), err = (dX / 2), ystep = (y0 < y1 ? 1 : -1), y = y0;
-
-			for (var x = x0; x <= x1; ++x)
+			var increment = y0 > y1 ? -1 : 1;
+			var points = BresenhamLine(x0, y0, x1, y1, increment);
+			foreach (var point in points)
 			{
-				if (steep)
-				{
-					// Zabezpieczenie do testów ale już nie pamiętam po co
-					if (y >= bmp.Width || x < 0)
-                        break;
-
-					//bmp.SetPixel(y > 0 ? y : 0, x < bmp.Height ? x : bmp.Height - 1, color);
-					if ((y > 0 ? y : 0) * bmp.Width + (x < bmp.Height ? x : bmp.Height - 1) < bmp.Bits.Length)
-						bmp.Bits[(y > 0 ? y : 0)*bmp.Width + (x < bmp.Height ? x : bmp.Height - 1)] = color.ToArgb();
-				}
-				else
-				{
-					// Zabezpieczenie do testów ale już nie pamiętam po co
-					if (x >= bmp.Width || y < 0)
-						break;
-
-					//bmp.SetPixel(x > 0 ? x : 0, y < bmp.Height ? y : bmp.Height - 1, color);
-					if ((y < bmp.Height ? y : bmp.Height - 1) * bmp.Width + (x > 0 ? x : 0) < bmp.Bits.Length)
-						bmp.Bits[(y < bmp.Height ? y : bmp.Height - 1)*bmp.Width + (x > 0 ? x : 0)] = color.ToArgb();
-				}
-				err = err - dY;
-
-				if (err >= 0)
-					continue;
-				y += ystep;
-				err += dX;
+				if (steep) DrawInBounds(point.Y, point.X, bmp, color);
+				else DrawInBounds(point.X, point.Y, bmp, color);
 			}
 		}
 
+		private static IEnumerable<Point> BresenhamLine(int x0, int y0, int x1, int y1, int increment)
+		{
+			var dx = x1 - x0;
+			var dy = Math.Abs(y1 - y0);
+			var d = 2 * dy - dx;
+			var x = x0;
+			var y = y0;
+			yield return new Point(x, y);
+			while (x <= x1)
+			{
+				if (d <= 0)
+				{
+					d += 2 * dy;
+					x++;
+				}
+				else
+				{
+					d += 2 * (dy - dx);
+					x++;
+					y += increment;
+				}
+				yield return new Point(x, y);
+			}
+		}
+
+		private static void DrawInBounds(int x, int y, DirectBitmap bitmap, Color color)
+		{
+			if (x >= 0 && y >= 0 &&
+				x < bitmap.Width && y < bitmap.Height)
+			{
+				bitmap.Bits[y*bitmap.Width + x] = color.ToArgb();
+			}
+		}
 	}
 }
 

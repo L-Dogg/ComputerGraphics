@@ -50,22 +50,20 @@ namespace GK2.States
 			Polygon.SetMovedXmin(Vertex);
 
 			MainForm.Render();
-			
 		}
 
 		public void Render(DirectBitmap bitmap, Graphics g)
 		{
 			foreach (var polygon in MainForm.Polygons)
-				polygon.Render(bitmap, g);
+				polygon.Render(bitmap, MainForm.ColorFill, MainForm.BumpMapping);
 		}
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Escape)
-			{
-				MainForm.CurrentState = new IdleState(MainForm);
-				MainForm.Render();
-			}
+			if (e.KeyCode != Keys.Escape)
+				return;
+			MainForm.CurrentState = new IdleState(MainForm);
+			MainForm.Render();
 		}
 		#endregion
 	}

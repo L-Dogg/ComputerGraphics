@@ -141,8 +141,8 @@ namespace GK2.States
 		public void Render(DirectBitmap bitmap, Graphics g)
 		{
 			foreach (var polygon in MainForm.Polygons)
-				polygon.Render(bitmap, g);
-        }
+				polygon.Render(bitmap, MainForm.ColorFill, MainForm.BumpMapping);
+		}
 		
 		#endregion
 	}

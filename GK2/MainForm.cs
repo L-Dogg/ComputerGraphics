@@ -46,6 +46,10 @@ namespace GK2
 		/// </summary>
 		public ContextMenuStrip PolygonContextMenu => this.polygonContextMenu;
 
+		public bool ColorFill => this.colorRadiobutton.Checked;
+		public bool TextureFill => this.textureRadiobutton.Checked;
+		public bool BumpMapping => this.bumpMapRadiobutton.Checked;
+
 		#endregion
 
 		#region Private Fields
@@ -61,10 +65,14 @@ namespace GK2
 		{
 			InitializeComponent();
 			var pepe = new Bitmap("../../Resources/pepe.bmp");
-            Polygon.DefaultFillTexture = DirectBitmap.FromBitmap(pepe);
+            Polygon.FillTexture = DirectBitmap.FromBitmap(pepe);
 			_directBitmap =	new DirectBitmap(background.Size.Width, background.Size.Height);
 			background.BackgroundImage = _directBitmap.Bitmap;
 			_graphics = Graphics.FromImage(background.BackgroundImage);
+
+			lightColorButton.BackColor = Polygon.LightColor;
+			polygonFillColorButton.BackColor = Polygon.FillColor;
+
 			CurrentState = new IdleState(this);
 			Render();
 		}
@@ -83,7 +91,12 @@ namespace GK2
 
 		public void Render()
 		{
-			this.ClearBitmap(background.BackgroundImage as Bitmap, _graphics);
+			this.ClearBitmap(_directBitmap.Bitmap, _graphics);
+
+			//_directBitmap.Dispose();
+			//_directBitmap = new DirectBitmap(background.Size.Width, background.Size.Height);
+			//background.BackgroundImage = _directBitmap.Bitmap;
+
 			CurrentState.Render(_directBitmap, _graphics);
 			
 			this.background.Invalidate(true);
@@ -135,7 +148,7 @@ namespace GK2
 			var result = _openFileDialog.ShowDialog();
 			if (result != DialogResult.OK)
 				return;
-			Polygon.DefaultFillTexture = DirectBitmap.FromBitmap(new Bitmap(_openFileDialog.FileName));
+			Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap(_openFileDialog.FileName));
 			this.Render();
 		}
 
@@ -144,9 +157,20 @@ namespace GK2
 			var result = _colorDialog.ShowDialog();
 			if (result != DialogResult.OK)
 				return;
-			Polygon.DefaultLightColor = _colorDialog.Color;
+			Polygon.LightColor = _colorDialog.Color;
+			this.lightColorButton.BackColor = _colorDialog.Color;
 			this.Render();
 		}
 		#endregion
+
+		private void polygonButton_Click(object sender, EventArgs e)
+		{
+			var result = _colorDialog.ShowDialog();
+			if (result != DialogResult.OK)
+				return;
+			Polygon.FillColor = _colorDialog.Color;
+			this.polygonFillColorButton.BackColor = _colorDialog.Color;
+			this.Render();
+		}
 	}
 }

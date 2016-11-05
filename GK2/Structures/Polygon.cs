@@ -12,9 +12,13 @@ namespace GK2.Structures
 {
 	public class Polygon
 	{
-		public static DirectBitmap DefaultFillTexture { get; set; }
-		public static Color DefaultLightColor { get; set; } = Color.FromArgb(127, 127, 255);
+		public static int LightX { get; set; } = 0;
+		public static int LightY { get; set; } = 0;
+		public static int LightZ { get; set; } = 1;
 
+		public static DirectBitmap FillTexture { get; set; }
+		public static Color FillColor { get; set; } = Color.White;
+		public static Color LightColor { get; set; } = Color.White;
 
 		public LinkedList<Vertex> Vertices	{ get; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
@@ -36,7 +40,7 @@ namespace GK2.Structures
 
 	    }
 
-		private void FillPolygon(Color color, DirectBitmap bmp)
+		private void FillPolygon(DirectBitmap bmp, bool fillColor = false, bool bumpMapping = false)
 		{
 			var activeEt = new List<Segment>();
 			var edgeTableElements = Segments.Count;
@@ -55,7 +59,7 @@ namespace GK2.Structures
 				activeEt.RemoveAll(seg => seg.Ymax == y);
 
 				activeEt.Sort((s1, s2) => s1.Xmin.CompareTo(s2.Xmin));
-				FillPixels(activeEt, color, bmp, y);
+				FillPixels(activeEt, bmp, y, fillColor, bumpMapping);
 								
 				y++;
 
@@ -64,23 +68,40 @@ namespace GK2.Structures
 			}
 		}
 
-		private static void FillPixels(IReadOnlyList<Segment> segments, Color color, DirectBitmap directBmp, int y)
+		private static void FillPixels(IReadOnlyList<Segment> segments, DirectBitmap directBmp, int y, bool fillColor = false, bool bumpMapping = false)
 		{
 			for (var i = 0; i < segments.Count() / 2; i++)
 				for (var x = segments[2*i].Xmin; x <= segments[2*i + 1].Xmin; x++)
 				{
-					//bmp.SetPixel((int)x, y, DefaultFillTexture.GetPixel(((int) x) % DefaultFillTexture.Width , y % DefaultFillTexture.Height));
-					directBmp.Bits[(int) x + y * directBmp.Width] =
-						DefaultFillTexture.Bits[((int) x) % DefaultFillTexture.Width + (y % DefaultFillTexture.Height) * DefaultFillTexture.Width];
+					var currentBitColor = FillColor;
+					if (!fillColor)
+						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
+
+					var cos =  CalculateCosinus(LightX, LightY, LightZ, currentBitColor);
+					
+					var r = (double)LightColor.R / 255 * (double)currentBitColor.R / 255 * cos;
+					var g = (double)LightColor.G /255 * (double)currentBitColor.G / 255 * cos;
+					var b = (double)LightColor.B /255 * (double)currentBitColor.B / 255 * cos;
+
+					directBmp.Bits[(int) x + y*directBmp.Width] = Color.FromArgb((int) (r*255), (int) (g*255), (int) (b*255)).ToArgb();
 				}
 		}
 
-		public void Render(DirectBitmap bmp, Graphics g)
+		private static double CalculateCosinus(int x, int y, int z, Color color)
+		{
+			var nX = (double) (color.R - 127) / 255;
+			var nY = (double) (color.G - 127) / 255;
+			var nZ = (double) color.B / 255;
+
+			return (x*nX + y*nY + z*nZ)/(Math.Sqrt(x*x + y*y + z*z) + Math.Sqrt(nX*nX + nY*nY + nZ*nZ));
+		}
+
+		public void Render(DirectBitmap bmp, bool fillColor = false, bool bumpMap = false)
 		{
 		    if (Finished)
 		    {		
                 GenerateEdgeTable();
-                FillPolygon(Color.BlueViolet, bmp);
+                FillPolygon(bmp, fillColor, bumpMap);
 		    }
 
 
