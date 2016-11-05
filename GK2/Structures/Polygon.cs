@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using GK2.Utilities;
 
 namespace GK2.Structures
 {
 	public class Polygon
 	{
+		#region Public Fields
 		public static double LightX { get; set; } = 0;
 		public static double LightY { get; set; } = 0;
 		public static double LightZ { get; set; } = 1;
@@ -21,10 +18,13 @@ namespace GK2.Structures
 		public static Color FillColor { get; set; } = Color.White;
 		public static Color LightColor { get; set; } = Color.White;
 
-		public LinkedList<Vertex> Vertices	{ get; } = new LinkedList<Vertex>();
+		public LinkedList<Vertex> Vertices	{ get; set; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
 		public bool Finished { private get; set; } = false;
-		
+		#endregion
+
+		#region Private Methods
+
 		private Dictionary<int, List<Segment>> _edgeTable = new Dictionary<int, List<Segment>>();
 		
 		private void GenerateEdgeTable()
@@ -67,6 +67,11 @@ namespace GK2.Structures
 				foreach (var segment in activeEt)
 					segment.Xmin += segment.DxDy;
 			}
+		}
+
+		private bool CheckIfClockwise()
+		{
+			return Segments.Sum(segment => (segment.To.X - segment.From.X) * (segment.To.Y + segment.From.Y)) > 0;
 		}
 
 		private static void FillPixels(IReadOnlyList<Segment> segments, DirectBitmap directBmp, int y, bool fillColor = false, bool bumpMapping = false)
@@ -142,6 +147,10 @@ namespace GK2.Structures
 			return (heightX + heightY + heightZ) / 3;
 		}
 
+
+		#endregion
+
+		#region Public Methods
 		public void Render(DirectBitmap bmp, Color lineColor, bool fillColor = false, bool bumpMap = false)
 		{
 		    if (Finished)
@@ -175,5 +184,19 @@ namespace GK2.Structures
 				seg.Xmin = seg.StartXmin;
 			}
 		}
+
+		/// <summary>
+		/// Normalizes polygon - all polygon's vertices and edges must be in CCW order.
+		/// </summary>
+		public void NormalizePolygon()
+		{
+			if (!CheckIfClockwise())
+				return;
+
+			Segments = new LinkedList<Segment>(Segments.Reverse());
+			Vertices = new LinkedList<Vertex>(Vertices.Reverse());
+		}
+
+		#endregion
 	}
 }

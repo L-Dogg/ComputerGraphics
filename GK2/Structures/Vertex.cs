@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using GK2.Utilities;
 
@@ -24,6 +23,11 @@ namespace GK2.Structures
 		public Vertex(int x, int y)
 		{
 			_p = new Point(x, y);
+		}
+
+		public Vertex()
+		{
+			_p = new Point();
 		}
 
 		public static bool operator ==(Vertex v1, Vertex v2)
@@ -51,6 +55,38 @@ namespace GK2.Structures
 		{
 			return _p.GetHashCode();
 		}
+
+		#region CopyPaste
+		public static Vertex operator -(Vertex v, Vertex w)
+		{
+			return new Vertex(v.X - w.X, v.Y - w.Y);
+		}
+
+		public static Vertex operator +(Vertex v, Vertex w)
+		{
+			return new Vertex(v.X + w.X, v.Y + w.Y);
+		}
+
+		public static double operator *(Vertex v, Vertex w)
+		{
+			return v.X * w.X + v.Y * w.Y;
+		}
+
+		public static Vertex operator *(Vertex v, double mult)
+		{
+			return new Vertex((int) (v.X * mult), (int)(v.Y * mult));
+		}
+
+		public static Vertex operator *(double mult, Vertex v)
+		{
+			return new Vertex((int)(v.X * mult), (int)(v.Y * mult));
+		}
+
+		public double Cross(Vertex v)
+		{
+			return X * v.Y - Y * v.X;
+		}
+		#endregion
 
 		#region Backward Compatibility
 		public bool ComparePoints(Vertex u)

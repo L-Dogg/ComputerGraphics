@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using GK2.Structures;
 using GK2.Utilities;
 
@@ -21,11 +19,113 @@ namespace GK2.States
 			MainForm = mainForm;
 		}
 
+		#region Weiler - Atherton Algorithm
 		// TODO:
 		private void Union()
 		{
+			Polygons[0].NormalizePolygon();
+			Polygons[1].NormalizePolygon();
 
+			var intersections = CalculateIntersections();
+			if (!intersections.Any())
+				return;
+			
+			AddIntersections(intersections);
+
+			var entryVertices = FindeEntryVertices(intersections);
+			
+			while (entryVertices.Any())
+			{
+				var i = 1; // ktory polygon
+
+				var first = Polygons[i].Vertices.Find(entryVertices.First());
+				var current = first.Next ?? Polygons[i].Vertices.First;
+
+				entryVertices.Remove(first.Value);
+				var p = new Polygon() { Finished = true };
+
+				p.Vertices.AddLast(first.Value);
+
+				while (current.Value != first.Value)
+				{
+					p.Segments.AddLast(new Segment(p.Vertices.Last.Value, current.Value));
+					p.Vertices.AddLast(current.Value);
+
+					if (intersections.Contains(current.Value))
+					{
+						if (entryVertices.Contains(current.Value))
+							entryVertices.Remove(current.Value);
+
+						i = (i + 1)%2;
+						current = Polygons[i].Vertices.Find(current.Value);
+					}
+
+					current = current.Next ?? Polygons[i].Vertices.First;
+				}
+
+				// zakonczenie polygona:
+				p.Segments.AddLast(new Segment(p.Vertices.Last.Value, p.Vertices.First.Value));
+				MainForm.Polygons.Add(p);
+			}
+
+			MainForm.Polygons.Remove(Polygons[0]);
+			MainForm.Polygons.Remove(Polygons[1]);
 		}
+
+		private void AddIntersections(List<Vertex> intersections)
+		{
+			foreach (var vertex in intersections)
+			{
+				foreach (var polygon in Polygons)
+				{
+					var tmp = new LinkedList<Segment>(polygon.Segments);
+					foreach (var segment in polygon.Segments)
+					{
+						if (!vertex.IsCloseToLine(segment))
+							continue;
+						tmp.AddBefore(tmp.Find(segment), new Segment(segment.From, vertex));
+						tmp.AddBefore(tmp.Find(segment), new Segment(vertex, segment.To));
+						tmp.Remove(segment);
+
+						polygon.Vertices.AddAfter(polygon.Vertices.Find(segment.From), vertex);
+					}
+
+					polygon.Segments = tmp;
+				}
+			}
+		} 
+
+		private List<Vertex> CalculateIntersections()
+		{
+			var intersecting = new List<Vertex>();
+			Vertex v;
+			foreach (var clipSeg in Polygons[0].Segments)
+			{
+				foreach (var subSeg in Polygons[1].Segments)
+				{
+					if (SegmentHelper.LineSegementsIntersect(clipSeg.From, clipSeg.To, subSeg.From, subSeg.To, out v))
+						intersecting.Add(v);
+				}
+			}
+
+			return intersecting;
+		}
+
+		private List<Vertex> FindeEntryVertices(List<Vertex> intersections)
+		{
+			var entryVertices = new List<Vertex>();
+			var subject = Polygons[1];
+			var clip = Polygons[0];
+
+			foreach (var segment in subject.Segments)
+			{
+				if (intersections.Contains(segment.From) && intersections.Contains(segment.To))
+					entryVertices.Add(segment.From);
+			}
+
+			return entryVertices;
+		}
+		#endregion
 
 		#region IState
 		public void MouseDown(object sender, MouseEventArgs e)
@@ -42,8 +142,8 @@ namespace GK2.States
 				return;
 
 			Union();
-			MainForm.Render();
 			MainForm.CurrentState = new IdleState(MainForm);
+			MainForm.Render();
 		}
 
 		public void MouseMove(object sender, MouseEventArgs e)

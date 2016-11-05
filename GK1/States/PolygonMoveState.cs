@@ -1,6 +1,5 @@
 ﻿using GK1.Structures;
 using GK1.Utilities;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
