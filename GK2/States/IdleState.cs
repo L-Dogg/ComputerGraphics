@@ -46,6 +46,12 @@ namespace GK2.States
 				MainForm.PolygonContextMenu.ItemClicked -= PolygonContextMenu_ItemClicked;
 				MainForm.CurrentState = new PolygonMoveState(MainForm);
 			}
+			// Union
+			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[3])
+			{
+				MainForm.PolygonContextMenu.ItemClicked -= PolygonContextMenu_ItemClicked;
+				MainForm.CurrentState = new PolygonUnionState(MainForm);
+			}
 		}
         #endregion
 

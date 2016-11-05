@@ -12,11 +12,12 @@ namespace GK2.Structures
 {
 	public class Polygon
 	{
-		public static int LightX { get; set; } = 0;
-		public static int LightY { get; set; } = 0;
-		public static int LightZ { get; set; } = 1;
+		public static double LightX { get; set; } = 0;
+		public static double LightY { get; set; } = 0;
+		public static double LightZ { get; set; } = 1;
 
 		public static DirectBitmap FillTexture { get; set; }
+		public static DirectBitmap HeightMap { get; set; }
 		public static Color FillColor { get; set; } = Color.White;
 		public static Color LightColor { get; set; } = Color.White;
 
@@ -77,26 +78,71 @@ namespace GK2.Structures
 					if (!fillColor)
 						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 
+					if (bumpMapping)
+						currentBitColor = DisturbNormalVector(currentBitColor, (int)x, y);
+
 					var cos =  CalculateCosinus(LightX, LightY, LightZ, currentBitColor);
-					
+					cos = (cos > 0) ? cos : 0;
+
 					var r = (double)LightColor.R / 255 * (double)currentBitColor.R / 255 * cos;
-					var g = (double)LightColor.G /255 * (double)currentBitColor.G / 255 * cos;
-					var b = (double)LightColor.B /255 * (double)currentBitColor.B / 255 * cos;
+					var g = (double)LightColor.G / 255 * (double)currentBitColor.G / 255 * cos;
+					var b = (double)LightColor.B / 255 * (double)currentBitColor.B / 255 * cos;
 
 					directBmp.Bits[(int) x + y*directBmp.Width] = Color.FromArgb((int) (r*255), (int) (g*255), (int) (b*255)).ToArgb();
 				}
 		}
 
-		private static double CalculateCosinus(int x, int y, int z, Color color)
+		private static double CalculateCosinus(double x, double y, double z, Color color)
 		{
-			var nX = (double) (color.R - 127) / 255;
-			var nY = (double) (color.G - 127) / 255;
+			var nX = (double) (color.R - 127) / 127;
+			var nY = (double) (color.G - 127) / 127;
 			var nZ = (double) color.B / 255;
 
 			return (x*nX + y*nY + z*nZ)/(Math.Sqrt(x*x + y*y + z*z) + Math.Sqrt(nX*nX + nY*nY + nZ*nZ));
 		}
 
-		public void Render(DirectBitmap bmp, bool fillColor = false, bool bumpMap = false)
+		private static Color DisturbNormalVector(Color color, int x, int y)
+		{
+			var nX = (double)(color.R - 127) / 127;
+			var nY = (double)(color.G - 127) / 127;
+			var nZ = (double)color.B / 255;
+
+			var dX = (CalculateHeight(x + 1, y) - CalculateHeight(x - 1, y))/2;
+			var dY = (CalculateHeight(x, y+1) - CalculateHeight(x, y - 1)) / 2;
+			var dZ = 1.0;
+
+			var length = Math.Sqrt(dX*dX + dY*dY + dZ*dZ);
+
+			dX /= length;
+			dY /= length;
+			dZ /= length;
+
+			nX = nX + dX;
+			nY = nY + dY;
+			nZ = nZ + dZ;
+
+			var normalLength = Math.Sqrt(nX * nX + nY * nY + nZ * nZ);
+
+			nX /= normalLength;
+			nY /= normalLength;
+			nZ /= normalLength;
+
+
+			return Color.FromArgb((int)(nX*127 + 127), (int)(nY*127 + 127), (int)(nZ*255));
+		}
+
+		private static double CalculateHeight(int x, int y)
+		{
+			var heightColor = Color.FromArgb(HeightMap.Bits[(y % HeightMap.Height)*HeightMap.Width + x % HeightMap.Width]);
+
+			var heightX = (double)heightColor.R / 255;
+			var heightY = (double)heightColor.G / 255;
+			var heightZ = (double)heightColor.B / 255;
+
+			return (heightX + heightY + heightZ) / 3;
+		}
+
+		public void Render(DirectBitmap bmp, Color lineColor, bool fillColor = false, bool bumpMap = false)
 		{
 		    if (Finished)
 		    {		
@@ -107,13 +153,18 @@ namespace GK2.Structures
 
             foreach (var line in Segments)
 			{
-				Algorithms.Algorithms.Line(line.From.X, line.From.Y, line.To.X, line.To.Y, bmp);
+				Algorithms.Algorithms.Line(line.From.X, line.From.Y, line.To.X, line.To.Y, bmp, lineColor);
 			}
 
 			foreach (var point in Vertices)
 				point.Draw(bmp);
 
 			Vertices.First.Value.Draw(bmp, Color.Blue);
+		}
+
+		public void Render(DirectBitmap bmp, bool fillColor = false, bool bumpMap = false)
+		{
+			this.Render(bmp, Color.Black, fillColor, bumpMap);
 		}
 
 		public void SetMovedXmin(Vertex v)

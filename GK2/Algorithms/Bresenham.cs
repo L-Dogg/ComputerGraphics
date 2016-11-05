@@ -20,7 +20,7 @@ namespace GK2.Algorithms
 			Line(x0, y0, x1, y1, bmp, Color.Black);
 		}
 
-		private static void Line(int x0, int y0, int x1, int y1, DirectBitmap bmp, Color color)
+		public static void Line(int x0, int y0, int x1, int y1, DirectBitmap bmp, Color color)
 		{
 			var steep = Math.Abs(y0 - y1) >= Math.Abs(x0 - x1);
 			if (steep)

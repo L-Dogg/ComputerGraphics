@@ -38,8 +38,8 @@ namespace GK2
 			this.lightColorButton = new System.Windows.Forms.Button();
 			this.textureButton = new System.Windows.Forms.Button();
 			this.normalVectorGroupbox = new System.Windows.Forms.GroupBox();
-			this.radioButton2 = new System.Windows.Forms.RadioButton();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.animatedLightRadiobutton = new System.Windows.Forms.RadioButton();
+			this.constantLightRadiobutton = new System.Windows.Forms.RadioButton();
 			this.label1 = new System.Windows.Forms.Label();
 			this.polygonFillColorButton = new System.Windows.Forms.Button();
 			this.ligthLabel = new System.Windows.Forms.Label();
@@ -48,6 +48,7 @@ namespace GK2
 			this.colorRadiobutton = new System.Windows.Forms.RadioButton();
 			this.textureRadiobutton = new System.Windows.Forms.RadioButton();
 			this.bumpMapRadiobutton = new System.Windows.Forms.RadioButton();
+			this.polygonUnionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.background = new GK2.Controls.Background();
 			this.polygonContextMenu.SuspendLayout();
 			this.normalVectorGroupbox.SuspendLayout();
@@ -60,9 +61,10 @@ namespace GK2
 			this.polygonContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addPolygonToolStripMenuItem,
             this.removePolygonToolStripMenuItem,
-            this.movePolygonToolStripMenuItem});
+            this.movePolygonToolStripMenuItem,
+            this.polygonUnionToolStripMenuItem});
 			this.polygonContextMenu.Name = "polygonContextMenu";
-			this.polygonContextMenu.Size = new System.Drawing.Size(165, 70);
+			this.polygonContextMenu.Size = new System.Drawing.Size(165, 92);
 			// 
 			// addPolygonToolStripMenuItem
 			// 
@@ -105,8 +107,8 @@ namespace GK2
 			// normalVectorGroupbox
 			// 
 			this.normalVectorGroupbox.BackColor = System.Drawing.SystemColors.Window;
-			this.normalVectorGroupbox.Controls.Add(this.radioButton2);
-			this.normalVectorGroupbox.Controls.Add(this.radioButton1);
+			this.normalVectorGroupbox.Controls.Add(this.animatedLightRadiobutton);
+			this.normalVectorGroupbox.Controls.Add(this.constantLightRadiobutton);
 			this.normalVectorGroupbox.Location = new System.Drawing.Point(1075, 235);
 			this.normalVectorGroupbox.Name = "normalVectorGroupbox";
 			this.normalVectorGroupbox.Size = new System.Drawing.Size(99, 75);
@@ -114,27 +116,27 @@ namespace GK2
 			this.normalVectorGroupbox.TabStop = false;
 			this.normalVectorGroupbox.Text = "Light Vector";
 			// 
-			// radioButton2
+			// animatedLightRadiobutton
 			// 
-			this.radioButton2.AutoSize = true;
-			this.radioButton2.Location = new System.Drawing.Point(7, 44);
-			this.radioButton2.Name = "radioButton2";
-			this.radioButton2.Size = new System.Drawing.Size(69, 17);
-			this.radioButton2.TabIndex = 1;
-			this.radioButton2.Text = "Animated";
-			this.radioButton2.UseVisualStyleBackColor = true;
+			this.animatedLightRadiobutton.AutoSize = true;
+			this.animatedLightRadiobutton.Location = new System.Drawing.Point(7, 44);
+			this.animatedLightRadiobutton.Name = "animatedLightRadiobutton";
+			this.animatedLightRadiobutton.Size = new System.Drawing.Size(69, 17);
+			this.animatedLightRadiobutton.TabIndex = 1;
+			this.animatedLightRadiobutton.Text = "Animated";
+			this.animatedLightRadiobutton.UseVisualStyleBackColor = true;
 			// 
-			// radioButton1
+			// constantLightRadiobutton
 			// 
-			this.radioButton1.AutoSize = true;
-			this.radioButton1.Checked = true;
-			this.radioButton1.Location = new System.Drawing.Point(7, 20);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(61, 17);
-			this.radioButton1.TabIndex = 0;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "(0, 0, 1)";
-			this.radioButton1.UseVisualStyleBackColor = true;
+			this.constantLightRadiobutton.AutoSize = true;
+			this.constantLightRadiobutton.Checked = true;
+			this.constantLightRadiobutton.Location = new System.Drawing.Point(7, 20);
+			this.constantLightRadiobutton.Name = "constantLightRadiobutton";
+			this.constantLightRadiobutton.Size = new System.Drawing.Size(61, 17);
+			this.constantLightRadiobutton.TabIndex = 0;
+			this.constantLightRadiobutton.TabStop = true;
+			this.constantLightRadiobutton.Text = "(0, 0, 1)";
+			this.constantLightRadiobutton.UseVisualStyleBackColor = true;
 			// 
 			// label1
 			// 
@@ -219,6 +221,12 @@ namespace GK2
 			this.bumpMapRadiobutton.Text = "Bump map";
 			this.bumpMapRadiobutton.UseVisualStyleBackColor = true;
 			// 
+			// polygonUnionToolStripMenuItem
+			// 
+			this.polygonUnionToolStripMenuItem.Name = "polygonUnionToolStripMenuItem";
+			this.polygonUnionToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.polygonUnionToolStripMenuItem.Text = "Polygon union";
+			// 
 			// background
 			// 
 			this.background.BackColor = System.Drawing.Color.White;
@@ -271,8 +279,8 @@ namespace GK2
 		private System.Windows.Forms.Button lightColorButton;
 		private System.Windows.Forms.Button textureButton;
 		private System.Windows.Forms.GroupBox normalVectorGroupbox;
-		private System.Windows.Forms.RadioButton radioButton2;
-		private System.Windows.Forms.RadioButton radioButton1;
+		private System.Windows.Forms.RadioButton animatedLightRadiobutton;
+		private System.Windows.Forms.RadioButton constantLightRadiobutton;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button polygonFillColorButton;
 		private System.Windows.Forms.Label ligthLabel;
@@ -281,6 +289,7 @@ namespace GK2
 		private System.Windows.Forms.RadioButton colorRadiobutton;
 		private System.Windows.Forms.RadioButton textureRadiobutton;
 		private System.Windows.Forms.RadioButton bumpMapRadiobutton;
+		private System.Windows.Forms.ToolStripMenuItem polygonUnionToolStripMenuItem;
 	}
 }
 

@@ -58,6 +58,16 @@ namespace GK2.Utilities
 			return false;
 		}
 
+		public static bool WasPolygonClicked(Vertex clicked, IEnumerable<Polygon> polygons, out Polygon clickedPolygon)
+		{
+			clickedPolygon = null;
+			var vertex = new Vertex(0, 0);
+            var segment = new Segment(vertex, vertex);
+
+			return WasEdgeClicked(clicked, polygons, out segment, out clickedPolygon) ||
+			       WasVertexClicked(clicked, polygons, out vertex, out clickedPolygon);
+		}
+
 		public static Vertex[] FindAdjacentPoints(Vertex p, Polygon poly)
 		{
 			var adjacentPoints = new Vertex[2];
