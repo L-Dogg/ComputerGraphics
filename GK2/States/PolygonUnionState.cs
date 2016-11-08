@@ -32,7 +32,7 @@ namespace GK2.States
 			
 			AddIntersections(intersections);
 
-			var entryVertices = FindeEntryVertices(intersections);
+			var entryVertices = FindEntryVertices(intersections);
 			
 			while (entryVertices.Any())
 			{
@@ -48,8 +48,8 @@ namespace GK2.States
 
 				while (current.Value != first.Value)
 				{
-					p.Segments.AddLast(new Segment(p.Vertices.Last.Value, current.Value));
-					p.Vertices.AddLast(current.Value);
+					p.Segments.AddFirst(new Segment(p.Vertices.Last.Value, current.Value));
+					p.Vertices.AddFirst(current.Value);
 
 					if (intersections.Contains(current.Value))
 					{
@@ -64,7 +64,7 @@ namespace GK2.States
 				}
 
 				// zakonczenie polygona:
-				p.Segments.AddLast(new Segment(p.Vertices.Last.Value, p.Vertices.First.Value));
+				p.Segments.AddFirst(new Segment(p.Vertices.Last.Value, p.Vertices.First.Value));
 				MainForm.Polygons.Add(p);
 			}
 
@@ -74,24 +74,31 @@ namespace GK2.States
 
 		private void AddIntersections(List<Vertex> intersections)
 		{
-			foreach (var vertex in intersections)
+			foreach (var polygon in Polygons)
 			{
-				foreach (var polygon in Polygons)
+				var tmpVert = new LinkedList<Vertex>();
+				var tmpSeg = new LinkedList<Segment>();
+				foreach (var vertex in intersections)
 				{
-					var tmp = new LinkedList<Segment>(polygon.Segments);
 					foreach (var segment in polygon.Segments)
 					{
+						tmpVert.AddLast(segment.From);
 						if (!vertex.IsCloseToLine(segment))
-							continue;
-						tmp.AddBefore(tmp.Find(segment), new Segment(segment.From, vertex));
-						tmp.AddBefore(tmp.Find(segment), new Segment(vertex, segment.To));
-						tmp.Remove(segment);
+						{
+							tmpSeg.AddLast(segment);
+						}
+						else
+						{
+							tmpSeg.AddLast(new Segment(segment.From, vertex));
+							tmpSeg.AddLast(new Segment(vertex, segment.To));
 
-						polygon.Vertices.AddAfter(polygon.Vertices.Find(segment.From), vertex);
+							tmpVert.AddLast(vertex);
+						}
 					}
-
-					polygon.Segments = tmp;
 				}
+				polygon.Segments = tmpSeg;
+				polygon.Vertices = tmpVert;
+				polygon.NormalizePolygon();
 			}
 		} 
 
@@ -111,7 +118,7 @@ namespace GK2.States
 			return intersecting;
 		}
 
-		private List<Vertex> FindeEntryVertices(List<Vertex> intersections)
+		private List<Vertex> FindEntryVertices(List<Vertex> intersections)
 		{
 			var entryVertices = new List<Vertex>();
 			var subject = Polygons[1];
