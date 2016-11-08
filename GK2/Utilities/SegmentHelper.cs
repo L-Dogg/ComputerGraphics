@@ -20,6 +20,7 @@ namespace GK2.Utilities
 			out Vertex intersection, bool considerCollinearOverlapAsIntersect = false)
 		{
 			intersection = new Vertex();
+			if (p == q || p == q2 || p2 == q || p2 == q2) return false;
 
 			var r = p2 - p;
 			var s = q2 - q;

@@ -49,8 +49,8 @@ namespace GK2.States
 
 				while (current.Value != first.Value)
 				{
-					p.Segments.AddFirst(new Segment(p.Vertices.Last.Value, current.Value));
-					p.Vertices.AddFirst(current.Value);
+					p.Segments.AddLast(new Segment(p.Vertices.Last.Value, current.Value));
+					p.Vertices.AddLast(current.Value);
 
 					if (intersections.Contains(current.Value))
 					{
@@ -65,7 +65,7 @@ namespace GK2.States
 				}
 
 				// zakonczenie polygona:
-				p.Segments.AddFirst(new Segment(p.Vertices.Last.Value, p.Vertices.First.Value));
+				p.Segments.AddLast(new Segment(p.Vertices.Last.Value, p.Vertices.First.Value));
 				MainForm.Polygons.Add(p);
 			}
 
@@ -139,7 +139,7 @@ namespace GK2.States
 				polygon.Segments.Clear();
 				var vert = polygon.Vertices.First;
 
-				while (vert != window.Vertices.Last)
+				while (vert != polygon.Vertices.Last)
 				{
 					polygon.Segments.AddLast(new Segment(vert.Value, vert.Next.Value));
 					vert = vert.Next;
