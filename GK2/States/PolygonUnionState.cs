@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using GK2.Structures;
@@ -30,7 +31,7 @@ namespace GK2.States
 			if (!intersections.Any())
 				return;
 			
-			AddIntersections(intersections);
+			//AddIntersections(intersections);
 
 			var entryVertices = FindEntryVertices(intersections);
 			
@@ -106,13 +107,45 @@ namespace GK2.States
 		{
 			var intersecting = new List<Vertex>();
 			Vertex v;
-			foreach (var clipSeg in Polygons[0].Segments)
+			var window = Polygons[0];
+			var subject = Polygons[1];
+
+
+			window.Vertices.AddLast(window.Vertices.First.Value);
+			subject.Vertices.AddLast(subject.Vertices.First.Value);
+			var winVert = window.Vertices.First;
+			while (winVert.Next != null)
 			{
-				foreach (var subSeg in Polygons[1].Segments)
+				var subVert = subject.Vertices.First;
+				while (subVert.Next != null)
 				{
-					if (SegmentHelper.LineSegementsIntersect(clipSeg.From, clipSeg.To, subSeg.From, subSeg.To, out v))
+					if (SegmentHelper.LineSegementsIntersect(winVert.Value, winVert.Next.Value, subVert.Value, subVert.Next.Value,
+						out v))
+					{
+						window.Vertices.AddAfter(winVert, v);
+						subject.Vertices.AddAfter(subVert, v);
 						intersecting.Add(v);
+					}
+					subVert = subVert.Next;
 				}
+				winVert = winVert.Next;
+			}
+
+			window.Vertices.RemoveLast();
+			subject.Vertices.RemoveLast();
+
+			foreach (var polygon in Polygons)
+			{
+				polygon.Segments.Clear();
+				var vert = polygon.Vertices.First;
+
+				while (vert != window.Vertices.Last)
+				{
+					polygon.Segments.AddLast(new Segment(vert.Value, vert.Next.Value));
+					vert = vert.Next;
+				}
+				polygon.Segments.AddLast(new Segment(polygon.Vertices.Last.Value, polygon.Vertices.First.Value));
+				polygon.NormalizePolygon();
 			}
 
 			return intersecting;
