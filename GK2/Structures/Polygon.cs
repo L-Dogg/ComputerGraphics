@@ -88,7 +88,7 @@ namespace GK2.Structures
 
 					var cos =  CalculateCosinus(LightX, LightY, LightZ, currentBitColor);
 					cos = (cos > 0) ? cos : 0;
-
+					cos = 1; //zle liczy tego cosinusa
 					var r = (double)LightColor.R / 255 * (double)currentBitColor.R / 255 * cos;
 					var g = (double)LightColor.G / 255 * (double)currentBitColor.G / 255 * cos;
 					var b = (double)LightColor.B / 255 * (double)currentBitColor.B / 255 * cos;
@@ -112,28 +112,44 @@ namespace GK2.Structures
 			var nY = (double)(color.G - 127) / 127;
 			var nZ = (double)color.B / 255;
 
-			var dX = (CalculateHeight(x + 1, y) - CalculateHeight(x - 1, y))/2;
-			var dY = (CalculateHeight(x, y+1) - CalculateHeight(x, y - 1)) / 2;
-			var dZ = 1.0;
+			var hx = (CalculateHeight(x + 1, y) - CalculateHeight(x - 1, y)) / 2;
+			var hy = (CalculateHeight(x, y + 1) - CalculateHeight(x, y - 1)) / 2;
+			
+			double tX = 1; double tY = 0; double tZ = -nX;
+			double bX = 0; double bY = 1; double bZ = -nY;
 
-			var length = Math.Sqrt(dX*dX + dY*dY + dZ*dZ);
+			var tLen = Math.Sqrt(tX * tX + tY * tY + tZ * tZ);
+			var bLen = Math.Sqrt(bX * bX + bY * bY + bZ * bZ);
 
-			dX /= length;
-			dY /= length;
-			dZ /= length;
+			tX /= tLen;
+			tY /= tLen;
+			tZ /= tLen;
 
-			nX = nX + dX;
-			nY = nY + dY;
-			nZ = nZ + dZ;
+			bX /= bLen;
+			bY /= bLen;
+			bZ /= bLen;
+
+			var dx = hx * tX + hy * bX;
+			var dy = hx * tY + hy * bY;
+			var dz = hx * tZ + hy * bZ;
+
+			//var dLen = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+
+			//dx /= dLen;
+			//dy /= dLen;
+			//dz /= dLen;
+
+			nX += dx;
+			nY += dy;
+			nZ += dz;
 
 			var normalLength = Math.Sqrt(nX * nX + nY * nY + nZ * nZ);
 
 			nX /= normalLength;
 			nY /= normalLength;
 			nZ /= normalLength;
-
-
-			return Color.FromArgb((int)(nX*127 + 127), (int)(nY*127 + 127), (int)(nZ*255));
+			
+			return Color.FromArgb((int)(nX*127 + 127) < 0 ? 0 : (int)(nX * 127 + 127), (int)(nY*127 + 127) < 0 ? 0 : (int)(nY * 127 + 127), (int)(nZ*255) < 0 ? 0 : (int)(nZ*255));
 		}
 
 		private static double CalculateHeight(int x, int y)
