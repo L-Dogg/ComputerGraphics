@@ -87,7 +87,7 @@ namespace GK2.Structures
 						currentBitColor = DisturbNormalVector(currentBitColor, (int)x, y);
 
 					var cos =  CalculateCosinus(LightX, LightY, LightZ, currentBitColor);
-					cos = (cos > 0) ? cos : 0;
+					//cos = (cos > 0) ? cos : 0;
 					cos = 1; //zle liczy tego cosinusa
 					var r = (double)LightColor.R / 255 * (double)currentBitColor.R / 255 * cos;
 					var g = (double)LightColor.G / 255 * (double)currentBitColor.G / 255 * cos;
@@ -103,7 +103,7 @@ namespace GK2.Structures
 			var nY = (double) (color.G - 127) / 127;
 			var nZ = (double) color.B / 255;
 
-			return (x*nX + y*nY + z*nZ)/(Math.Sqrt(x*x + y*y + z*z) + Math.Sqrt(nX*nX + nY*nY + nZ*nZ));
+			return (x*nX + y*nY + z*nZ)/(Math.Sqrt(x*x + y*y + z*z) * Math.Sqrt(nX*nX + nY*nY + nZ*nZ));
 		}
 
 		private static Color DisturbNormalVector(Color color, int x, int y)
