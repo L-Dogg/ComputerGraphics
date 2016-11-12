@@ -24,6 +24,9 @@ namespace GK2.States
 		// TODO:
 		private void Intersection()
 		{
+			if (Polygons[0] == Polygons[1])
+				return;
+
 			Polygons[0].NormalizePolygon();
 			Polygons[1].NormalizePolygon();
 
@@ -181,8 +184,10 @@ namespace GK2.States
 				return;
 
 			Intersection();
-			MainForm.CurrentState = new IdleState(MainForm);
+			this.Polygons.Clear();
 			MainForm.Render();
+			MainForm.CurrentPolygon = new Polygon();
+			MainForm.CurrentState = new IdleState(MainForm);
 		}
 
 		public void MouseMove(object sender, MouseEventArgs e)
