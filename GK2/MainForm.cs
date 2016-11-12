@@ -56,6 +56,8 @@ namespace GK2
 
 		private static Timer lightAnimationTimer = new Timer();
 
+		private static int LightTimerInterval = 100;
+
 		#region Public Methods
 
 		public MainForm()
@@ -72,8 +74,8 @@ namespace GK2
 			lightColorButton.BackColor = Polygon.LightColor;
 			polygonFillColorButton.BackColor = Polygon.FillColor;
 
-			lightAnimationTimer.Tick += new EventHandler(TimerEventProcessor);
-			lightAnimationTimer.Interval = 500;
+			lightAnimationTimer.Tick += new EventHandler(LightTimerProcessor);
+			lightAnimationTimer.Interval = LightTimerInterval;
 
 			colorRadiobutton.CheckedChanged += new EventHandler(fillRadioButtons_CheckedChanged);
 			textureRadiobutton.CheckedChanged += new EventHandler(fillRadioButtons_CheckedChanged);
@@ -203,11 +205,19 @@ namespace GK2
 			}
 		}
 
-		private void TimerEventProcessor(object sender, EventArgs e)
+		private static double Radius = 1.0;
+		private static double s = 0;
+		private static double t = -90;
+
+		private void LightTimerProcessor(object sender, EventArgs e)
 		{
-			Polygon.LightX = (Polygon.LightX + 0.15) % 1.0;
-			Polygon.LightY = (Polygon.LightY + 0.15) % 1.0;
-			Polygon.LightZ = 1.0;
+			s = (s + 1)%360;
+			t = (t + 1 <= 90) ? t + 1 : -90;
+			//t = (t + 1)%180;
+
+			Polygon.LightX = Radius * Math.Cos(s * Math.PI / 180) * Math.Sin(t * Math.PI / 180);
+			Polygon.LightY = Radius * Math.Cos(s * Math.PI / 180) * Math.Sin(t * Math.PI / 180);
+			Polygon.LightZ = Radius * Math.Cos(t * Math.PI / 180);
 
 			this.Render();
 		}
