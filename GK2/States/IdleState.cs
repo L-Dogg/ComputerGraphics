@@ -50,7 +50,7 @@ namespace GK2.States
 			if (e.ClickedItem == MainForm.PolygonContextMenu.Items[3])
 			{
 				MainForm.PolygonContextMenu.ItemClicked -= PolygonContextMenu_ItemClicked;
-				MainForm.CurrentState = new PolygonUnionState(MainForm);
+				MainForm.CurrentState = new PolygonIntersectionState(MainForm);
 			}
 		}
         #endregion

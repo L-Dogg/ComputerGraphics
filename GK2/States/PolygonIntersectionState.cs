@@ -9,20 +9,20 @@ using GK2.Utilities;
 
 namespace GK2.States
 {
-	public class PolygonUnionState : IState
+	public class PolygonIntersectionState : IState
 	{
 		private static readonly Color MarkedColor = Color.Red;
 		private List<Polygon> Polygons { get; set; } = new List<Polygon>(2);
 		private MainForm MainForm { get; set; }
 
-		public PolygonUnionState(MainForm mainForm)
+		public PolygonIntersectionState(MainForm mainForm)
 		{
 			MainForm = mainForm;
 		}
 
 		#region Weiler - Atherton Algorithm
 		// TODO:
-		private void Union()
+		private void Intersection()
 		{
 			Polygons[0].NormalizePolygon();
 			Polygons[1].NormalizePolygon();
@@ -109,8 +109,7 @@ namespace GK2.States
 			Vertex v;
 			var window = Polygons[0];
 			var subject = Polygons[1];
-
-
+			
 			window.Vertices.AddLast(window.Vertices.First.Value);
 			subject.Vertices.AddLast(subject.Vertices.First.Value);
 			var winVert = window.Vertices.First;
@@ -181,7 +180,7 @@ namespace GK2.States
 			if (Polygons.Count != 2)
 				return;
 
-			Union();
+			Intersection();
 			MainForm.CurrentState = new IdleState(MainForm);
 			MainForm.Render();
 		}

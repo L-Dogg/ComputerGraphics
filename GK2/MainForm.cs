@@ -98,6 +98,8 @@ namespace GK2
 			{
 				polygonContextMenu.Items[1].Enabled = polygonContextMenu.Items[2].Enabled = true;
 			}
+
+			polygonContextMenu.Items[3].Enabled = Polygons.Count >= 2;
 		}
 
 		public void Render()
