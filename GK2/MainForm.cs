@@ -64,12 +64,12 @@ namespace GK2
 		{
 			InitializeComponent();
 
-            Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap("../../Resources/pepe.bmp"));
+            Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap("../../Resources/texture.bmp"));
 			_directBitmap =	new DirectBitmap(background.Size.Width, background.Size.Height);
 			background.BackgroundImage = _directBitmap.Bitmap;
 			_graphics = Graphics.FromImage(background.BackgroundImage);
 
-			Polygon.HeightMap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/heightmap.bmp"));
+			Polygon.HeightMap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/bumpmap.bmp"));
 
 			lightColorButton.BackColor = Polygon.LightColor;
 			polygonFillColorButton.BackColor = Polygon.FillColor;

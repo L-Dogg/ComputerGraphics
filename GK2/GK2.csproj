@@ -108,8 +108,10 @@
     <Folder Include="Documentation\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\bumpmap.bmp" />
     <Content Include="Resources\heightmap.bmp" />
     <Content Include="Resources\pepe.bmp" />
+    <Content Include="Resources\texture.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
