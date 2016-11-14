@@ -14,7 +14,9 @@ namespace GK2.Structures
 		public static double LightZ { get; set; } = 1;
 
 		public static DirectBitmap FillTexture { get; set; }
-		public static DirectBitmap HeightMap { get; set; }
+		public static DirectBitmap BumpMap { get; set; }
+		public static DirectBitmap NormalMap { get; set; }
+
 		public static Color FillColor { get; set; } = Color.White;
 		public static Color LightColor { get; set; } = Color.White;
 
@@ -84,11 +86,13 @@ namespace GK2.Structures
 						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 
 					if (bumpMapping)
-						currentBitColor = DisturbNormalVector(currentBitColor, (int)x, y);
+						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 
-					var cos =  CalculateCosinus(LightX, LightY, LightZ, currentBitColor);
+					var normalMapColor = Color.FromArgb(NormalMap.Bits[((int)x) % NormalMap.Width + (y % NormalMap.Height) * NormalMap.Width]);
+
+					var cos =  CalculateCosinus(LightX, LightY, LightZ, normalMapColor);
 					cos = (cos > 0) ? cos : 0;
-					//cos = 1; //zle liczy tego cosinusa
+
 					var r = (double)LightColor.R / 255 * (double)currentBitColor.R / 255 * cos;
 					var g = (double)LightColor.G / 255 * (double)currentBitColor.G / 255 * cos;
 					var b = (double)LightColor.B / 255 * (double)currentBitColor.B / 255 * cos;
@@ -99,8 +103,8 @@ namespace GK2.Structures
 
 		private static double CalculateCosinus(double x, double y, double z, Color color)
 		{
-			var nX = (double) (color.R - 127) / 127;
-			var nY = (double) (color.G - 127) / 127;
+			var nX = (double) (color.R) / 255;
+			var nY = (double) (color.G) / 255;
 			var nZ = (double) color.B / 255;
 
 			return (x*nX + y*nY + z*nZ)/(Math.Sqrt(x*x + y*y + z*z) * Math.Sqrt(nX*nX + nY*nY + nZ*nZ));
@@ -148,7 +152,7 @@ namespace GK2.Structures
 
 		private static double CalculateHeight(int x, int y)
 		{
-			var heightColor = Color.FromArgb(HeightMap.Bits[(y % HeightMap.Height)*HeightMap.Width + x % HeightMap.Width]);
+			var heightColor = Color.FromArgb(BumpMap.Bits[(y % BumpMap.Height)*BumpMap.Width + x % BumpMap.Width]);
 
 			var heightX = (double)heightColor.R / 255;
 			var heightY = (double)heightColor.G / 255;

@@ -63,13 +63,16 @@ namespace GK2
 		public MainForm()
 		{
 			InitializeComponent();
+			
+			PopulateScreen();
 
-            Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap("../../Resources/texture.bmp"));
+			Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap("../../Resources/pepe.bmp"));
 			_directBitmap =	new DirectBitmap(background.Size.Width, background.Size.Height);
 			background.BackgroundImage = _directBitmap.Bitmap;
 			_graphics = Graphics.FromImage(background.BackgroundImage);
 
-			Polygon.HeightMap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/bumpmap.bmp"));
+			Polygon.BumpMap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/bumpmap.bmp"));
+			Polygon.NormalMap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/normalmap.bmp"));
 
 			lightColorButton.BackColor = Polygon.LightColor;
 			polygonFillColorButton.BackColor = Polygon.FillColor;
@@ -86,6 +89,34 @@ namespace GK2
 
 			CurrentState = new IdleState(this);
 			Render();
+		}
+
+		/// <summary>
+		/// Adds two intersecting polygons (triangles).
+		/// </summary>
+		private void PopulateScreen()
+		{
+			var p = new Polygon();
+			var vtx = new List<Vertex>() { new Vertex(250, 250), new Vertex(115, 215), new Vertex(450, 50) };
+			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[0]));
+			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[1]));
+			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[2]));
+			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[0], vtx[1])));
+			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[1], vtx[2])));
+			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[2], vtx[0])));
+			p.Finished = true;
+			Polygons.Add(p);
+
+			var u = new Polygon();
+			var utx = new List<Vertex>() { new Vertex(350, 350), new Vertex(225, 175), new Vertex(333, 222) };
+			u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[0]));
+			u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[1]));
+			u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[2]));
+			u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[0], utx[1])));
+			u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[1], utx[2])));
+			u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[2], utx[0])));
+			u.Finished = true;
+			Polygons.Add(u);
 		}
 
 		public void SetContextMenuItems()

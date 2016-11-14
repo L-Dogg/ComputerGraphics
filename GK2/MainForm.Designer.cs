@@ -35,6 +35,7 @@ namespace GK2
 			this.addPolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.movePolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.polygonUnionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.lightColorButton = new System.Windows.Forms.Button();
 			this.textureButton = new System.Windows.Forms.Button();
 			this.normalVectorGroupbox = new System.Windows.Forms.GroupBox();
@@ -45,10 +46,9 @@ namespace GK2
 			this.ligthLabel = new System.Windows.Forms.Label();
 			this.fillColorLabel = new System.Windows.Forms.Label();
 			this.fillTypeGroupbox = new System.Windows.Forms.GroupBox();
-			this.colorRadiobutton = new System.Windows.Forms.RadioButton();
-			this.textureRadiobutton = new System.Windows.Forms.RadioButton();
 			this.bumpMapRadiobutton = new System.Windows.Forms.RadioButton();
-			this.polygonUnionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.textureRadiobutton = new System.Windows.Forms.RadioButton();
+			this.colorRadiobutton = new System.Windows.Forms.RadioButton();
 			this.background = new GK2.Controls.Background();
 			this.polygonContextMenu.SuspendLayout();
 			this.normalVectorGroupbox.SuspendLayout();
@@ -64,25 +64,31 @@ namespace GK2
             this.movePolygonToolStripMenuItem,
             this.polygonUnionToolStripMenuItem});
 			this.polygonContextMenu.Name = "polygonContextMenu";
-			this.polygonContextMenu.Size = new System.Drawing.Size(165, 92);
+			this.polygonContextMenu.Size = new System.Drawing.Size(184, 114);
 			// 
 			// addPolygonToolStripMenuItem
 			// 
 			this.addPolygonToolStripMenuItem.Name = "addPolygonToolStripMenuItem";
-			this.addPolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.addPolygonToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.addPolygonToolStripMenuItem.Text = "Add polygon";
 			// 
 			// removePolygonToolStripMenuItem
 			// 
 			this.removePolygonToolStripMenuItem.Name = "removePolygonToolStripMenuItem";
-			this.removePolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.removePolygonToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.removePolygonToolStripMenuItem.Text = "Remove polygon";
 			// 
 			// movePolygonToolStripMenuItem
 			// 
 			this.movePolygonToolStripMenuItem.Name = "movePolygonToolStripMenuItem";
-			this.movePolygonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.movePolygonToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.movePolygonToolStripMenuItem.Text = "Move polygon";
+			// 
+			// polygonUnionToolStripMenuItem
+			// 
+			this.polygonUnionToolStripMenuItem.Name = "polygonUnionToolStripMenuItem";
+			this.polygonUnionToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.polygonUnionToolStripMenuItem.Text = "Polygon intersection";
 			// 
 			// lightColorButton
 			// 
@@ -189,15 +195,15 @@ namespace GK2
 			this.fillTypeGroupbox.TabStop = false;
 			this.fillTypeGroupbox.Text = "Fill";
 			// 
-			// colorRadiobutton
+			// bumpMapRadiobutton
 			// 
-			this.colorRadiobutton.AutoSize = true;
-			this.colorRadiobutton.Location = new System.Drawing.Point(7, 20);
-			this.colorRadiobutton.Name = "colorRadiobutton";
-			this.colorRadiobutton.Size = new System.Drawing.Size(49, 17);
-			this.colorRadiobutton.TabIndex = 0;
-			this.colorRadiobutton.Text = "Color";
-			this.colorRadiobutton.UseVisualStyleBackColor = true;
+			this.bumpMapRadiobutton.AutoSize = true;
+			this.bumpMapRadiobutton.Location = new System.Drawing.Point(7, 66);
+			this.bumpMapRadiobutton.Name = "bumpMapRadiobutton";
+			this.bumpMapRadiobutton.Size = new System.Drawing.Size(75, 17);
+			this.bumpMapRadiobutton.TabIndex = 3;
+			this.bumpMapRadiobutton.Text = "Bump map";
+			this.bumpMapRadiobutton.UseVisualStyleBackColor = true;
 			// 
 			// textureRadiobutton
 			// 
@@ -211,21 +217,15 @@ namespace GK2
 			this.textureRadiobutton.Text = "Texture";
 			this.textureRadiobutton.UseVisualStyleBackColor = true;
 			// 
-			// bumpMapRadiobutton
+			// colorRadiobutton
 			// 
-			this.bumpMapRadiobutton.AutoSize = true;
-			this.bumpMapRadiobutton.Location = new System.Drawing.Point(7, 66);
-			this.bumpMapRadiobutton.Name = "bumpMapRadiobutton";
-			this.bumpMapRadiobutton.Size = new System.Drawing.Size(75, 17);
-			this.bumpMapRadiobutton.TabIndex = 3;
-			this.bumpMapRadiobutton.Text = "Bump map";
-			this.bumpMapRadiobutton.UseVisualStyleBackColor = true;
-			// 
-			// polygonUnionToolStripMenuItem
-			// 
-			this.polygonUnionToolStripMenuItem.Name = "polygonUnionToolStripMenuItem";
-			this.polygonUnionToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-			this.polygonUnionToolStripMenuItem.Text = "Polygon union";
+			this.colorRadiobutton.AutoSize = true;
+			this.colorRadiobutton.Location = new System.Drawing.Point(7, 20);
+			this.colorRadiobutton.Name = "colorRadiobutton";
+			this.colorRadiobutton.Size = new System.Drawing.Size(49, 17);
+			this.colorRadiobutton.TabIndex = 0;
+			this.colorRadiobutton.Text = "Color";
+			this.colorRadiobutton.UseVisualStyleBackColor = true;
 			// 
 			// background
 			// 
