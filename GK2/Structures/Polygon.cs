@@ -82,13 +82,17 @@ namespace GK2.Structures
 				for (var x = segments[2*i].Xmin; x <= segments[2*i + 1].Xmin; x++)
 				{
 					var currentBitColor = FillColor;
+					var bumpMapColor = Color.White;
 					if (!fillColor)
 						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 
-					if (bumpMapping)
-						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 
 					var normalMapColor = Color.FromArgb(NormalMap.Bits[((int)x) % NormalMap.Width + (y % NormalMap.Height) * NormalMap.Width]);
+
+					if (bumpMapping)
+					{
+						normalMapColor = DisturbNormalVector(normalMapColor, (int) x, y);
+					}
 
 					var cos =  CalculateCosinus(LightX, LightY, LightZ, normalMapColor);
 					cos = (cos > 0) ? cos : 0;
