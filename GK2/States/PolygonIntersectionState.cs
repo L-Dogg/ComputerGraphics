@@ -34,8 +34,6 @@ namespace GK2.States
 			if (!intersections.Any())
 				return;
 			
-			//AddIntersections(intersections);
-
 			var entryVertices = FindEntryVertices(intersections);
 			
 			while (entryVertices.Any())
@@ -153,6 +151,7 @@ namespace GK2.States
 			return intersecting;
 		}
 
+		// TODO: ZLE
 		private List<Vertex> FindEntryVertices(List<Vertex> intersections)
 		{
 			var entryVertices = new List<Vertex>();

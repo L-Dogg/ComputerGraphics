@@ -212,6 +212,13 @@ namespace GK2.Structures
 				return;
 
 			Segments = new LinkedList<Segment>(Segments.Reverse());
+			foreach (var seg in this.Segments)
+			{
+				var tmp = seg.From;
+				seg.From = seg.To;
+				seg.To = tmp;
+
+			}
 			Vertices = new LinkedList<Vertex>(Vertices.Reverse());
 		}
 

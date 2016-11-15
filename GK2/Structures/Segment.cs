@@ -5,8 +5,8 @@ namespace GK2.Structures
 {
 	public class Segment
 	{
-		public Vertex From { get; }
-		public Vertex To { get; }
+		public Vertex From { get; set; }
+		public Vertex To { get; set; }
 
         public int Ymax => Math.Max(From.Y, To.Y);
 	    public int Ymin => Math.Min(From.Y, To.Y);
