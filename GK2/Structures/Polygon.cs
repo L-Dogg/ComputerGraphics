@@ -97,7 +97,6 @@ namespace GK2.Structures
 					if (!fillColor)
 						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 
-
 					var normalMapColor = Color.FromArgb(NormalMap.Bits[((int)x) % NormalMap.Width + (y % NormalMap.Height) * NormalMap.Width]);
 
 					if (bumpMapping)
