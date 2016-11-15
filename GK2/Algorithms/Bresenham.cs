@@ -13,6 +13,33 @@ namespace GK2.Algorithms
 			lhs = rhs;
 			rhs = temp;
 		}
+
+		private static IEnumerable<Point> Bresenham(int x0, int y0, int x1, int y1, int plus)
+		{
+			var x = x0;
+			var y = y0;
+			var dx = x1 - x0;
+			var dy = Math.Abs(y1 - y0);
+			var d = 2 * dy - dx;
+
+			var points = new List<Point>() {new Point(x, y)};
+			while (x <= x1)
+			{
+				if (d <= 0)
+				{
+					d += 2 * dy;
+					x++;
+				}
+				else
+				{
+					d += 2 * (dy - dx);
+					x++;
+					y += plus;
+				}
+				points.Add(new Point(x,y));
+			}
+			return points;
+		}
 		
 		public static void Line(int x0, int y0, int x1, int y1, DirectBitmap bmp)
 		{
@@ -42,33 +69,6 @@ namespace GK2.Algorithms
 				else if (point.X >= 0 && point.Y >= 0 && point.X < bmp.Width && point.Y < bmp.Height)
 					bmp.Bits[point.Y * bmp.Width + point.X] = color.ToArgb();
 			
-		}
-
-		private static IEnumerable<Point> Bresenham(int x0, int y0, int x1, int y1, int plus)
-		{
-			var x = x0;
-			var y = y0;
-			var dx = x1 - x0;
-			var dy = Math.Abs(y1 - y0);
-			var d = 2 * dy - dx;
-
-			var points = new List<Point>() {new Point(x, y)};
-			while (x <= x1)
-			{
-				if (d <= 0)
-				{
-					d += 2 * dy;
-					x++;
-				}
-				else
-				{
-					d += 2 * (dy - dx);
-					x++;
-					y += plus;
-				}
-				points.Add(new Point(x,y));
-			}
-			return points;
 		}
 		
 	}

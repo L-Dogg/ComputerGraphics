@@ -179,9 +179,8 @@ namespace GK2.States
 			foreach (var polygon in MainForm.Polygons)
 				if (!Polygons.Contains(polygon))
 					polygon.Render(bitmap, MainForm.ColorFill, MainForm.BumpMapping);
-
-			foreach (var polygon in this.Polygons)
-				polygon.Render(bitmap, MarkedColor, MainForm.ColorFill, MainForm.BumpMapping);
+				else 
+					polygon.Render(bitmap, MarkedColor, MainForm.ColorFill, MainForm.BumpMapping);
 		}
 		#endregion
 	}

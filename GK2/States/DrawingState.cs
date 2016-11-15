@@ -69,17 +69,17 @@ namespace GK2.States
 
 		public void Render(DirectBitmap bitmap, Graphics g)
 		{
+
+			foreach (var polygon in MainForm.Polygons)
+			{
+				polygon.Render(bitmap, MainForm.ColorFill, MainForm.BumpMapping);
+			}
 			if (Moving)
 			{
 				Algorithms.Algorithms.Line(MainForm.CurrentPolygon.Vertices.Last.Value.X, MainForm.CurrentPolygon.Vertices.Last.Value.Y, Point.X, Point.Y, bitmap);
 			}
 
 			MainForm.CurrentPolygon.Render(bitmap);
-
-			foreach (var polygon in MainForm.Polygons)
-			{
-				polygon.Render(bitmap, MainForm.ColorFill, MainForm.BumpMapping);
-			}
 		}
 
 		public void KeyUp(object sender, KeyEventArgs e)

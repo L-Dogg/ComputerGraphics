@@ -240,17 +240,14 @@ namespace GK2
 
 		private static double Radius = 1.0;
 		private static double s = 0;
-		private static double t = -90;
+
 
 		private void LightTimerProcessor(object sender, EventArgs e)
 		{
-			s = (s + 1)%360;
-			t = (t + 1 <= 90) ? t + 1 : -90;
-			//t = (t + 1)%180;
-
-			Polygon.LightX = Radius * Math.Cos(s * Math.PI / 180) * Math.Sin(t * Math.PI / 180);
-			Polygon.LightY = Radius * Math.Cos(s * Math.PI / 180) * Math.Sin(t * Math.PI / 180);
-			Polygon.LightZ = Radius * Math.Cos(t * Math.PI / 180);
+			s = (s + 1)%3600;
+			Polygon.LightX = Math.Cos(s/10)*Radius;// + (double)this.background.BackgroundImage.Width / 2;
+			Polygon.LightY = Math.Cos(s/10)*Radius;// + (double)this.background.BackgroundImage.Height / 2;
+			Polygon.LightZ = 5;
 
 			this.Render();
 		}
