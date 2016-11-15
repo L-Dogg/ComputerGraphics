@@ -30,11 +30,22 @@ namespace GK2.States
 			Polygons[0].NormalizePolygon();
 			Polygons[1].NormalizePolygon();
 
-			var intersections = CalculateIntersections();
+			var entryVertices = new List<Vertex>();
+			var intersections = CalculateIntersections(entryVertices);
+
 			if (!intersections.Any())
+			{
+				// Przypadek gdy jeden jest wewnatrz drugiego:
+				if (Polygons[0].PointInsidePolygon(Polygons[1].Vertices.First()))
+				{
+					MainForm.Polygons.Remove(Polygons[0]);
+				}
+				else if (Polygons[1].PointInsidePolygon(Polygons[0].Vertices.First()))
+				{
+					MainForm.Polygons.Remove(Polygons[1]);
+				}
 				return;
-			
-			var entryVertices = FindEntryVertices(intersections);
+			}
 			
 			while (entryVertices.Any())
 			{
@@ -74,37 +85,7 @@ namespace GK2.States
 			MainForm.Polygons.Remove(Polygons[1]);
 		}
 
-		private void AddIntersections(List<Vertex> intersections)
-		{
-			foreach (var polygon in Polygons)
-			{
-				var tmpVert = new LinkedList<Vertex>();
-				var tmpSeg = new LinkedList<Segment>();
-				foreach (var vertex in intersections)
-				{
-					foreach (var segment in polygon.Segments)
-					{
-						tmpVert.AddLast(segment.From);
-						if (!vertex.IsCloseToLine(segment))
-						{
-							tmpSeg.AddLast(segment);
-						}
-						else
-						{
-							tmpSeg.AddLast(new Segment(segment.From, vertex));
-							tmpSeg.AddLast(new Segment(vertex, segment.To));
-
-							tmpVert.AddLast(vertex);
-						}
-					}
-				}
-				polygon.Segments = tmpSeg;
-				polygon.Vertices = tmpVert;
-				polygon.NormalizePolygon();
-			}
-		} 
-
-		private List<Vertex> CalculateIntersections()
+		private List<Vertex> CalculateIntersections(List<Vertex> entryVertices)
 		{
 			var intersecting = new List<Vertex>();
 			Vertex v;
@@ -125,6 +106,10 @@ namespace GK2.States
 						window.Vertices.AddAfter(winVert, v);
 						subject.Vertices.AddAfter(subVert, v);
 						intersecting.Add(v);
+
+						if ((winVert.Value - winVert.Next.Value) * (subVert.Next.Value - winVert.Value) < 0)
+							entryVertices.Add(v);
+
 					}
 					subVert = subVert.Next;
 				}
@@ -151,21 +136,6 @@ namespace GK2.States
 			return intersecting;
 		}
 
-		// TODO: ZLE
-		private List<Vertex> FindEntryVertices(List<Vertex> intersections)
-		{
-			var entryVertices = new List<Vertex>();
-			var subject = Polygons[1];
-			var clip = Polygons[0];
-
-			foreach (var segment in subject.Segments)
-			{
-				if (intersections.Contains(segment.From) && intersections.Contains(segment.To))
-					entryVertices.Add(segment.From);
-			}
-
-			return entryVertices;
-		}
 		#endregion
 
 		#region IState

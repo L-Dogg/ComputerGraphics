@@ -23,6 +23,12 @@ namespace GK2.Structures
 		public LinkedList<Vertex> Vertices	{ get; set; } = new LinkedList<Vertex>();
 		public LinkedList<Segment> Segments { get; set; } = new LinkedList<Segment>();
 		public bool Finished { private get; set; } = false;
+
+		private int MaxX => Vertices.Max(v => v.X);
+		private int MinX => Vertices.Min(v => v.X);
+		private int MaxY => Vertices.Max(v => v.Y);
+		private int MinY => Vertices.Min(v => v.Y);
+
 		#endregion
 
 		#region Private Methods
@@ -169,6 +175,26 @@ namespace GK2.Structures
 		#endregion
 
 		#region Public Methods
+
+		public bool PointInsidePolygon(Vertex p)
+		{
+			if (p.X < MinX || p.X > MaxX || p.Y < MinY || p.Y > MaxY)
+					return false;
+
+			bool c = false;
+
+			var vert = Vertices.ToList();
+
+			for (int i = 0, j = Vertices.Count - 1; i < Vertices.Count; j = i++)
+			{
+				if (((vert[i].Y > p.Y) != (vert[j].Y > p.Y)) &&
+				    (p.X < (vert[j].X - vert[i].X)*(p.Y - vert[i].Y)/(vert[j].Y - vert[i].Y) + vert[i].X))
+					c = !c;
+			}
+
+			return c;
+		}
+
 		public void Render(DirectBitmap bmp, Color lineColor, bool fillColor = false, bool bumpMap = false)
 		{
 		    if (Finished)
