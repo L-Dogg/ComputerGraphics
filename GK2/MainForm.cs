@@ -196,6 +196,15 @@ namespace GK2
 			this.Render();
 		}
 
+		private void bumpMapButton_Click(object sender, EventArgs e)
+		{
+			var result = _openFileDialog.ShowDialog();
+			if (result != DialogResult.OK)
+				return;
+			Polygon.BumpMap = DirectBitmap.FromBitmap(new Bitmap(_openFileDialog.FileName));
+			this.Render();
+		}
+
 		private void colorButton_Click(object sender, EventArgs e)
 		{
 			var result = _colorDialog.ShowDialog();
@@ -252,6 +261,5 @@ namespace GK2
 			this.Render();
 		}
 		#endregion
-
 	}
 }

@@ -50,6 +50,7 @@ namespace GK2
 			this.textureRadiobutton = new System.Windows.Forms.RadioButton();
 			this.colorRadiobutton = new System.Windows.Forms.RadioButton();
 			this.background = new GK2.Controls.Background();
+			this.bumpMapButton = new System.Windows.Forms.Button();
 			this.polygonContextMenu.SuspendLayout();
 			this.normalVectorGroupbox.SuspendLayout();
 			this.fillTypeGroupbox.SuspendLayout();
@@ -64,7 +65,7 @@ namespace GK2
             this.movePolygonToolStripMenuItem,
             this.polygonUnionToolStripMenuItem});
 			this.polygonContextMenu.Name = "polygonContextMenu";
-			this.polygonContextMenu.Size = new System.Drawing.Size(184, 114);
+			this.polygonContextMenu.Size = new System.Drawing.Size(184, 92);
 			// 
 			// addPolygonToolStripMenuItem
 			// 
@@ -115,7 +116,7 @@ namespace GK2
 			this.normalVectorGroupbox.BackColor = System.Drawing.SystemColors.Window;
 			this.normalVectorGroupbox.Controls.Add(this.animatedLightRadiobutton);
 			this.normalVectorGroupbox.Controls.Add(this.constantLightRadiobutton);
-			this.normalVectorGroupbox.Location = new System.Drawing.Point(1075, 235);
+			this.normalVectorGroupbox.Location = new System.Drawing.Point(1075, 292);
 			this.normalVectorGroupbox.Name = "normalVectorGroupbox";
 			this.normalVectorGroupbox.Size = new System.Drawing.Size(99, 75);
 			this.normalVectorGroupbox.TabIndex = 3;
@@ -188,7 +189,7 @@ namespace GK2
 			this.fillTypeGroupbox.Controls.Add(this.bumpMapRadiobutton);
 			this.fillTypeGroupbox.Controls.Add(this.textureRadiobutton);
 			this.fillTypeGroupbox.Controls.Add(this.colorRadiobutton);
-			this.fillTypeGroupbox.Location = new System.Drawing.Point(1075, 124);
+			this.fillTypeGroupbox.Location = new System.Drawing.Point(1075, 192);
 			this.fillTypeGroupbox.Name = "fillTypeGroupbox";
 			this.fillTypeGroupbox.Size = new System.Drawing.Size(99, 94);
 			this.fillTypeGroupbox.TabIndex = 8;
@@ -240,12 +241,23 @@ namespace GK2
 			this.background.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BgMouseDown);
 			this.background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BgMouseMove);
 			// 
+			// bumpMapButton
+			// 
+			this.bumpMapButton.Location = new System.Drawing.Point(1075, 146);
+			this.bumpMapButton.Name = "bumpMapButton";
+			this.bumpMapButton.Size = new System.Drawing.Size(99, 23);
+			this.bumpMapButton.TabIndex = 9;
+			this.bumpMapButton.Text = "Bump Map";
+			this.bumpMapButton.UseVisualStyleBackColor = true;
+			this.bumpMapButton.Click += new System.EventHandler(this.bumpMapButton_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(1179, 552);
+			this.Controls.Add(this.bumpMapButton);
 			this.Controls.Add(this.fillTypeGroupbox);
 			this.Controls.Add(this.fillColorLabel);
 			this.Controls.Add(this.ligthLabel);
@@ -290,6 +302,7 @@ namespace GK2
 		private System.Windows.Forms.RadioButton textureRadiobutton;
 		private System.Windows.Forms.RadioButton bumpMapRadiobutton;
 		private System.Windows.Forms.ToolStripMenuItem polygonUnionToolStripMenuItem;
+		private System.Windows.Forms.Button bumpMapButton;
 	}
 }
 
