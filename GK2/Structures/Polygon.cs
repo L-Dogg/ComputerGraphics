@@ -253,6 +253,19 @@ namespace GK2.Structures
 			Vertices = new LinkedList<Vertex>(Vertices.Reverse());
 		}
 
+		public bool IsSelfIntersecting()
+		{
+			Vertex v;
+			var segList = this.Segments.ToList();
+			for (var i = 0; i < segList.Count; i++)
+				for (var j = i + 1; j < segList.Count; j++)
+					if (SegmentHelper.LineSegementsIntersect(segList[i].From, segList[i].To, segList[j].From, segList[j].To, out v,
+						true))
+						return true;
+
+			return false;
+		}
+
 		#endregion
 	}
 }

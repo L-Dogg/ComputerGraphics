@@ -30,6 +30,12 @@ namespace GK2.States
 			Polygons[0].NormalizePolygon();
 			Polygons[1].NormalizePolygon();
 
+			if (Polygons[0].IsSelfIntersecting() || Polygons[1].IsSelfIntersecting())
+			{
+				MessageBox.Show("One of selected polygons has self intersections.");
+				return;
+			}
+
 			var entryVertices = new List<Vertex>();
 			var intersections = CalculateIntersections(entryVertices);
 
