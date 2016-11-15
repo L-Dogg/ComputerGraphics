@@ -59,8 +59,20 @@ namespace GK2.Utilities
 			var vertex = new Vertex(0, 0);
             var segment = new Segment(vertex, vertex);
 
-			return WasEdgeClicked(clicked, polygons, out segment, out clickedPolygon) ||
-			       WasVertexClicked(clicked, polygons, out vertex, out clickedPolygon);
+			if (WasEdgeClicked(clicked, polygons, out segment, out clickedPolygon) ||
+			    WasVertexClicked(clicked, polygons, out vertex, out clickedPolygon))
+				return true;
+
+			foreach (var polygon in polygons)
+			{
+				if (polygon.PointInsidePolygon(clicked))
+				{
+					clickedPolygon = polygon;
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public static Vertex[] FindAdjacentPoints(Vertex p, Polygon poly)

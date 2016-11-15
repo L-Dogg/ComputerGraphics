@@ -79,7 +79,13 @@ namespace GK2.Structures
 
 		private bool CheckIfClockwise()
 		{
-			return Segments.Sum(segment => (segment.To.X - segment.From.X) * (segment.To.Y + segment.From.Y)) > 0;
+			double a = 0;
+			var v = this.Vertices.ToList();
+			for (var i = 0; i < v.Count - 1; i++)
+				a += v[i].Cross(v[i + 1]);
+			a += v.Last().Cross(v[0]);
+
+			return a > 0;
 		}
 
 		private static void FillPixels(IReadOnlyList<Segment> segments, DirectBitmap directBmp, int y, bool fillColor = false, bool bumpMapping = false)
@@ -88,7 +94,6 @@ namespace GK2.Structures
 				for (var x = segments[2*i].Xmin; x <= segments[2*i + 1].Xmin; x++)
 				{
 					var currentBitColor = FillColor;
-					var bumpMapColor = Color.White;
 					if (!fillColor)
 						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
 

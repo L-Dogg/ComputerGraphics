@@ -103,12 +103,12 @@ namespace GK2.States
 					if (SegmentHelper.LineSegementsIntersect(winVert.Value, winVert.Next.Value, subVert.Value, subVert.Next.Value,
 						out v))
 					{
+						if ((winVert.Next.Value - winVert.Value) * (subVert.Next.Value - winVert.Value) > 0)
+							entryVertices.Add(v);
+
 						window.Vertices.AddAfter(winVert, v);
 						subject.Vertices.AddAfter(subVert, v);
 						intersecting.Add(v);
-
-						if ((winVert.Value - winVert.Next.Value) * (subVert.Next.Value - winVert.Value) < 0)
-							entryVertices.Add(v);
 
 					}
 					subVert = subVert.Next;

@@ -32,23 +32,27 @@ namespace GK2.Algorithms
 				Swap(ref x0, ref x1);
 				Swap(ref y0, ref y1);
 			}
+
 			var increment = y0 > y1 ? -1 : 1;
-			var points = BresenhamLine(x0, y0, x1, y1, increment);
+            var points = Bresenham(x0, y0, x1, y1, increment);
+
 			foreach (var point in points)
-			{
-				if (steep) DrawInBounds(point.Y, point.X, bmp, color);
-				else DrawInBounds(point.X, point.Y, bmp, color);
-			}
+				if ((steep) && (point.Y >= 0 && point.X >= 0 && point.Y < bmp.Width && point.X < bmp.Height))
+						bmp.Bits[point.X * bmp.Width + point.Y] = color.ToArgb();
+				else if (point.X >= 0 && point.Y >= 0 && point.X < bmp.Width && point.Y < bmp.Height)
+					bmp.Bits[point.Y * bmp.Width + point.X] = color.ToArgb();
+			
 		}
 
-		private static IEnumerable<Point> BresenhamLine(int x0, int y0, int x1, int y1, int increment)
+		private static IEnumerable<Point> Bresenham(int x0, int y0, int x1, int y1, int plus)
 		{
+			var x = x0;
+			var y = y0;
 			var dx = x1 - x0;
 			var dy = Math.Abs(y1 - y0);
 			var d = 2 * dy - dx;
-			var x = x0;
-			var y = y0;
-			yield return new Point(x, y);
+
+			var points = new List<Point>() {new Point(x, y)};
 			while (x <= x1)
 			{
 				if (d <= 0)
@@ -60,20 +64,13 @@ namespace GK2.Algorithms
 				{
 					d += 2 * (dy - dx);
 					x++;
-					y += increment;
+					y += plus;
 				}
-				yield return new Point(x, y);
+				points.Add(new Point(x,y));
 			}
+			return points;
 		}
-
-		private static void DrawInBounds(int x, int y, DirectBitmap bitmap, Color color)
-		{
-			if (x >= 0 && y >= 0 &&
-				x < bitmap.Width && y < bitmap.Height)
-			{
-				bitmap.Bits[y*bitmap.Width + x] = color.ToArgb();
-			}
-		}
+		
 	}
 }
 
