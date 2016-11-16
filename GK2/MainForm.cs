@@ -66,7 +66,7 @@ namespace GK2
 			
 			PopulateScreen();
 
-			Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap("../../Resources/pepe.bmp"));
+			Polygon.FillTexture = DirectBitmap.FromBitmap(new Bitmap("../../Resources/lenna.bmp"));
 			_directBitmap =	new DirectBitmap(background.Size.Width, background.Size.Height);
 			background.BackgroundImage = _directBitmap.Bitmap;
 			_graphics = Graphics.FromImage(background.BackgroundImage);

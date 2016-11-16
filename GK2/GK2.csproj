@@ -109,6 +109,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\bumpmap.bmp" />
+    <Content Include="Resources\lenna.bmp" />
     <Content Include="Resources\pepe.bmp" />
     <Content Include="Resources\normalmap.bmp" />
   </ItemGroup>
