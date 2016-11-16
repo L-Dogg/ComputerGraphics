@@ -5,7 +5,7 @@ namespace GK2.Utilities
 	public class SegmentHelper
 	{
 		public static bool LineSegementsIntersect(Vertex p, Vertex p2, Vertex q, Vertex q2,
-			out Vertex intersection, bool considerCollinearOverlapAsIntersect = false)
+			out Vertex intersection, bool considerCollinearOverlapAsIntersect = true)
 		{
 			intersection = new Vertex();
 			if (p == q || p == q2 || p2 == q || p2 == q2) return false;
@@ -24,8 +24,7 @@ namespace GK2.Utilities
 					p.Y += 2;
 					p2.Y -= 2;
 
-					if ((0 <= (q - p) * r && (q - p) * r <= r * r) || (0 <= (p - q) * s && (p - q) * s <= s * s))
-						return true;
+					return LineSegementsIntersect(p, p2, q, q2, out intersection, false);
 				}
 				
 				return false;
