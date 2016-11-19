@@ -53,6 +53,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Processors\HSVProcessor.cs" />
+    <Compile Include="Processors\LabProcessor.cs" />
     <Compile Include="Processors\Processor.cs" />
     <Compile Include="Processors\IProcessor.cs" />
     <Compile Include="Processors\RGBProcessor.cs" />
