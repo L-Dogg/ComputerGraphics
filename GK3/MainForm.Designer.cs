@@ -113,7 +113,7 @@
 			this.separationCombobox.FormattingEnabled = true;
 			this.separationCombobox.Items.AddRange(new object[] {
             "RGB (test)",
-            "YCBr separation",
+            "YCbCr separation",
             "HSV separation",
             "Lab separation"});
 			this.separationCombobox.Location = new System.Drawing.Point(667, 736);

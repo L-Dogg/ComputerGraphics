@@ -9,9 +9,7 @@ namespace GK2.Structures
 	public class Polygon
 	{
 		#region Public Fields
-		public static double LightX { get; set; } = 0;
-		public static double LightY { get; set; } = 0;
-		public static double LightZ { get; set; } = 1;
+		public static Vector3D LightVector = new Vector3D(0.0, 0.0, 1.0);
 
 		public static DirectBitmap FillTexture { get; set; }
 		public static DirectBitmap BumpMap { get; set; }
@@ -96,72 +94,60 @@ namespace GK2.Structures
 					var currentBitColor = FillColor;
 					if (!fillColor)
 						currentBitColor = Color.FromArgb(FillTexture.Bits[((int)x) % FillTexture.Width + (y % FillTexture.Height) * FillTexture.Width]);
-
-					var normalMapColor = Color.FromArgb(NormalMap.Bits[((int)x) % NormalMap.Width + (y % NormalMap.Height) * NormalMap.Width]);
+					
+					var normalMapVector =
+						new Vector3D(Color.FromArgb(NormalMap.Bits[((int) x)%NormalMap.Width + (y%NormalMap.Height)*NormalMap.Width]), true);
 
 					if (bumpMapping)
-					{
-						normalMapColor = DisturbNormalVector(normalMapColor, (int) x, y);
-					}
-
-					var cos =  CalculateCosinus(LightX, LightY, LightZ, normalMapColor);
+						normalMapVector = DisturbNormalVector(normalMapVector, (int) x, y);
+					
+					var cos =  CalculateCosinus(LightVector, normalMapVector);
 					cos = (cos > 0) ? cos : 0;
+
 
 					var r = (double)LightColor.R / 255 * (double)currentBitColor.R / 255 * cos;
 					var g = (double)LightColor.G / 255 * (double)currentBitColor.G / 255 * cos;
 					var b = (double)LightColor.B / 255 * (double)currentBitColor.B / 255 * cos;
 
-					directBmp.Bits[(int) x + y*directBmp.Width] = Color.FromArgb((int) (r*255), (int) (g*255), (int) (b*255)).ToArgb();
+					directBmp.Bits[(int) x + y*directBmp.Width] = (255 << 24) | ((int) (r * 255) << 16) | ((int)(g * 255) << 8) | (int) (b * 255);
 				}
 		}
 
-		private static double CalculateCosinus(double x, double y, double z, Color color)
+		private static double CalculateCosinus(Vector3D lightVector, Vector3D normalVector)
 		{
-			var nX = (double) (color.R) / 255;
-			var nY = (double) (color.G) / 255;
-			var nZ = (double) color.B / 255;
-
-			return (x*nX + y*nY + z*nZ)/(Math.Sqrt(x*x + y*y + z*z) * Math.Sqrt(nX*nX + nY*nY + nZ*nZ));
+			var light = new Vector3D(lightVector);
+			// Jeżeli mamy inny niż domyślny wektor do światła:
+			if (lightVector.X != 0.0 || lightVector.Y != 0.0 || lightVector.Z != 1.0)
+			{
+				light.X -= normalVector.X;
+				light.Y -= normalVector.Y;
+				light.Z -= normalVector.Z;
+			}
+			
+			return (light.X*normalVector.X + light.Y*normalVector.Y + light.Z*normalVector.Z)/(light.Length * normalVector.Length);
 		}
 
-		private static Color DisturbNormalVector(Color color, int x, int y)
+		private static Vector3D DisturbNormalVector(Vector3D v, int x, int y)
 		{
-			var nX = (double)(color.R - 127) / 127;
-			var nY = (double)(color.G - 127) / 127;
-			var nZ = (double)color.B / 255;
-
 			var hx = (CalculateHeight(x + 1, y) - CalculateHeight(x - 1, y)) / 2;
 			var hy = (CalculateHeight(x, y + 1) - CalculateHeight(x, y - 1)) / 2;
 			
-			double tX = 1; double tY = 0; double tZ = -nX;
-			double bX = 0; double bY = 1; double bZ = -nY;
-
-			var tLen = Math.Sqrt(tX * tX + tY * tY + tZ * tZ);
-			var bLen = Math.Sqrt(bX * bX + bY * bY + bZ * bZ);
-
-			tX /= tLen;
-			tY /= tLen;
-			tZ /= tLen;
-
-			bX /= bLen;
-			bY /= bLen;
-			bZ /= bLen;
-
-			var dx = hx * tX + hy * bX;
-			var dy = hx * tY + hy * bY;
-			var dz = hx * tZ + hy * bZ;
+			var t = new Vector3D(1, 0, -v.X);
+			t.Normalize();
+			var b = new Vector3D(0, 1, -v.Y);
+			b.Normalize();
 			
-			nX += dx;
-			nY += dy;
-			nZ += dz;
-
-			var normalLength = Math.Sqrt(nX * nX + nY * nY + nZ * nZ);
-
-			nX /= normalLength;
-			nY /= normalLength;
-			nZ /= normalLength;
+			var dx = hx * t.X + hy * b.X;
+			var dy = hx * t.Y + hy * b.Y;
+			var dz = hx * t.Z + hy * b.Z;
 			
-			return Color.FromArgb((int)(nX*127 + 127) < 0 ? 0 : (int)(nX * 127 + 127), (int)(nY*127 + 127) < 0 ? 0 : (int)(nY * 127 + 127), (int)(nZ*255) < 0 ? 0 : (int)(nZ*255));
+			v.X += dx;
+			v.Y += dy;
+			v.Z += dz;
+			
+			v.Normalize();
+
+			return new Vector3D(v.X > 0 ? v.X : 0, v.Y > 0 ? v.Y : 0, v.Z > 0 ? v.Z : 0);
 		}
 
 		private static double CalculateHeight(int x, int y)
