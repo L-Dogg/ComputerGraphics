@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GK1", "GK1.csproj", "{BFE3A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GK2", "..\GK2\GK2.csproj", "{9676710D-1123-479A-80B8-C6A16B373388}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GK3", "..\GK3\GK3.csproj", "{9870F4DF-032B-457D-97DF-430E161FD7F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9676710D-1123-479A-80B8-C6A16B373388}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9676710D-1123-479A-80B8-C6A16B373388}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9676710D-1123-479A-80B8-C6A16B373388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9870F4DF-032B-457D-97DF-430E161FD7F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9870F4DF-032B-457D-97DF-430E161FD7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9870F4DF-032B-457D-97DF-430E161FD7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9870F4DF-032B-457D-97DF-430E161FD7F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
