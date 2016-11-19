@@ -55,11 +55,12 @@ namespace GK3
 			{
 				case Mode.RGB:
 					processor.Process(pictureBox2, pictureBox3, pictureBox4, new RgbProcessor());
-					//this.Invalidate(true);
 					break;
 				case Mode.YCBr:
 					processor.Process(pictureBox2, pictureBox3, pictureBox4, new YCbCrProcessor());
-					//this.Invalidate(true);
+					break;
+				case Mode.HSV:
+					processor.Process(pictureBox2, pictureBox3, pictureBox4, new HSVProcessor());
 					break;
 				default:
 					MessageBox.Show("Not implemented", "Sorry");
