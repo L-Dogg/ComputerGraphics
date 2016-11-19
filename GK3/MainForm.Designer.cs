@@ -50,7 +50,7 @@
 			this.mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.mainPictureBox.Location = new System.Drawing.Point(12, 12);
 			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(924, 607);
+			this.mainPictureBox.Size = new System.Drawing.Size(924, 658);
 			this.mainPictureBox.TabIndex = 0;
 			this.mainPictureBox.TabStop = false;
 			// 
@@ -116,14 +116,14 @@
             "YCBr separation",
             "HSV separation",
             "Lab separation"});
-			this.separationCombobox.Location = new System.Drawing.Point(667, 659);
+			this.separationCombobox.Location = new System.Drawing.Point(667, 736);
 			this.separationCombobox.Name = "separationCombobox";
 			this.separationCombobox.Size = new System.Drawing.Size(182, 24);
 			this.separationCombobox.TabIndex = 7;
 			// 
 			// pickFileButton
 			// 
-			this.pickFileButton.Location = new System.Drawing.Point(441, 636);
+			this.pickFileButton.Location = new System.Drawing.Point(441, 713);
 			this.pickFileButton.Name = "pickFileButton";
 			this.pickFileButton.Size = new System.Drawing.Size(148, 47);
 			this.pickFileButton.TabIndex = 8;
@@ -134,7 +134,7 @@
 			// separationTypeLabel
 			// 
 			this.separationTypeLabel.AutoSize = true;
-			this.separationTypeLabel.Location = new System.Drawing.Point(667, 636);
+			this.separationTypeLabel.Location = new System.Drawing.Point(667, 713);
 			this.separationTypeLabel.Name = "separationTypeLabel";
 			this.separationTypeLabel.Size = new System.Drawing.Size(112, 17);
 			this.separationTypeLabel.TabIndex = 9;
@@ -142,12 +142,13 @@
 			// 
 			// runButton
 			// 
-			this.runButton.Location = new System.Drawing.Point(861, 636);
+			this.runButton.Location = new System.Drawing.Point(861, 713);
 			this.runButton.Name = "runButton";
 			this.runButton.Size = new System.Drawing.Size(75, 47);
 			this.runButton.TabIndex = 10;
 			this.runButton.Text = "RUN";
 			this.runButton.UseVisualStyleBackColor = true;
+			this.runButton.Click += new System.EventHandler(this.runButton_Click);
 			// 
 			// MainForm
 			// 
