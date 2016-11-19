@@ -17,6 +17,7 @@ namespace GK3
 	public partial class MainForm : Form
 	{
 		private DirectBitmap mainBitmap;
+		private Processor processor;
 
 		public MainForm()
 		{
@@ -26,8 +27,9 @@ namespace GK3
 			pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
 			pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
 			separationCombobox.SelectedIndex = 0;
-			mainBitmap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/rgb_example.bmp"));
+			mainBitmap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/barn.bmp"));
 			mainPictureBox.Image = mainBitmap.Bitmap;
+			processor = new Processor(mainBitmap);
 		}
 
 		private void pickFileButton_Click(object sender, EventArgs e)
@@ -42,6 +44,7 @@ namespace GK3
 					mainBitmap.Dispose();
 					mainBitmap = DirectBitmap.FromBitmap(new Bitmap(dlg.FileName));
 					mainPictureBox.Image = mainBitmap.Bitmap;
+					processor = new Processor(mainBitmap);
 				}
 			}
 		}
@@ -51,11 +54,42 @@ namespace GK3
 			switch ((Mode)separationCombobox.SelectedIndex)
 			{
 				case Mode.RGB:
-					new RgbProcessor(mainBitmap).Process(pictureBox2, pictureBox3, pictureBox4);
-					this.Invalidate(true);
+					processor.Process(pictureBox2, pictureBox3, pictureBox4, new RgbProcessor());
+					//this.Invalidate(true);
+					break;
+				case Mode.YCBr:
+					processor.Process(pictureBox2, pictureBox3, pictureBox4, new YCbCrProcessor());
+					//this.Invalidate(true);
 					break;
 				default:
-					MessageBox.Show("Not implemented");
+					MessageBox.Show("Not implemented", "Sorry");
+					break;
+			}
+		}
+
+		private void separationCombobox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			switch ((Mode)separationCombobox.SelectedIndex)
+			{
+				case Mode.RGB:
+					firstChannelLabel.Text = "R";
+					secondChannelLabel.Text = "G";
+					thirdChannelLabel.Text = "B";
+					break;
+				case Mode.YCBr:
+					firstChannelLabel.Text = "Y";
+					secondChannelLabel.Text = "Cb";
+					thirdChannelLabel.Text = "Cr";
+					break;
+				case Mode.HSV:
+					firstChannelLabel.Text = "H";
+					secondChannelLabel.Text = "S";
+					thirdChannelLabel.Text = "V";
+					break;
+				case Mode.Lab:
+					firstChannelLabel.Text = "L";
+					secondChannelLabel.Text = "a";
+					thirdChannelLabel.Text = "b";
 					break;
 			}
 		}

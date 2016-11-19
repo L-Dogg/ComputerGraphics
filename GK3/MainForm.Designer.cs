@@ -120,6 +120,7 @@
 			this.separationCombobox.Name = "separationCombobox";
 			this.separationCombobox.Size = new System.Drawing.Size(182, 24);
 			this.separationCombobox.TabIndex = 7;
+			this.separationCombobox.SelectedIndexChanged += new System.EventHandler(this.separationCombobox_SelectedIndexChanged);
 			// 
 			// pickFileButton
 			// 
