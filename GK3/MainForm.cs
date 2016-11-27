@@ -63,7 +63,8 @@ namespace GK3
 					processor.Process(pictureBox2, pictureBox3, pictureBox4, new HSVProcessor());
 					break;
 				case Mode.Lab:
-					processor.Process(pictureBox2, pictureBox3, pictureBox4, new LabProcessor());
+					//processor.Process(pictureBox2, pictureBox3, pictureBox4, new LabProcessor());
+					MessageBox.Show("Not implemented", "Sorry");
 					break;
 				default:
 					MessageBox.Show("Not implemented", "Sorry");
