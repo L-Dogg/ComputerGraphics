@@ -39,72 +39,99 @@
 			this.pickFileButton = new System.Windows.Forms.Button();
 			this.separationTypeLabel = new System.Windows.Forms.Label();
 			this.runButton = new System.Windows.Forms.Button();
+			this.labGroupbox = new System.Windows.Forms.GroupBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.labPresetsCombobox = new System.Windows.Forms.ComboBox();
+			this.whitePointPresetCombobox = new System.Windows.Forms.ComboBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.Wy = new System.Windows.Forms.TextBox();
+			this.Wx = new System.Windows.Forms.TextBox();
+			this.By = new System.Windows.Forms.TextBox();
+			this.Bx = new System.Windows.Forms.TextBox();
+			this.Gy = new System.Windows.Forms.TextBox();
+			this.Gx = new System.Windows.Forms.TextBox();
+			this.Ry = new System.Windows.Forms.TextBox();
+			this.Rx = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+			this.labGroupbox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// mainPictureBox
 			// 
 			this.mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.mainPictureBox.Location = new System.Drawing.Point(12, 12);
+			this.mainPictureBox.Location = new System.Drawing.Point(9, 10);
+			this.mainPictureBox.Margin = new System.Windows.Forms.Padding(2);
 			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(924, 658);
+			this.mainPictureBox.Size = new System.Drawing.Size(694, 535);
 			this.mainPictureBox.TabIndex = 0;
 			this.mainPictureBox.TabStop = false;
 			// 
 			// pictureBox2
 			// 
 			this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.pictureBox2.Location = new System.Drawing.Point(1021, 12);
+			this.pictureBox2.Location = new System.Drawing.Point(766, 10);
+			this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
 			this.pictureBox2.Name = "pictureBox2";
-			this.pictureBox2.Size = new System.Drawing.Size(338, 240);
+			this.pictureBox2.Size = new System.Drawing.Size(254, 195);
 			this.pictureBox2.TabIndex = 1;
 			this.pictureBox2.TabStop = false;
 			// 
 			// pictureBox3
 			// 
 			this.pictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.pictureBox3.Location = new System.Drawing.Point(1021, 280);
+			this.pictureBox3.Location = new System.Drawing.Point(766, 228);
+			this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
 			this.pictureBox3.Name = "pictureBox3";
-			this.pictureBox3.Size = new System.Drawing.Size(338, 240);
+			this.pictureBox3.Size = new System.Drawing.Size(254, 195);
 			this.pictureBox3.TabIndex = 2;
 			this.pictureBox3.TabStop = false;
 			// 
 			// pictureBox4
 			// 
 			this.pictureBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.pictureBox4.Location = new System.Drawing.Point(1021, 547);
+			this.pictureBox4.Location = new System.Drawing.Point(766, 444);
+			this.pictureBox4.Margin = new System.Windows.Forms.Padding(2);
 			this.pictureBox4.Name = "pictureBox4";
-			this.pictureBox4.Size = new System.Drawing.Size(338, 240);
+			this.pictureBox4.Size = new System.Drawing.Size(254, 195);
 			this.pictureBox4.TabIndex = 3;
 			this.pictureBox4.TabStop = false;
 			// 
 			// firstChannelLabel
 			// 
 			this.firstChannelLabel.AutoSize = true;
-			this.firstChannelLabel.Location = new System.Drawing.Point(969, 12);
+			this.firstChannelLabel.Location = new System.Drawing.Point(727, 10);
+			this.firstChannelLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.firstChannelLabel.Name = "firstChannelLabel";
-			this.firstChannelLabel.Size = new System.Drawing.Size(18, 17);
+			this.firstChannelLabel.Size = new System.Drawing.Size(15, 13);
 			this.firstChannelLabel.TabIndex = 4;
 			this.firstChannelLabel.Text = "R";
 			// 
 			// secondChannelLabel
 			// 
 			this.secondChannelLabel.AutoSize = true;
-			this.secondChannelLabel.Location = new System.Drawing.Point(969, 280);
+			this.secondChannelLabel.Location = new System.Drawing.Point(727, 228);
+			this.secondChannelLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.secondChannelLabel.Name = "secondChannelLabel";
-			this.secondChannelLabel.Size = new System.Drawing.Size(19, 17);
+			this.secondChannelLabel.Size = new System.Drawing.Size(15, 13);
 			this.secondChannelLabel.TabIndex = 5;
 			this.secondChannelLabel.Text = "G";
 			// 
 			// thirdChannelLabel
 			// 
 			this.thirdChannelLabel.AutoSize = true;
-			this.thirdChannelLabel.Location = new System.Drawing.Point(969, 547);
+			this.thirdChannelLabel.Location = new System.Drawing.Point(727, 444);
+			this.thirdChannelLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.thirdChannelLabel.Name = "thirdChannelLabel";
-			this.thirdChannelLabel.Size = new System.Drawing.Size(17, 17);
+			this.thirdChannelLabel.Size = new System.Drawing.Size(14, 13);
 			this.thirdChannelLabel.TabIndex = 6;
 			this.thirdChannelLabel.Text = "B";
 			// 
@@ -116,17 +143,19 @@
             "YCbCr separation",
             "HSV separation",
             "Lab separation"});
-			this.separationCombobox.Location = new System.Drawing.Point(667, 736);
+			this.separationCombobox.Location = new System.Drawing.Point(500, 598);
+			this.separationCombobox.Margin = new System.Windows.Forms.Padding(2);
 			this.separationCombobox.Name = "separationCombobox";
-			this.separationCombobox.Size = new System.Drawing.Size(182, 24);
+			this.separationCombobox.Size = new System.Drawing.Size(138, 21);
 			this.separationCombobox.TabIndex = 7;
 			this.separationCombobox.SelectedIndexChanged += new System.EventHandler(this.separationCombobox_SelectedIndexChanged);
 			// 
 			// pickFileButton
 			// 
-			this.pickFileButton.Location = new System.Drawing.Point(441, 713);
+			this.pickFileButton.Location = new System.Drawing.Point(385, 584);
+			this.pickFileButton.Margin = new System.Windows.Forms.Padding(2);
 			this.pickFileButton.Name = "pickFileButton";
-			this.pickFileButton.Size = new System.Drawing.Size(148, 47);
+			this.pickFileButton.Size = new System.Drawing.Size(111, 38);
 			this.pickFileButton.TabIndex = 8;
 			this.pickFileButton.Text = "Choose file";
 			this.pickFileButton.UseVisualStyleBackColor = true;
@@ -135,27 +164,205 @@
 			// separationTypeLabel
 			// 
 			this.separationTypeLabel.AutoSize = true;
-			this.separationTypeLabel.Location = new System.Drawing.Point(667, 713);
+			this.separationTypeLabel.Location = new System.Drawing.Point(500, 579);
+			this.separationTypeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.separationTypeLabel.Name = "separationTypeLabel";
-			this.separationTypeLabel.Size = new System.Drawing.Size(112, 17);
+			this.separationTypeLabel.Size = new System.Drawing.Size(84, 13);
 			this.separationTypeLabel.TabIndex = 9;
 			this.separationTypeLabel.Text = "Separation type:";
 			// 
 			// runButton
 			// 
-			this.runButton.Location = new System.Drawing.Point(861, 713);
+			this.runButton.Location = new System.Drawing.Point(647, 584);
+			this.runButton.Margin = new System.Windows.Forms.Padding(2);
 			this.runButton.Name = "runButton";
-			this.runButton.Size = new System.Drawing.Size(75, 47);
+			this.runButton.Size = new System.Drawing.Size(56, 38);
 			this.runButton.TabIndex = 10;
 			this.runButton.Text = "RUN";
 			this.runButton.UseVisualStyleBackColor = true;
 			this.runButton.Click += new System.EventHandler(this.runButton_Click);
 			// 
+			// labGroupbox
+			// 
+			this.labGroupbox.Controls.Add(this.label8);
+			this.labGroupbox.Controls.Add(this.label7);
+			this.labGroupbox.Controls.Add(this.labPresetsCombobox);
+			this.labGroupbox.Controls.Add(this.whitePointPresetCombobox);
+			this.labGroupbox.Controls.Add(this.label5);
+			this.labGroupbox.Controls.Add(this.label6);
+			this.labGroupbox.Controls.Add(this.label4);
+			this.labGroupbox.Controls.Add(this.label3);
+			this.labGroupbox.Controls.Add(this.label2);
+			this.labGroupbox.Controls.Add(this.label1);
+			this.labGroupbox.Controls.Add(this.Wy);
+			this.labGroupbox.Controls.Add(this.Wx);
+			this.labGroupbox.Controls.Add(this.By);
+			this.labGroupbox.Controls.Add(this.Bx);
+			this.labGroupbox.Controls.Add(this.Gy);
+			this.labGroupbox.Controls.Add(this.Gx);
+			this.labGroupbox.Controls.Add(this.Ry);
+			this.labGroupbox.Controls.Add(this.Rx);
+			this.labGroupbox.Location = new System.Drawing.Point(9, 550);
+			this.labGroupbox.Name = "labGroupbox";
+			this.labGroupbox.Size = new System.Drawing.Size(353, 123);
+			this.labGroupbox.TabIndex = 27;
+			this.labGroupbox.TabStop = false;
+			this.labGroupbox.Text = "Lab";
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(67, 95);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(101, 13);
+			this.label8.TabIndex = 44;
+			this.label8.Text = "White point presets:";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(230, 32);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(45, 13);
+			this.label7.TabIndex = 43;
+			this.label7.Text = "Presets:";
+			// 
+			// labPresetsCombobox
+			// 
+			this.labPresetsCombobox.FormattingEnabled = true;
+			this.labPresetsCombobox.Items.AddRange(new object[] {
+            "None",
+            "adobeRGB(1998)"});
+			this.labPresetsCombobox.Location = new System.Drawing.Point(230, 51);
+			this.labPresetsCombobox.Name = "labPresetsCombobox";
+			this.labPresetsCombobox.Size = new System.Drawing.Size(121, 21);
+			this.labPresetsCombobox.TabIndex = 42;
+			this.labPresetsCombobox.SelectedIndexChanged += new System.EventHandler(this.labPresetsCombobox_SelectedIndexChanged);
+			// 
+			// whitePointPresetCombobox
+			// 
+			this.whitePointPresetCombobox.FormattingEnabled = true;
+			this.whitePointPresetCombobox.Location = new System.Drawing.Point(172, 92);
+			this.whitePointPresetCombobox.Name = "whitePointPresetCombobox";
+			this.whitePointPresetCombobox.Size = new System.Drawing.Size(62, 21);
+			this.whitePointPresetCombobox.TabIndex = 41;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(189, 16);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(18, 13);
+			this.label5.TabIndex = 40;
+			this.label5.Text = "W";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(138, 16);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(14, 13);
+			this.label6.TabIndex = 39;
+			this.label6.Text = "B";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(84, 16);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(15, 13);
+			this.label4.TabIndex = 38;
+			this.label4.Text = "G";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(33, 16);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(15, 13);
+			this.label3.TabIndex = 37;
+			this.label3.Text = "R";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(1, 61);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(12, 13);
+			this.label2.TabIndex = 36;
+			this.label2.Text = "y";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(1, 35);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(12, 13);
+			this.label1.TabIndex = 35;
+			this.label1.Text = "x";
+			// 
+			// Wy
+			// 
+			this.Wy.Location = new System.Drawing.Point(172, 59);
+			this.Wy.Name = "Wy";
+			this.Wy.Size = new System.Drawing.Size(45, 20);
+			this.Wy.TabIndex = 34;
+			// 
+			// Wx
+			// 
+			this.Wx.Location = new System.Drawing.Point(172, 32);
+			this.Wx.Name = "Wx";
+			this.Wx.Size = new System.Drawing.Size(45, 20);
+			this.Wx.TabIndex = 33;
+			// 
+			// By
+			// 
+			this.By.Location = new System.Drawing.Point(121, 59);
+			this.By.Name = "By";
+			this.By.Size = new System.Drawing.Size(45, 20);
+			this.By.TabIndex = 32;
+			// 
+			// Bx
+			// 
+			this.Bx.Location = new System.Drawing.Point(121, 32);
+			this.Bx.Name = "Bx";
+			this.Bx.Size = new System.Drawing.Size(45, 20);
+			this.Bx.TabIndex = 31;
+			// 
+			// Gy
+			// 
+			this.Gy.Location = new System.Drawing.Point(70, 59);
+			this.Gy.Name = "Gy";
+			this.Gy.Size = new System.Drawing.Size(45, 20);
+			this.Gy.TabIndex = 30;
+			// 
+			// Gx
+			// 
+			this.Gx.Location = new System.Drawing.Point(70, 32);
+			this.Gx.Name = "Gx";
+			this.Gx.Size = new System.Drawing.Size(45, 20);
+			this.Gx.TabIndex = 29;
+			// 
+			// Ry
+			// 
+			this.Ry.Location = new System.Drawing.Point(19, 59);
+			this.Ry.Name = "Ry";
+			this.Ry.Size = new System.Drawing.Size(45, 20);
+			this.Ry.TabIndex = 28;
+			// 
+			// Rx
+			// 
+			this.Rx.Location = new System.Drawing.Point(19, 32);
+			this.Rx.Name = "Rx";
+			this.Rx.Size = new System.Drawing.Size(45, 20);
+			this.Rx.TabIndex = 27;
+			// 
 			// MainForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1384, 799);
+			this.ClientSize = new System.Drawing.Size(1038, 676);
+			this.Controls.Add(this.labGroupbox);
 			this.Controls.Add(this.runButton);
 			this.Controls.Add(this.separationTypeLabel);
 			this.Controls.Add(this.pickFileButton);
@@ -167,12 +374,15 @@
 			this.Controls.Add(this.pictureBox3);
 			this.Controls.Add(this.pictureBox2);
 			this.Controls.Add(this.mainPictureBox);
+			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "MainForm";
 			this.Text = "Computer Graphics 3";
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+			this.labGroupbox.ResumeLayout(false);
+			this.labGroupbox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -191,6 +401,25 @@
 		private System.Windows.Forms.Button pickFileButton;
 		private System.Windows.Forms.Label separationTypeLabel;
 		private System.Windows.Forms.Button runButton;
+		private System.Windows.Forms.GroupBox labGroupbox;
+		private System.Windows.Forms.ComboBox labPresetsCombobox;
+		private System.Windows.Forms.ComboBox whitePointPresetCombobox;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TextBox Wy;
+		private System.Windows.Forms.TextBox By;
+		private System.Windows.Forms.TextBox Bx;
+		private System.Windows.Forms.TextBox Gy;
+		private System.Windows.Forms.TextBox Gx;
+		private System.Windows.Forms.TextBox Ry;
+		private System.Windows.Forms.TextBox Rx;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.TextBox Wx;
 	}
 }
 

@@ -7,18 +7,17 @@ namespace GK3.Processors
 	{
 		// 3x3 matrix used to transform from RGB to XYZ space.
 		private readonly Matrix3 ConversionMatrix;
-		private Vector3 WhiteReference;
-		private double gamma;
+		private readonly Vector3 WhiteReference;
+		private readonly double gamma;
 
-		// TODO: WTF IS THAT
 		private const double Epsilon = 0.008856; // Intent is 216/24389
 		private const double Kappa = 903.3; // Intent is 24389/27
 
 		// These four vectors are already in xyz space.
-		public LabProcessor(Vector3 r, Vector3 g, Vector3 b, Vector3 w, double gamma)
+		public LabProcessor(LabData data)
 		{
-			w = w.MultiplyScalar(1/w.Y);
-			var mtx = new Matrix3(new Vector3[] {r, g, b});
+			Vector3 w = data.W.MultiplyScalar(1/data.W.Y);
+			var mtx = new Matrix3(new Vector3[] {data.R, data.G, data.B});
 			var vec = mtx.Invert().MultiplyVector(w);
 			var tmp = new Matrix3
 			{
@@ -31,7 +30,7 @@ namespace GK3.Processors
 			};
 			ConversionMatrix = mtx.MultiplyMatrix3(tmp);
 			WhiteReference = w.MultiplyScalar(100);
-			this.gamma = gamma;
+			this.gamma = data.Gamma;
 		}
 
 		public void Process(int a, int r, int g, int b, DirectBitmap bmp1, DirectBitmap bmp2, DirectBitmap bmp3, int x, int y)
@@ -46,6 +45,11 @@ namespace GK3.Processors
 			var L = Math.Max(0, 116*_y - 16);
 			var A = 500*(_x - _y);
 			var B = 200*(_y - _z);
+
+			// TODO: bmp1
+			bmp1[x, y] = (a << 24) | ((int)(L * 255) << 16) | ((int)(L * 255) << 8) | (int)(L * 255);
+			bmp2[x, y] = a << 24 | ((int) (A*255) << 16) | ((int) ((1 - A)*255) << 8) | 255;
+			bmp3[x, y] = a << 24 | ((int) (B*255) << 16) | 255 << 8 | (int) ((1 - B)*255);
 		}
 
 		private static double PivotXyz(double n)
