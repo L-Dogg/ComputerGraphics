@@ -19,35 +19,107 @@ namespace GK3
 	{
 		None = 0,
 		adobeRGB = 1,
+		appleRGB = 2,
+		sRGB = 3,
+		PAL_SECAM = 4,
+		NTSC = 5,
+		cieRGB = 6,
 	}
 
+	public enum IluminantPresets
+	{
+		C = 0,
+		D50 ,
+		D65,
+		E,
+	}
+
+	// Source:
+	// http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
 	public partial class MainForm : Form
 	{
 		private DirectBitmap mainBitmap;
 		private Processor processor;
 		private static Dictionary<LabPresets, LabData> presetDictionary = new Dictionary<LabPresets, LabData>();
+		private static Dictionary<IluminantPresets, IluminantData> iluminantDictionary = new Dictionary<IluminantPresets, IluminantData>();
+
 
 		private static void PopulateLabData()
 		{
-			// Iluminant D65
-			var aRgb = new LabData(0.6400, 0.3300,
+			#region Lab presets
+			var adobeRgb = new LabData(0.6400, 0.3300,
 									0.2100, 0.7100,
 									0.1500, 0.0600,
 									0.31273, 0.32902, 
-									2.2);
-			presetDictionary.Add(LabPresets.adobeRGB, aRgb);
+									2.2,
+									IluminantPresets.D65);
+			presetDictionary.Add(LabPresets.adobeRGB, adobeRgb);
+			
+			var appleRgb = new LabData(0.6250, 0.3400,
+									0.2800, 0.5950,
+									0.1550, 0.0700,
+									0.31273, 0.32902,
+									1.8,
+									IluminantPresets.D65);
+			presetDictionary.Add(LabPresets.appleRGB, appleRgb);
+
+			var sRGB = new LabData(0.6400, 0.3300,
+								0.3000, 0.6000,
+								0.1500, 0.0600,
+								0.31273, 0.32902,
+								2.2,
+								IluminantPresets.D65);
+
+			presetDictionary.Add(LabPresets.sRGB, sRGB);
+
+			var palSecamRGB = new LabData(0.6400, 0.3300,
+										0.2900, 0.6000,
+										0.1500, 0.0600,
+										0.31273, 0.32902,
+										2.2,
+										IluminantPresets.D65);
+			presetDictionary.Add(LabPresets.PAL_SECAM, palSecamRGB);
+
+			var ntscRGB = new LabData(0.6700, 0.3300,
+									0.2100, 0.7100,
+									0.1400, 0.0800,
+									0.31006, 0.31615,
+                                    2.2,
+									IluminantPresets.C);
+			presetDictionary.Add(LabPresets.NTSC, ntscRGB);
+
+			var cieRGB = new LabData(0.7350, 0.2650,
+									0.2740, 0.7170, 
+									0.1670, 0.0090,
+									0.33333, 0.33333,
+									2.2,
+									IluminantPresets.E);
+			presetDictionary.Add(LabPresets.cieRGB, cieRGB);
+			#endregion
+
+			#region Iluminant presets
+
+			iluminantDictionary.Add(IluminantPresets.C, new IluminantData(0.31006, 0.31615));
+			iluminantDictionary.Add(IluminantPresets.D50, new IluminantData(0.34567, 0.35850));
+			iluminantDictionary.Add(IluminantPresets.D65, new IluminantData(0.31273, 0.32902));
+			iluminantDictionary.Add(IluminantPresets.E, new IluminantData(0.33333, 0.33333));
+
+			#endregion
 		}
 
 		public MainForm()
 		{
 			InitializeComponent();
 			PopulateLabData();
+
 			mainPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
 			pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
 			pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
 			pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
+
 			separationCombobox.SelectedIndex = 0;
 			labPresetsCombobox.SelectedIndex = 1;
+
 			mainBitmap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/barn.bmp"));
 			mainPictureBox.Image = mainBitmap.Bitmap;
 			processor = new Processor(mainBitmap);
@@ -86,11 +158,10 @@ namespace GK3
 					processor.Process(pictureBox2, pictureBox3, pictureBox4, new HSVProcessor());
 					break;
 				case Mode.Lab:
-					// TODO: GAMMA
 					LabData lab = null;
 					if ((LabPresets) labPresetsCombobox.SelectedIndex == LabPresets.None)
 						lab = new LabData(double.Parse(Rx.Text), double.Parse(Ry.Text), double.Parse(Gx.Text), double.Parse(Gy.Text),
-							double.Parse(Bx.Text), double.Parse(By.Text), double.Parse(Wx.Text), double.Parse(Wy.Text), 2.2); // O TUTEJ GAMMA HARDKODZONA
+							double.Parse(Bx.Text), double.Parse(By.Text), double.Parse(Wx.Text), double.Parse(Wy.Text), double.Parse(gammaTexbox.Text), null);
 					else
 						lab = presetDictionary[(LabPresets) labPresetsCombobox.SelectedIndex];
 
@@ -129,8 +200,6 @@ namespace GK3
 			}
 		}
 
-
-
 		private void changeLabTextboxes(LabPresets preset)
 		{
 			var data = presetDictionary[preset];
@@ -142,6 +211,15 @@ namespace GK3
 			By.Text = data.B.Y.ToString();
 			Wx.Text = data.W.X.ToString();
 			Wy.Text = data.W.Y.ToString();
+			gammaTexbox.Text = data.Gamma.ToString();
+			this.whitePointPresetCombobox.SelectedIndex = (int) data.Iluminant.Value;
+		}
+
+		private void changeWhiteTextboxes(IluminantPresets preset)
+		{
+			var data = iluminantDictionary[preset];
+			Wx.Text = data.X.ToString();
+			Wy.Text = data.Y.ToString();
 		}
 
 		private void separationCombobox_SelectedIndexChanged(object sender, EventArgs e)
@@ -152,6 +230,11 @@ namespace GK3
 		private void labPresetsCombobox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			changeLabTextboxes((LabPresets)labPresetsCombobox.SelectedIndex);
+		}
+
+		private void whitePointPresetCombobox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			changeWhiteTextboxes((IluminantPresets) whitePointPresetCombobox.SelectedIndex);
 		}
 	}
 }

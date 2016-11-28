@@ -13,10 +13,12 @@ namespace GK3.Utilities
 		public Vector3 B { get; }
 		public Vector3 W { get; }
 		public double Gamma { get; }
+		public IluminantPresets? Iluminant { get; }
 
-		public LabData(double Rx, double Ry, double Gx, double Gy, double Bx, double By, double Wx, double Wy, double gamma)
+	public LabData(double Rx, double Ry, double Gx, double Gy, double Bx, double By, double Wx, double Wy, double gamma, IluminantPresets? preset)
 		{
 			this.Gamma = gamma;
+			this.Iluminant = preset;
 			this.R = new Vector3(Rx, Ry, 1 - Rx - Ry);
 			this.G = new Vector3(Gx, Gy, 1 - Gx - Gy);
 			this.B = new Vector3(Bx, By, 1 - Bx - By);

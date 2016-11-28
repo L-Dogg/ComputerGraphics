@@ -29,7 +29,7 @@ namespace GK3.Processors
 				}
 			};
 			ConversionMatrix = mtx.MultiplyMatrix3(tmp);
-			WhiteReference = w.MultiplyScalar(100); // TODO: zbadac
+			WhiteReference = w.MultiplyScalar(100);
 			this.gamma = data.Gamma;
 		}
 

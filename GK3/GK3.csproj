@@ -61,6 +61,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\DirectBitmap.cs" />
+    <Compile Include="Utilities\IluminantData.cs" />
     <Compile Include="Utilities\LabData.cs" />
     <Compile Include="Utilities\Matrix.cs" />
     <Compile Include="Utilities\Vector3.cs" />

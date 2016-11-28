@@ -58,6 +58,8 @@
 			this.Gx = new System.Windows.Forms.TextBox();
 			this.Ry = new System.Windows.Forms.TextBox();
 			this.Rx = new System.Windows.Forms.TextBox();
+			this.gammaLabel = new System.Windows.Forms.Label();
+			this.gammaTexbox = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -184,6 +186,8 @@
 			// 
 			// labGroupbox
 			// 
+			this.labGroupbox.Controls.Add(this.gammaTexbox);
+			this.labGroupbox.Controls.Add(this.gammaLabel);
 			this.labGroupbox.Controls.Add(this.label8);
 			this.labGroupbox.Controls.Add(this.label7);
 			this.labGroupbox.Controls.Add(this.labPresetsCombobox);
@@ -232,7 +236,12 @@
 			this.labPresetsCombobox.FormattingEnabled = true;
 			this.labPresetsCombobox.Items.AddRange(new object[] {
             "None",
-            "adobeRGB(1998)"});
+            "adobeRGB(1998)",
+            "appleRGB",
+            "sRGB",
+            "PAL/SECAM RGB",
+            "NTSC RGB",
+            "CIE RGB"});
 			this.labPresetsCombobox.Location = new System.Drawing.Point(230, 51);
 			this.labPresetsCombobox.Name = "labPresetsCombobox";
 			this.labPresetsCombobox.Size = new System.Drawing.Size(121, 21);
@@ -242,10 +251,16 @@
 			// whitePointPresetCombobox
 			// 
 			this.whitePointPresetCombobox.FormattingEnabled = true;
+			this.whitePointPresetCombobox.Items.AddRange(new object[] {
+            "C",
+            "D50 ",
+            "D65",
+            "E"});
 			this.whitePointPresetCombobox.Location = new System.Drawing.Point(172, 92);
 			this.whitePointPresetCombobox.Name = "whitePointPresetCombobox";
 			this.whitePointPresetCombobox.Size = new System.Drawing.Size(62, 21);
 			this.whitePointPresetCombobox.TabIndex = 41;
+			this.whitePointPresetCombobox.SelectedIndexChanged += new System.EventHandler(this.whitePointPresetCombobox_SelectedIndexChanged);
 			// 
 			// label5
 			// 
@@ -357,6 +372,23 @@
 			this.Rx.Size = new System.Drawing.Size(45, 20);
 			this.Rx.TabIndex = 27;
 			// 
+			// gammaLabel
+			// 
+			this.gammaLabel.AutoSize = true;
+			this.gammaLabel.Location = new System.Drawing.Point(239, 94);
+			this.gammaLabel.Name = "gammaLabel";
+			this.gammaLabel.Size = new System.Drawing.Size(13, 13);
+			this.gammaLabel.TabIndex = 45;
+			this.gammaLabel.Text = "γ";
+			// 
+			// gammaTexbox
+			// 
+			this.gammaTexbox.Location = new System.Drawing.Point(259, 92);
+			this.gammaTexbox.Name = "gammaTexbox";
+			this.gammaTexbox.Size = new System.Drawing.Size(68, 20);
+			this.gammaTexbox.TabIndex = 46;
+			this.gammaTexbox.Text = "2.2";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -420,6 +452,8 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.TextBox Wx;
+		private System.Windows.Forms.Label gammaLabel;
+		private System.Windows.Forms.TextBox gammaTexbox;
 	}
 }
 
