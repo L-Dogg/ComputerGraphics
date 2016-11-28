@@ -29,14 +29,14 @@ namespace GK3.Processors
 				}
 			};
 			ConversionMatrix = mtx.MultiplyMatrix3(tmp);
-			WhiteReference = w.MultiplyScalar(100);
+			WhiteReference = w.MultiplyScalar(100); // TODO: zbadac
 			this.gamma = data.Gamma;
 		}
 
 		public void Process(int a, int r, int g, int b, DirectBitmap bmp1, DirectBitmap bmp2, DirectBitmap bmp3, int x, int y)
 		{
 			var XYZ = ConversionMatrix.MultiplyVector(
-				new Vector3(GammaCorrection(r, gamma), GammaCorrection(g, gamma), GammaCorrection(b, gamma)));
+				new Vector3(GammaCorrection((double)r / 255.0, gamma), GammaCorrection((double)g / 255.0, gamma), GammaCorrection((double)b / 255.0, gamma)));
 
 			var _x = PivotXyz(XYZ.X / WhiteReference.X);
 			var _y = PivotXyz(XYZ.Y / WhiteReference.Y);
