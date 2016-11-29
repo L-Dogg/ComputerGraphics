@@ -34,8 +34,6 @@ namespace GK3
 		E,
 	}
 
-	// Source:
-	// http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
 	public partial class MainForm : Form
 	{
 		private DirectBitmap mainBitmap;
@@ -43,7 +41,8 @@ namespace GK3
 		private static Dictionary<LabPresets, LabData> presetDictionary = new Dictionary<LabPresets, LabData>();
 		private static Dictionary<IluminantPresets, IluminantData> iluminantDictionary = new Dictionary<IluminantPresets, IluminantData>();
 
-
+		// Source:
+		// http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
 		private static void PopulateLabData()
 		{
 			#region Lab presets

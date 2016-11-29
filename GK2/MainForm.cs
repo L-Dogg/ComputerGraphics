@@ -252,7 +252,7 @@ namespace GK2
 			}
 			else if (animatedLightRadiobutton.Checked)
 			{
-				Polygon.LightVector.Z = 15;
+				Polygon.LightVector.Z = 100;
 				lightAnimationTimer.Start();
 				Radius = (double)background.BackgroundImage.Height / 2;
 			}
