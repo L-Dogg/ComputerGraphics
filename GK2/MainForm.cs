@@ -55,7 +55,7 @@ namespace GK2
 
 		private static Timer lightAnimationTimer = new Timer();
 
-		private static int LightTimerInterval = 10;
+		private static int LightTimerInterval = 100;
 
 		#region Public Methods
 
@@ -96,41 +96,41 @@ namespace GK2
 		private void PopulateScreen()
 		{
 			// Weiler-Atherton test:
-		//	var p = new Polygon();
-		//	var vtx = new List<Vertex>() { new Vertex(250, 250), new Vertex(115, 215), new Vertex(450, 50) };
-		//	p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[0]));
-		//	p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[1]));
-		//	p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[2]));
-		//	p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[0], vtx[1])));
-		//	p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[1], vtx[2])));
-		//	p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[2], vtx[0])));
-		//	p.Finished = true;
-		//	Polygons.Add(p);
-
-		//	var u = new Polygon();
-		//	var utx = new List<Vertex>() { new Vertex(350, 350), new Vertex(225, 175), new Vertex(333, 222) };
-		//	u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[0]));
-		//	u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[1]));
-		//	u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[2]));
-		//	u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[0], utx[1])));
-		//	u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[1], utx[2])));
-		//	u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[2], utx[0])));
-		//	u.Finished = true;
-		//	Polygons.Add(u);
-
-			// Light test:
 			var p = new Polygon();
-			var vtx = new List<Vertex>() { new Vertex(5, 5), new Vertex(800, 5), new Vertex(800, 500), new Vertex(5 , 500)};
+			var vtx = new List<Vertex>() { new Vertex(250, 250), new Vertex(115, 215), new Vertex(450, 50) };
 			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[0]));
 			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[1]));
 			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[2]));
-			p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[3]));
 			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[0], vtx[1])));
 			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[1], vtx[2])));
-			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[2], vtx[3])));
-			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[3], vtx[0])));
+			p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[2], vtx[0])));
 			p.Finished = true;
 			Polygons.Add(p);
+
+			var u = new Polygon();
+			var utx = new List<Vertex>() { new Vertex(350, 350), new Vertex(225, 175), new Vertex(333, 222) };
+			u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[0]));
+			u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[1]));
+			u.Vertices.AddLast(new LinkedListNode<Vertex>(utx[2]));
+			u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[0], utx[1])));
+			u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[1], utx[2])));
+			u.Segments.AddLast(new LinkedListNode<Segment>(new Segment(utx[2], utx[0])));
+			u.Finished = true;
+			Polygons.Add(u);
+
+			// Light test:
+			//var p = new Polygon();
+			//var vtx = new List<Vertex>() { new Vertex(5, 5), new Vertex(800, 5), new Vertex(800, 500), new Vertex(5 , 500)};
+			//p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[0]));
+			//p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[1]));
+			//p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[2]));
+			//p.Vertices.AddLast(new LinkedListNode<Vertex>(vtx[3]));
+			//p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[0], vtx[1])));
+			//p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[1], vtx[2])));
+			//p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[2], vtx[3])));
+			//p.Segments.AddLast(new LinkedListNode<Segment>(new Segment(vtx[3], vtx[0])));
+			//p.Finished = true;
+			//Polygons.Add(p);
 		}
 
 		public void SetContextMenuItems()
