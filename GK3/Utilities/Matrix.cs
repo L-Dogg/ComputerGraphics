@@ -39,7 +39,7 @@ namespace GK3.Utilities
 			for (var i = 0; i < SIZE; i++)
 				ret.tab[i] = this.tab[i, 0]*v.X + this.tab[i, 1]*v.Y + this.tab[i, 2]*v.Z;
 
-			return v;
+			return ret;
 		}
 
 		public Matrix3 MultiplyScalar(double s)

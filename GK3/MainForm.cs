@@ -228,7 +228,9 @@ namespace GK3
 
 		private void labPresetsCombobox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			changeLabTextboxes((LabPresets)labPresetsCombobox.SelectedIndex);
+			var idx = (LabPresets)labPresetsCombobox.SelectedIndex;
+			if (idx != LabPresets.None)
+				changeLabTextboxes(idx);
 		}
 
 		private void whitePointPresetCombobox_SelectedIndexChanged(object sender, EventArgs e)

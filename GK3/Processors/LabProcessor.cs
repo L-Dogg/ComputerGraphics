@@ -18,6 +18,8 @@ namespace GK3.Processors
 		{
 			Vector3 w = data.W.MultiplyScalar(1/data.W.Y);
 			var mtx = new Matrix3(new Vector3[] {data.R, data.G, data.B});
+			var inv = mtx.Invert();
+			var ret = inv.MultiplyVector(w);
 			var vec = mtx.Invert().MultiplyVector(w);
 			var tmp = new Matrix3
 			{
@@ -42,14 +44,13 @@ namespace GK3.Processors
 			var _y = PivotXyz(XYZ.Y / WhiteReference.Y);
 			var _z = PivotXyz(XYZ.Z / WhiteReference.Z);
 
-			var L = Math.Max(0, 116*_y - 16);
-			var A = 500*(_x - _y);
-			var B = 200*(_y - _z);
+			var L = Math.Max(0, 116 * _y - 16) / 100;
+			var A = 500*(_x - _y) + 128;
+			var B = 200*(_y - _z) + 128;
 
-			// TODO: bmp1
 			bmp1[x, y] = (a << 24) | ((int)(L * 255) << 16) | ((int)(L * 255) << 8) | (int)(L * 255);
-			bmp2[x, y] = a << 24 | ((int) (A*255) << 16) | ((int) ((1 - A)*255) << 8) | 255;
-			bmp3[x, y] = a << 24 | ((int) (B*255) << 16) | 255 << 8 | (int) ((1 - B)*255);
+			bmp2[x, y] = (a << 24) | ((int) (A) << 16) | ((int) ((255 - A)) << 8) | 128;
+			bmp3[x, y] = (a << 24) | ((int) (B) << 16) | 128 << 8 | (int) ((255 - B));
 		}
 
 		private static double PivotXyz(double n)
@@ -59,7 +60,7 @@ namespace GK3.Processors
 		
 		private static double GammaCorrection(double value, double gamma)
 		{
-			return Math.Pow(value, gamma);
+			return Math.Pow(value, gamma) * 100;
 		}
 	}
 }
