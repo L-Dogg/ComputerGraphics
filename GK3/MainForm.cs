@@ -41,6 +41,8 @@ namespace GK3
 		private static Dictionary<LabPresets, LabData> presetDictionary = new Dictionary<LabPresets, LabData>();
 		private static Dictionary<IluminantPresets, IluminantData> iluminantDictionary = new Dictionary<IluminantPresets, IluminantData>();
 
+		private bool CoordsChanged = false;
+
 		// Source:
 		// http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
 		private static void PopulateLabData()
@@ -122,6 +124,20 @@ namespace GK3
 			mainBitmap = DirectBitmap.FromBitmap(new Bitmap("../../Resources/barn.bmp"));
 			mainPictureBox.Image = mainBitmap.Bitmap;
 			processor = new Processor(mainBitmap);
+
+			this.Rx.TextChanged += Rx_TextChanged;
+			this.Ry.TextChanged += Rx_TextChanged;
+			this.Gx.TextChanged += Rx_TextChanged;
+			this.Gy.TextChanged += Rx_TextChanged;
+			this.Bx.TextChanged += Rx_TextChanged;
+			this.By.TextChanged += Rx_TextChanged;
+			this.Wx.TextChanged += Rx_TextChanged;
+			this.Wy.TextChanged += Rx_TextChanged;
+		}
+
+		private void Rx_TextChanged(object sender, EventArgs e)
+		{
+			CoordsChanged = true;
 		}
 
 		private void pickFileButton_Click(object sender, EventArgs e)
@@ -158,7 +174,7 @@ namespace GK3
 					break;
 				case Mode.Lab:
 					LabData lab = null;
-					if ((LabPresets) labPresetsCombobox.SelectedIndex == LabPresets.None)
+					if (CoordsChanged || (LabPresets) labPresetsCombobox.SelectedIndex == LabPresets.None)
 						lab = new LabData(double.Parse(Rx.Text), double.Parse(Ry.Text), double.Parse(Gx.Text), double.Parse(Gy.Text),
 							double.Parse(Bx.Text), double.Parse(By.Text), double.Parse(Wx.Text), double.Parse(Wy.Text), double.Parse(gammaTexbox.Text), null);
 					else
@@ -228,6 +244,7 @@ namespace GK3
 
 		private void labPresetsCombobox_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			CoordsChanged = false;
 			var idx = (LabPresets)labPresetsCombobox.SelectedIndex;
 			if (idx != LabPresets.None)
 				changeLabTextboxes(idx);
