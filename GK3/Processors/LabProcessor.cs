@@ -14,6 +14,7 @@ namespace GK3.Processors
 		private const double Kappa = 903.3; // Intent is 24389/27
 
 		// These four vectors are already in xyz space.
+		// http://www.ryanjuckett.com/programming/rgb-color-space-conversion/
 		public LabProcessor(LabData data)
 		{
 			Vector3 w = data.W.MultiplyScalar(1/data.W.Y);
