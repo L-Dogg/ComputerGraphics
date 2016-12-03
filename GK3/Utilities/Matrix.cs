@@ -81,7 +81,7 @@ namespace GK3.Utilities
 			// check if the input is a singular matrix (non-invertable)
 			// (note that the epsilon here was arbitrarily chosen)
 			if (determinant > -0.000001f && determinant < 0.000001f)
-				return null;
+				throw new NonInvertibleMatrixException();
 
 			// the inverse of inMat is (1 / determinant) * adjoint(inMat)
 			var invDet = 1.0f / determinant;
