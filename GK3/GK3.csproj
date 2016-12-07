@@ -64,6 +64,7 @@
     <Compile Include="Utilities\IluminantData.cs" />
     <Compile Include="Utilities\LabData.cs" />
     <Compile Include="Utilities\Matrix.cs" />
+    <Compile Include="Utilities\NonInvertibleMatrixException.cs" />
     <Compile Include="Utilities\Vector3.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
