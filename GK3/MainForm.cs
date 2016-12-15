@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using GK3.Processors;
 using GK3.Utilities;
+using System.Drawing.Imaging;
 
 namespace GK3
 {
@@ -264,6 +265,42 @@ namespace GK3
 		private void whitePointPresetCombobox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			changeWhiteTextboxes((IluminantPresets) whitePointPresetCombobox.SelectedIndex);
+		}
+
+		private void saveFileButton_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog dialog = new SaveFileDialog();
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				
+				this.pictureBox2.Image.Save($"{dialog.FileName}_channel_{firstChannelLabel.Text}.bmp", ImageFormat.Bmp);
+				this.pictureBox3.Image.Save($"{dialog.FileName}_channel_{secondChannelLabel.Text}.bmp", ImageFormat.Bmp);
+				this.pictureBox4.Image.Save($"{dialog.FileName}_channel_{thirdChannelLabel.Text}.bmp", ImageFormat.Bmp);
+			}
+		}
+
+		private void toGrayScaleButton_Click(object sender, EventArgs e)
+		{
+			for (var x = 0; x < mainBitmap.Width; x++)
+			{
+				for (var y = 0; y < mainBitmap.Height; y++)
+				{
+					var color = mainBitmap[x, y];
+					var a = ((byte)(color >> 24)) & 255;
+					var r = ((byte)(color >> 16)) & 255;
+					var g = ((byte)(color >> 8)) & 255;
+					var b = ((byte)color) & 255;
+
+					int _r = (int)((double)r * (double)1.0/3.0);
+					int _g = (int)((double)g * (double)5.0/9.0);
+					int _b = (int)((double)b * (double)1.0/9.0);
+
+					int greyValue = _r + _g + _b;
+
+					mainBitmap[x, y] = a << 24 | greyValue << 16 | greyValue << 8 | greyValue;
+					this.mainPictureBox.Image = mainBitmap.Bitmap;
+				}
+			}
 		}
 	}
 }

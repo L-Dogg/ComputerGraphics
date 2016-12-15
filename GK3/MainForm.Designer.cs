@@ -40,6 +40,8 @@
 			this.separationTypeLabel = new System.Windows.Forms.Label();
 			this.runButton = new System.Windows.Forms.Button();
 			this.labGroupbox = new System.Windows.Forms.GroupBox();
+			this.gammaTexbox = new System.Windows.Forms.TextBox();
+			this.gammaLabel = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.labPresetsCombobox = new System.Windows.Forms.ComboBox();
@@ -58,8 +60,8 @@
 			this.Gx = new System.Windows.Forms.TextBox();
 			this.Ry = new System.Windows.Forms.TextBox();
 			this.Rx = new System.Windows.Forms.TextBox();
-			this.gammaLabel = new System.Windows.Forms.Label();
-			this.gammaTexbox = new System.Windows.Forms.TextBox();
+			this.saveFileButton = new System.Windows.Forms.Button();
+			this.toGrayScaleButton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -212,6 +214,23 @@
 			this.labGroupbox.TabIndex = 27;
 			this.labGroupbox.TabStop = false;
 			this.labGroupbox.Text = "Lab";
+			// 
+			// gammaTexbox
+			// 
+			this.gammaTexbox.Location = new System.Drawing.Point(259, 92);
+			this.gammaTexbox.Name = "gammaTexbox";
+			this.gammaTexbox.Size = new System.Drawing.Size(68, 20);
+			this.gammaTexbox.TabIndex = 46;
+			this.gammaTexbox.Text = "2.2";
+			// 
+			// gammaLabel
+			// 
+			this.gammaLabel.AutoSize = true;
+			this.gammaLabel.Location = new System.Drawing.Point(239, 94);
+			this.gammaLabel.Name = "gammaLabel";
+			this.gammaLabel.Size = new System.Drawing.Size(13, 13);
+			this.gammaLabel.TabIndex = 45;
+			this.gammaLabel.Text = "γ";
 			// 
 			// label8
 			// 
@@ -372,28 +391,33 @@
 			this.Rx.Size = new System.Drawing.Size(45, 20);
 			this.Rx.TabIndex = 27;
 			// 
-			// gammaLabel
+			// saveFileButton
 			// 
-			this.gammaLabel.AutoSize = true;
-			this.gammaLabel.Location = new System.Drawing.Point(239, 94);
-			this.gammaLabel.Name = "gammaLabel";
-			this.gammaLabel.Size = new System.Drawing.Size(13, 13);
-			this.gammaLabel.TabIndex = 45;
-			this.gammaLabel.Text = "γ";
+			this.saveFileButton.Location = new System.Drawing.Point(385, 628);
+			this.saveFileButton.Name = "saveFileButton";
+			this.saveFileButton.Size = new System.Drawing.Size(111, 36);
+			this.saveFileButton.TabIndex = 28;
+			this.saveFileButton.Text = "Save File";
+			this.saveFileButton.UseVisualStyleBackColor = true;
+			this.saveFileButton.Click += new System.EventHandler(this.saveFileButton_Click);
 			// 
-			// gammaTexbox
+			// toGrayScaleButton
 			// 
-			this.gammaTexbox.Location = new System.Drawing.Point(259, 92);
-			this.gammaTexbox.Name = "gammaTexbox";
-			this.gammaTexbox.Size = new System.Drawing.Size(68, 20);
-			this.gammaTexbox.TabIndex = 46;
-			this.gammaTexbox.Text = "2.2";
+			this.toGrayScaleButton.Location = new System.Drawing.Point(503, 628);
+			this.toGrayScaleButton.Name = "toGrayScaleButton";
+			this.toGrayScaleButton.Size = new System.Drawing.Size(96, 36);
+			this.toGrayScaleButton.TabIndex = 29;
+			this.toGrayScaleButton.Text = "To Gray Scale";
+			this.toGrayScaleButton.UseVisualStyleBackColor = true;
+			this.toGrayScaleButton.Click += new System.EventHandler(this.toGrayScaleButton_Click);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1038, 676);
+			this.Controls.Add(this.toGrayScaleButton);
+			this.Controls.Add(this.saveFileButton);
 			this.Controls.Add(this.labGroupbox);
 			this.Controls.Add(this.runButton);
 			this.Controls.Add(this.separationTypeLabel);
@@ -454,6 +478,8 @@
 		private System.Windows.Forms.TextBox Wx;
 		private System.Windows.Forms.Label gammaLabel;
 		private System.Windows.Forms.TextBox gammaTexbox;
+		private System.Windows.Forms.Button saveFileButton;
+		private System.Windows.Forms.Button toGrayScaleButton;
 	}
 }
 
