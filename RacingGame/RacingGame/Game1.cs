@@ -56,6 +56,7 @@ namespace RacingGame
 
 		private string LightModel = "Phong";
 		private string ShadingModel = "Flat";
+		private string CurrentModel => $"{ShadingModel}{LightModel}";
 		private Vector3 lightPos1;
 	
 		#endregion
@@ -86,7 +87,7 @@ namespace RacingGame
 
 		private void UpdateLightData()
 		{
-			lightPos = new Vector3(5, 10, -2);
+			lightPos = new Vector3(5, 5, -2);
 			lightPower = 1.0f;
 			ambientPower = 0.3f;
 		}
@@ -115,9 +116,9 @@ namespace RacingGame
 			var keys = Keyboard.GetState();
 
 			// Turn
-			if (keys.IsKeyDown(Keys.Right) && moveSpeed > 0.00005f)
+			if (keys.IsKeyDown(Keys.Right) && (moveSpeed > 0.00005f || moveSpeed < -0.00005f))
 				leftRightRot += turningSpeed;
-			if (keys.IsKeyDown(Keys.Left) && moveSpeed > 0.00005f)
+			if (keys.IsKeyDown(Keys.Left) && (moveSpeed > 0.00005f || moveSpeed < -0.00005f))
 				leftRightRot -= turningSpeed;
 
 			// Accelerate
@@ -129,6 +130,8 @@ namespace RacingGame
 				moveSpeed -= acceleration;
 			else if (moveSpeed < 0.0f)
 				moveSpeed += acceleration;
+			if (moveSpeed < 0.0005f && moveSpeed > -0.0005f)
+				moveSpeed = 0;
 
 			// Change light model:
 			if (keys.IsKeyDown(Keys.D1))
@@ -362,7 +365,7 @@ namespace RacingGame
 					wMatrix = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationY(MathHelper.Pi) 
 						* Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
 					var worldMatrix = modelTransforms[mesh.ParentBone.Index] * wMatrix;
-					currentEffect.CurrentTechnique = currentEffect.Techniques[ShadingModel + LightModel];
+					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
 					currentEffect.Parameters["xWorldViewProjection"].SetValue(worldMatrix * viewMatrix * projectionMatrix);
 					currentEffect.Parameters["xTexture"].SetValue(textures[i++]);
 
@@ -406,7 +409,7 @@ namespace RacingGame
 				foreach (var currentEffect in mesh.Effects)
 				{
 					var worldMatrix = skyboxTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(carPosition);
-					currentEffect.CurrentTechnique = currentEffect.Techniques[ShadingModel + LightModel];
+					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
 					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
 					currentEffect.Parameters["xView"].SetValue(viewMatrix);
 					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
@@ -434,7 +437,7 @@ namespace RacingGame
 
 		private void DrawCity()
 		{
-			effect.CurrentTechnique = effect.Techniques[ShadingModel + LightModel];
+			effect.CurrentTechnique = effect.Techniques[CurrentModel];
 			effect.Parameters["xWorld"].SetValue(Matrix.Identity);
 			effect.Parameters["xView"].SetValue(viewMatrix);
 			effect.Parameters["xProjection"].SetValue(projectionMatrix);

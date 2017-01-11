@@ -13,7 +13,7 @@ float xLight1Intensity = 1.0f;
 
 // Ambient Light:
 float4 AmbientColor = float4(1, 1, 1, 1);
-float AmbientIntensity = 0.7f;
+float AmbientIntensity = 0.3f;
 
 // Diffuse Light:
 float3 DiffuseLightDirection = float3(1, 0, 0);
@@ -88,7 +88,8 @@ float4 Flat_Phong_PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 	float3 R = reflect(L, N);
 
-	float4 lightColor = PhongLighting(N, L, V, R);
+	float4 lightColor = PhongLighting(N, -xLight1Pos, V, R);
+	//float4 lightColor = PhongLighting(N, L, V, R);
 	lightColor.a = 1;
 
 	float4 textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
@@ -105,7 +106,8 @@ float4 Flat_Blinn_PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 V = normalize(xCamPos - L);
 	float3 H = normalize(L + V);
 
-	float4 lightColor = BlinnLighting(N, L, H);
+	float4 lightColor = BlinnLighting(N, -xLight1Pos, H);
+	//float4 lightColor = BlinnLighting(N, L, H);
 	lightColor.a = 1;
 
 	float4 textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
