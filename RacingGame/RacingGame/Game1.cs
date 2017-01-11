@@ -48,6 +48,14 @@ namespace RacingGame
 
 		#endregion
 
+		#region Shading and Ligth Fields
+
+		private string LightModel = "Phong";
+		private string ShadingModel = "Phong";
+		private Vector3 lightPos1;
+	
+		#endregion
+
 		#region Update and Process Keyboard
 
 		protected override void Update(GameTime gameTime)
@@ -101,11 +109,14 @@ namespace RacingGame
 			var turningSpeed = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
 			turningSpeed *= 1.6f * gameSpeed;
 			var keys = Keyboard.GetState();
+
+			// Turn
 			if (keys.IsKeyDown(Keys.Right) && moveSpeed != 0)
 				leftRightRot += turningSpeed;
 			if (keys.IsKeyDown(Keys.Left) && moveSpeed != 0)
 				leftRightRot -= turningSpeed;
 
+			// Accelerate
 			if (keys.IsKeyDown(Keys.Up))
 				moveSpeed += acceleration;
 			else if (keys.IsKeyDown(Keys.Down))
@@ -114,6 +125,20 @@ namespace RacingGame
 				moveSpeed -= acceleration;
 			else if (moveSpeed < 0.0f)
 				moveSpeed += acceleration;
+
+			// Change light model:
+			if (keys.IsKeyDown(Keys.D1))
+				this.LightModel = "Phong";
+			else if (keys.IsKeyDown(Keys.D2))
+				this.LightModel = "Blinn";
+
+			// Change shading model:
+			if (keys.IsKeyDown(Keys.Q))
+				this.ShadingModel = "Flat";
+			else if (keys.IsKeyDown(Keys.W))
+				this.ShadingModel = "Gouraud";
+			else if (keys.IsKeyDown(Keys.E))
+				this.ShadingModel = "Phong";
 
 			var additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
 			carRotation *= additionalRot;
@@ -159,12 +184,21 @@ namespace RacingGame
 			sceneryTexture = Content.Load<Texture2D>("texturemap");
 			skyboxModel = LoadModel("skybox2", out skyboxTextures);
 			xwingModel = LoadModel("car", out carTextures);
+			//xwingModel = LoadModel("xwing");
 
 			SetUpCamera();
 			SetUpVertices();
 
 			SetUpBoundingBoxes();
 
+		}
+
+		private Model LoadModel(string assetName)
+		{
+			Model newModel = Content.Load<Model>(assetName); foreach (ModelMesh mesh in newModel.Meshes)
+				foreach (ModelMeshPart meshPart in mesh.MeshParts)
+					meshPart.Effect = effect.Clone();
+			return newModel;
 		}
 
 		private Model LoadModel(string assetName, out Texture2D[] textures)
@@ -296,7 +330,7 @@ namespace RacingGame
 			DrawCity();
 			var car1Matrix = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
 			DrawModel(xwingModel, carTextures, car1Matrix, "Simplest");
-
+			
 			base.Draw(gameTime);
 		}
 
@@ -332,14 +366,31 @@ namespace RacingGame
 			{
 				foreach (var currentEffect in mesh.Effects)
 				{
+					wMatrix = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationY(MathHelper.Pi) 
+						* Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
 					var worldMatrix = modelTransforms[mesh.ParentBone.Index] * wMatrix;
-					currentEffect.CurrentTechnique = currentEffect.Techniques[technique];
+					currentEffect.CurrentTechnique = currentEffect.Techniques["RENDER_VL_PHONG"];
 					currentEffect.Parameters["xWorldViewProjection"].SetValue(worldMatrix * viewMatrix * projectionMatrix);
 					currentEffect.Parameters["xTexture"].SetValue(textures[i++]);
-					currentEffect.Parameters["xWorld"].SetValue(modelTransforms[mesh.ParentBone.Index] * worldMatrix);
+
+					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
+					currentEffect.Parameters["xView"].SetValue(viewMatrix);
+					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
+
 					currentEffect.Parameters["xLightPos"].SetValue(lightPos);
 					currentEffect.Parameters["xLightPower"].SetValue(lightPower);
 					currentEffect.Parameters["xAmbient"].SetValue(ambientPower);
+
+					// Nowe:
+					currentEffect.Parameters["Ka"].SetValue(0.5f);
+					currentEffect.Parameters["Ks"].SetValue(0.5f);
+					currentEffect.Parameters["Kd"].SetValue(0.75f);
+					currentEffect.Parameters["A"].SetValue(15f);
+
+					currentEffect.Parameters["xLight1Pos"].SetValue(lightPos);
+					currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+					currentEffect.Parameters["ambientLight"].SetValue(ambientPower);
+
 				}
 				mesh.Draw();
 			}
@@ -363,11 +414,21 @@ namespace RacingGame
 				foreach (var currentEffect in mesh.Effects)
 				{
 					var worldMatrix = skyboxTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(carPosition);
-					currentEffect.CurrentTechnique = currentEffect.Techniques["Textured"];
+					currentEffect.CurrentTechnique = currentEffect.Techniques["RENDER_VL_PHONG"];
 					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
 					currentEffect.Parameters["xView"].SetValue(viewMatrix);
 					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
 					currentEffect.Parameters["xTexture"].SetValue(skyboxTextures[i++]);
+
+					// Nowe:
+					currentEffect.Parameters["Ka"].SetValue(0.5f);
+					currentEffect.Parameters["Ks"].SetValue(0.5f);
+					currentEffect.Parameters["Kd"].SetValue(0.75f);
+					currentEffect.Parameters["A"].SetValue(15f);
+
+					currentEffect.Parameters["xLight1Pos"].SetValue(lightPos);
+					currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+					currentEffect.Parameters["ambientLight"].SetValue(ambientPower);
 				}
 				mesh.Draw();
 			}
@@ -379,7 +440,7 @@ namespace RacingGame
 
 		private void DrawCity()
 		{
-			effect.CurrentTechnique = effect.Techniques["Textured"];
+			effect.CurrentTechnique = effect.Techniques["RENDER_VL_PHONG"];
 			effect.Parameters["xWorld"].SetValue(Matrix.Identity);
 			effect.Parameters["xView"].SetValue(viewMatrix);
 			effect.Parameters["xProjection"].SetValue(projectionMatrix);
@@ -387,6 +448,16 @@ namespace RacingGame
 			effect.Parameters["xEnableLighting"].SetValue(true);
 			effect.Parameters["xLightDirection"].SetValue(lightDirection);
 			effect.Parameters["xAmbient"].SetValue(0.5f);
+
+			// Nowe:
+			effect.Parameters["Ka"].SetValue(0.5f);
+			effect.Parameters["Ks"].SetValue(0.5f);
+			effect.Parameters["Kd"].SetValue(0.75f);
+			effect.Parameters["A"].SetValue(15f);
+
+			effect.Parameters["xLight1Pos"].SetValue(lightPos);
+			effect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+			effect.Parameters["ambientLight"].SetValue(ambientPower);
 
 			foreach (var pass in effect.CurrentTechnique.Passes)
 			{

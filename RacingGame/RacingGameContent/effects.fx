@@ -19,6 +19,31 @@ struct MyVertexToPixel
 	float3 Position3D    : TEXCOORD2;
 };
 
+struct VS_INPUT
+{
+	float4 p : POSITION;
+	float2 t : TEXCOORD;
+	float3 n : NORMAL;
+};
+
+//pixel shader inputs
+struct PS_INPUT_PV
+{
+	float4 p : SV_POSITION;
+	float2 t : TEXCOORD;
+	float4 i : COLOR;
+};
+
+//------- K - variables --------
+float Ka;
+float Kd;
+float Ks;
+float A;
+
+//------- Light - variables --------
+float3 xLight1Pos;
+float4 xLight1Color;
+float ambientLight;
 
 //------- Constants --------
 float4x4 xView;
@@ -27,7 +52,6 @@ float4x4 xWorld;
 float3 xLightDirection;
 float xAmbient;
 bool xEnableLighting;
-bool xShowNormals;
 float3 xCamPos;
 float3 xCamUp;
 float xPointSpriteSize;
@@ -37,7 +61,7 @@ float xLightPower;
 
 //------- Texture Samplers --------
 
-Texture xTexture;
+Texture2D xTexture;
 sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter=LINEAR; AddressU = mirror; AddressV = mirror;};
 
 //------- Technique: Colored --------
@@ -158,5 +182,70 @@ technique Simplest
 	{
 		VertexShader = compile vs_2_0 SimplestVertexShader();
 		PixelShader = compile ps_2_0 OurFirstPixelShader();
+	}
+}
+
+//------- Shading+Lightning functions --------
+
+float4 FlatShading_PhongLightning(float4 LColor, float3 N, float3 L, float3 V, float3 R)
+{
+	float4 Ia = Ka * ambientLight;
+	float4 Id = Kd * saturate(dot(N, L));
+	float4 Is = Ks * pow(saturate(dot(R, V)), A);
+
+	return Ia + (Id + Is) * LColor;
+}
+
+float4 FlatShading_BlinnLightning(float4 LColor, float3 N, float3 L, float3 H)
+{
+	float4 Ia = Ka * ambientLight;
+	float4 Id = Kd * saturate(dot(N, L));
+	float4 Is = Ks * pow(saturate(dot(N, H)), A);
+
+	return Ia + (Id + Is) * LColor;
+}
+
+//------- Shading+Lighting functions --------
+
+PixelToFrame PS_VERTEX_LIGHTING_PHONG(PS_INPUT_PV input)
+{
+	input.t.y--;
+	PixelToFrame Output = (PixelToFrame)0;
+	Output.Color = input.i * xTexture.Sample(TextureSampler, input.t);
+	return Output;
+}
+
+PS_INPUT_PV VS_VERTEX_LIGHTING_PHONG(VS_INPUT input)
+{
+	PS_INPUT_PV output;
+
+	//transform position to clip space
+	input.p = mul(input.p, xWorld);
+	output.p = mul(input.p, xView);
+	output.p = mul(output.p, xProjection);
+
+	//set texture coords
+	output.t = input.t;
+
+	//calculate lighting vectors
+	float3 N = normalize(mul(input.n, (float3x3) xWorld));
+	float3 V = normalize(xCamPos - (float3) input.p);
+	//DONOT USE -light.dir since the reflection returns a ray from the surface	
+	float3 R = reflect(xLight1Pos - N, N);
+
+	//calculate per vertex lighting intensity and interpolate it like a color
+	output.i = FlatShading_PhongLightning(xLight1Color, N, -xLight1Pos, V, R);
+
+	return output;
+}
+
+technique RENDER_VL_PHONG
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_2_0, VS_VERTEX_LIGHTING_PHONG()));
+		//SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_2_0, PS_VERTEX_LIGHTING_PHONG()));
+		//SetRasterizerState(rsSolid);
 	}
 }
