@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,7 +11,9 @@ namespace RacingGame
 	{
 		#region Private Fields
 		GraphicsDeviceManager graphics;
-		SpriteBatch spriteBatch;
+		SpriteBatch spriteBatch; private SpriteFont font;
+		SoundEffect soundEngine;
+		SoundEffectInstance soundEngineInstance;
 		GraphicsDevice device;
 		Effect effect;
 		Texture2D texture;
@@ -82,6 +85,16 @@ namespace RacingGame
 
 			UpdateCamera();
 			UpdateLightData();
+
+			//if (soundEngineInstance.State == SoundState.Stopped)
+			//{
+			//	soundEngineInstance.Volume = 0.75f;
+			//	soundEngineInstance.IsLooped = true;
+			//	soundEngineInstance.Play();
+			//}
+			//else
+			//	soundEngineInstance.Resume();
+
 			base.Update(gameTime);
 		}
 
@@ -185,7 +198,11 @@ namespace RacingGame
 		protected override void LoadContent()
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
+			font = Content.Load<SpriteFont>("Courier New");
 			device = graphics.GraphicsDevice;
+
+			soundEngine = Content.Load<SoundEffect>("engine_2");
+			soundEngineInstance = soundEngine.CreateInstance();
 
 			effect = Content.Load<Effect>("effects");
 			sceneryTexture = Content.Load<Texture2D>("texturemap");
@@ -196,7 +213,6 @@ namespace RacingGame
 			SetUpVertices();
 
 			SetUpBoundingBoxes();
-
 		}
 		
 		private Model LoadModel(string assetName, out Texture2D[] textures)
@@ -206,7 +222,10 @@ namespace RacingGame
 			var i = 0;
 			foreach (var mesh in newModel.Meshes)
 				foreach (BasicEffect currentEffect in mesh.Effects)
+				{
 					textures[i++] = currentEffect.Texture;
+					//this.effect.Parameters["Ka"].SetValue(currentEffect.Parameters["SpecularPower"].GetValueSingle());
+				}
 
 			foreach (var mesh in newModel.Meshes)
 				foreach (var meshPart in mesh.MeshParts)
@@ -328,7 +347,10 @@ namespace RacingGame
 			DrawCity();
 			var car1Matrix = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
 			DrawModel(xwingModel, carTextures, car1Matrix, "Simplest");
-			
+			spriteBatch.Begin();
+			spriteBatch.DrawString(font, $"{(int)(moveSpeed * 1000)} km/h", 
+				new Vector2(GraphicsDevice.Viewport.Width * 2 / 3, GraphicsDevice.Viewport.Height * 7 / 8), Color.Red);
+			spriteBatch.End();
 			base.Draw(gameTime);
 		}
 
