@@ -21,7 +21,7 @@ float AmbientIntensity = 0.3f;
 
 // Diffuse Light:
 float3 DiffuseLightDirection = float3(1, 0, 0);
-float4 DiffuseColor = float4(1, 1, 1, 1);
+//float4 DiffuseColor = float4(1, 1, 1, 1);
 float DiffuseIntensity = 1.0f;
 
 //------- Constants --------
@@ -29,6 +29,9 @@ float4x4 xView;
 float4x4 xProjection;
 float4x4 xWorld;
 float4x4 xWorldViewProjection;
+
+bool UseColors;
+float4 DiffuseColor;
 
 //------- Shader I/O structures --------
 struct VertexShaderInput
@@ -101,7 +104,11 @@ float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 	float4 lightColor = PhongLighting(N, L, V, R);
 	lightColor.a = 1;
 
-	float4 textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
+	float4 textureColor = 0;
+	if (UseColors)
+		textureColor = DiffuseColor;
+	else
+		textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
 	textureColor.a = 1;
 
 	return saturate(textureColor * lightColor);

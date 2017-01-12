@@ -54,8 +54,8 @@ namespace RacingGame
 
 		#region Shading and Ligth Fields
 
-		private string LightModel = "Phong";
 		private string ShadingModel = "Flat";
+		private string LightModel = "Phong";
 		private string CurrentModel => $"{ShadingModel}{LightModel}";
 		private Vector3 lightPos1;
 	
@@ -215,6 +215,27 @@ namespace RacingGame
 			return newModel;
 		}
 
+		private Model LoadModel(string assetName)
+		{
+
+			Model newModel = Content.Load<Model>(assetName);
+			foreach (ModelMesh mesh in newModel.Meshes)
+				foreach (ModelMeshPart meshPart in mesh.MeshParts)
+				{
+					if ((meshPart.Effect as BasicEffect).Texture == null)
+					{
+						effect.Parameters["UseColors"].SetValue(true);
+						effect.Parameters["DiffuseColor"].SetValue(new Vector4((meshPart.Effect as BasicEffect).DiffuseColor, 1));
+					}
+					else
+					{
+						effect.Parameters["xTexture"].SetValue((meshPart.Effect as BasicEffect).Texture);
+					}
+					meshPart.Effect = effect.Clone();
+				}
+			return newModel;
+		}
+
 		private void LoadFloorPlan()
 		{
 			floorPlan = new int[,]
@@ -367,8 +388,10 @@ namespace RacingGame
 					var worldMatrix = modelTransforms[mesh.ParentBone.Index] * wMatrix;
 					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
 					currentEffect.Parameters["xWorldViewProjection"].SetValue(worldMatrix * viewMatrix * projectionMatrix);
-					currentEffect.Parameters["xTexture"].SetValue(textures[i++]);
 
+					//if (textures != null && textures.Length != 0)
+					//	currentEffect.Parameters["xTexture"].SetValue(textures[i++]);
+					
 					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
 					currentEffect.Parameters["xView"].SetValue(viewMatrix);
 					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
