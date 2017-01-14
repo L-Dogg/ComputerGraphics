@@ -23,7 +23,7 @@ float4x4 xView;
 float4x4 xProjection;
 float4x4 xWorld;
 float4x4 xWorldViewProjection;
-int xLightCount = 1;
+int xLightCount = 2;
 float4x4 xLightPositions;
 
 
@@ -55,20 +55,18 @@ sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEA
 //------- Lighting functions --------
 float4 PhongLighting(float3 N, float3 L, float3 V, float3 R)
 {
-	float4 Ia = Ka;
 	float4 Id = Kd * xLightIntensity * saturate(dot(N, L));
 	float4 Is = Ks * xLightIntensity * pow(saturate(dot(R, V)), A);
 
-	return Ia * AmbientColor + (Id + Is) * xLightColor;
+	return (Id + Is) * xLightColor;
 }
 
 float4 BlinnLighting(float3 N, float3 L, float3 H)
 {
-	float4 Ia = Ka;
 	float4 Id = Kd * xLightIntensity * saturate(dot(N, L));
 	float4 Is = Ks * xLightIntensity * pow(saturate(dot(N, H)), 2 * A);
 
-	return Ia * AmbientColor + (Id + Is) * xLightColor;
+	return (Id + Is) * xLightColor;
 }
 
 //------- Flat vertex shader --------
@@ -102,6 +100,7 @@ float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 
 		lightColor += PhongLighting(N, L, V, R);
 	}
+	lightColor += Ka * AmbientColor;
 	lightColor.a = 1;
 
 	float4 textureColor = 0;
@@ -129,6 +128,7 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 
 		lightColor += BlinnLighting(N, L, H);
 	}
+	lightColor += Ka * AmbientColor;
 	lightColor.a = 1;
 	
 	float4 textureColor = 0;
@@ -184,6 +184,7 @@ VertexShaderOutput GouraudPhongVertexShader(VertexShaderInput input)
 
 		intensity += PhongLighting(N, L, V, R);
 	}
+	intensity += Ka * AmbientColor;
 	intensity.a = 1;
 
 	output.Intensity = intensity;
@@ -214,6 +215,7 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 
 		intensity += BlinnLighting(N, L, H);
 	}
+	intensity += Ka * AmbientColor;
 	intensity.a = 1;
 
 	output.Intensity = intensity;
@@ -280,6 +282,7 @@ float4 PhongPhongPixelShader(VertexShaderOutput input) : COLOR0
 
 		intensity += PhongLighting(N, L, V, R);
 	}
+	intensity += Ka * AmbientColor;
 	intensity.a = 1;
 
 	if (UseColors)
@@ -303,6 +306,7 @@ float4 PhongBlinnPixelShader(VertexShaderOutput input) : COLOR0
 
 		intensity += BlinnLighting(N, L, H);
 	}
+	intensity += Ka * AmbientColor;
 	intensity.a = 1;
 
 	if (UseColors)
