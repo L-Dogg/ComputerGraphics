@@ -45,6 +45,8 @@ namespace RacingGame
 		private Vector3 _lightPosition;
 		private float _ambientPower;
 
+		private Matrix _lightPositions;
+
 		private string _shadingModel = "Flat";
 		private string _lightingModel = "Phong";
 		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
@@ -303,6 +305,11 @@ namespace RacingGame
 		private void SetUpLightData()
 		{
 			_lightPosition = new Vector3(5, 10, 5);
+			_lightPositions = new Matrix
+				(5, 10, 5, 0,
+				1, 30, 3, 0,
+				0, 0, 0, 0,
+				0, 0, 0 , 0);
 			_ambientPower = 0.3f;
 		}
 
@@ -361,9 +368,11 @@ namespace RacingGame
 
 					_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 					_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
-					currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
-					currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+					//currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
+					//currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
 					currentEffect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
+
+					_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
 
 				}
 				mesh.Draw();
@@ -400,9 +409,11 @@ namespace RacingGame
 
 					_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 					_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
-					currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
-					currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+					//currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
+					//currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
 					currentEffect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
+
+					_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
 				}
 				mesh.Draw();
 			}
@@ -426,9 +437,11 @@ namespace RacingGame
 
 			_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 			_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
-			_effect.Parameters["xLight1Pos"].SetValue(_lightPosition);
-			_effect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+			//_effect.Parameters["xLight1Pos"].SetValue(_lightPosition);
+			//_effect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
 			_effect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
+
+			_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
 
 			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{
