@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,115 +7,80 @@ namespace RacingGame
 {
 	public class Game1 : Game
 	{
-		#region Private Fields
-		GraphicsDeviceManager graphics;
-		SpriteBatch spriteBatch; private SpriteFont font;
-		SoundEffect soundEngine;
-		SoundEffectInstance soundEngineInstance;
-		GraphicsDevice device;
-		Effect effect;
-		Texture2D texture;
+		private readonly GraphicsDeviceManager _graphics;
+		private SpriteBatch _spriteBatch;
+		private SpriteFont _font;
+		private GraphicsDevice _device;
+		private Effect _effect;
 
-		VertexPositionTexture[] vertices;
+		private Matrix _viewMatrix;
+		private Matrix _projectionMatrix;
 
-		Quaternion cameraRotation = Quaternion.Identity;
-		Vector3 lightDirection = new Vector3(3, -2, 5);
-		Matrix viewMatrix;
-		Matrix projectionMatrix;
+		private int[,] _floorPlan;
+		private VertexBuffer _vertexBuffer;
+		private Texture2D _sceneryTexture;
+		private BoundingBox _raceTrackBox;
 
-		int[,] floorPlan;
+		private Model _skyboxModel;
+		private Texture2D[] _skyboxTextures;
 
-		VertexBuffer cityVertexBuffer;
-		Texture2D sceneryTexture;
-		int[] buildingHeights = { 0, 0, 0, 0, 0, 0 };
-		
-		BoundingBox[] buildingBoundingBoxes;
+		private Model _carModel;
+		private Texture2D[] _carTextures;
+		private Vector3 _carPosition = new Vector3(8, 0.037f, -3);
+		private Quaternion _carRotation = Quaternion.Identity;
 
-		Model skyboxModel;
-		Texture2D[] skyboxTextures;
+		private Vector3 _cameraUp;
+		private Vector3 _cameraPosition;
+		private Quaternion _cameraRotation = Quaternion.Identity;
 
-		Model xwingModel;
-		Texture2D[] carTextures;
+		private readonly float _acceleration = 0.0005f;
+		private float _moveSpeed;
+		private float _gameSpeed = 1.0f;
+		private enum CollisionType { None, Boundary }
 
-		Vector3 carPosition = new Vector3(8, 0.037f, -3);
-		Quaternion carRotation = Quaternion.Identity;
-		private float moveSpeed = 0;
-		private float acceleration = 0.0005f;
+		private Vector3 _lightPosition;
+		private float _ambientPower;
 
-        float gameSpeed = 1.0f;
-		enum CollisionType { None, Building }
+		private string _shadingModel = "Flat";
+		private string _lightingModel = "Phong";
+		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
 
-		Vector3 lightPos;
-		float lightPower;
-		float ambientPower;
-
-		private Vector3 camup;
-		private Vector3 campos;
-		#endregion
-
-		#region Shading and Ligth Fields
-
-		private string ShadingModel = "Flat";
-		private string LightModel = "Phong";
-		private string CurrentModel => $"{ShadingModel}{LightModel}";
-		private Vector3 lightPos1;
-	
-		#endregion
-
-		#region Update and Process Keyboard
+		#region Update
 
 		protected override void Update(GameTime gameTime)
 		{
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-				this.Exit();
+				Exit();
 
 			ProcessKeyboard(gameTime);
-			MoveForward(ref carPosition, carRotation, moveSpeed);
+			MoveForward(ref _carPosition, _carRotation, _moveSpeed);
 
-			var xwingSpere = new BoundingSphere(carPosition, 0.04f);
-			if (CheckCollision(xwingSpere) != CollisionType.None)
+			var carSpere = new BoundingSphere(_carPosition, 0.04f);
+			if (CheckCollision(carSpere) != CollisionType.None)
 			{
-				moveSpeed = 0f;
-				carRotation = Quaternion.Identity;
-				carPosition = new Vector3(8, 0.037f, -3);
-				gameSpeed /= 1.1f;
+				_moveSpeed = 0f;
+				_carRotation = Quaternion.Identity;
+				_carPosition = new Vector3(8, 0.037f, -3);
+				_gameSpeed /= 1.1f;
 			}
 
 			UpdateCamera();
-			UpdateLightData();
-
-			//if (soundEngineInstance.State == SoundState.Stopped)
-			//{
-			//	soundEngineInstance.Volume = 0.75f;
-			//	soundEngineInstance.IsLooped = true;
-			//	soundEngineInstance.Play();
-			//}
-			//else
-			//	soundEngineInstance.Resume();
-
 			base.Update(gameTime);
-		}
-
-		private void UpdateLightData()
-		{
-			lightPos = new Vector3(5, 5, -2);
-			lightPower = 1.0f;
-			ambientPower = 0.3f;
 		}
 
 		private void UpdateCamera()
 		{
-			cameraRotation = Quaternion.Lerp(cameraRotation, carRotation, 0.08f);
+			_cameraRotation = Quaternion.Lerp(_cameraRotation, _carRotation, 0.08f);
 
-			campos = new Vector3(0, 0.33f, 0.88f);
-			campos = Vector3.Transform(campos, Matrix.CreateFromQuaternion(cameraRotation));
-			campos += carPosition;
+			_cameraPosition = new Vector3(0, 0.33f, 0.88f);
+			_cameraPosition = Vector3.Transform(_cameraPosition, Matrix.CreateFromQuaternion(_cameraRotation));
+			_cameraPosition += _carPosition;
 
-			camup = new Vector3(0, 1, 0);
-			camup = Vector3.Transform(camup, Matrix.CreateFromQuaternion(cameraRotation));
+			_cameraUp = new Vector3(0, 1, 0);
+			_cameraUp = Vector3.Transform(_cameraUp, Matrix.CreateFromQuaternion(_cameraRotation));
 
-			viewMatrix = Matrix.CreateLookAt(campos, carPosition, camup);
-			projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 0.2f, 500.0f);
+			_viewMatrix = Matrix.CreateLookAt(_cameraPosition, _carPosition, _cameraUp);
+			//_projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, 0.2f, 500.0f);
 		}
 
 		private void ProcessKeyboard(GameTime gameTime)
@@ -125,43 +88,41 @@ namespace RacingGame
 			float leftRightRot = 0;
 
 			var turningSpeed = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
-			turningSpeed *= 1.6f * gameSpeed;
+			turningSpeed *= 1.6f * _gameSpeed;
 			var keys = Keyboard.GetState();
 
 			// Turn
-			if (keys.IsKeyDown(Keys.Right) && (moveSpeed > 0.00005f || moveSpeed < -0.00005f))
+			if (keys.IsKeyDown(Keys.Right) && (_moveSpeed > 0.00005f || _moveSpeed < -0.00005f))
 				leftRightRot += turningSpeed;
-			if (keys.IsKeyDown(Keys.Left) && (moveSpeed > 0.00005f || moveSpeed < -0.00005f))
+			if (keys.IsKeyDown(Keys.Left) && (_moveSpeed > 0.00005f || _moveSpeed < -0.00005f))
 				leftRightRot -= turningSpeed;
 
 			// Accelerate
 			if (keys.IsKeyDown(Keys.Up))
-				moveSpeed += acceleration;
+				_moveSpeed += _acceleration;
 			else if (keys.IsKeyDown(Keys.Down))
-				moveSpeed -= acceleration;
-			else if (moveSpeed > 0.0f)
-				moveSpeed -= acceleration;
-			else if (moveSpeed < 0.0f)
-				moveSpeed += acceleration;
-			if (moveSpeed < 0.0005f && moveSpeed > -0.0005f)
-				moveSpeed = 0;
+				_moveSpeed -= _acceleration;
+			else if (_moveSpeed > 0.0f)
+				_moveSpeed -= _acceleration;
+			else if (_moveSpeed < 0.0f)
+				_moveSpeed += _acceleration;
 
 			// Change light model:
 			if (keys.IsKeyDown(Keys.D1))
-				this.LightModel = "Phong";
+				_lightingModel = "Phong";
 			else if (keys.IsKeyDown(Keys.D2))
-				this.LightModel = "Blinn";
+				_lightingModel = "Blinn";
 
 			// Change shading model:
 			if (keys.IsKeyDown(Keys.Q))
-				this.ShadingModel = "Flat";
+				_shadingModel = "Flat";
 			else if (keys.IsKeyDown(Keys.W))
-				this.ShadingModel = "Gouraud";
+				_shadingModel = "Gouraud";
 			else if (keys.IsKeyDown(Keys.E))
-				this.ShadingModel = "Phong";
+				_shadingModel = "Phong";
 
 			var additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
-			carRotation *= additionalRot;
+			_carRotation *= additionalRot;
 		}
 
 		private void MoveForward(ref Vector3 position, Quaternion rotationQuat, float speed)
@@ -172,64 +133,66 @@ namespace RacingGame
 
 		private CollisionType CheckCollision(BoundingSphere sphere)
 		{
-			for (var i = 0; i < buildingBoundingBoxes.Length; i++)
-				if (buildingBoundingBoxes[i].Contains(sphere) != ContainmentType.Disjoint)
-					return CollisionType.Building;
-
-			return CollisionType.None;
+			return _raceTrackBox.Contains(sphere) != ContainmentType.Contains ? CollisionType.Boundary : CollisionType.None;
 		}
 
 		#endregion
 
-		#region Initialize Load SetUp
+		#region Setup
 
 		protected override void Initialize()
 		{
-			graphics.PreferredBackBufferWidth = 500;
-			graphics.PreferredBackBufferHeight = 500;
-			graphics.IsFullScreen = false;
-			graphics.ApplyChanges();
-			Window.Title = "Racing";
+			_graphics.PreferredBackBufferWidth = 1280;
+			_graphics.PreferredBackBufferHeight = 720;
+			_graphics.IsFullScreen = false;
+			_graphics.ApplyChanges();
+			Window.Title = "Project Cars";
+
 			LoadFloorPlan();
-			lightDirection.Normalize();
+
 			base.Initialize();
 		}
 
 		protected override void LoadContent()
 		{
-			spriteBatch = new SpriteBatch(GraphicsDevice);
-			font = Content.Load<SpriteFont>("Courier New");
-			device = graphics.GraphicsDevice;
+			_spriteBatch = new SpriteBatch(GraphicsDevice);
+			_font = Content.Load<SpriteFont>("Courier-New");
+			_device = _graphics.GraphicsDevice;
 
-			soundEngine = Content.Load<SoundEffect>("engine_2");
-			soundEngineInstance = soundEngine.CreateInstance();
-
-			effect = Content.Load<Effect>("effects");
-			sceneryTexture = Content.Load<Texture2D>("texturemap");
-			skyboxModel = LoadModel("skybox2", out skyboxTextures);
-			xwingModel = LoadModel("car", out carTextures);
+			_effect = Content.Load<Effect>("effects");
+			_sceneryTexture = Content.Load<Texture2D>("texturemap");
+			_skyboxModel = LoadModel("skybox2", out _skyboxTextures);
+			_carModel = LoadModel("car");
 
 			SetUpCamera();
 			SetUpVertices();
 
 			SetUpBoundingBoxes();
+			SetUpLightData();
 		}
-		
+
 		private Model LoadModel(string assetName, out Texture2D[] textures)
 		{
 			var newModel = Content.Load<Model>(assetName);
 			textures = new Texture2D[7];
+
 			var i = 0;
 			foreach (var mesh in newModel.Meshes)
+			{
 				foreach (BasicEffect currentEffect in mesh.Effects)
 				{
 					textures[i++] = currentEffect.Texture;
 					//this.effect.Parameters["Ka"].SetValue(currentEffect.Parameters["SpecularPower"].GetValueSingle());
 				}
+			}
 
 			foreach (var mesh in newModel.Meshes)
+			{
 				foreach (var meshPart in mesh.MeshParts)
-					meshPart.Effect = effect.Clone();
+				{
+					meshPart.Effect = _effect.Clone();
+				}
+			}
 
 			return newModel;
 		}
@@ -243,193 +206,150 @@ namespace RacingGame
 				{
 					if ((meshPart.Effect as BasicEffect).Texture == null)
 					{
-						effect.Parameters["UseColors"].SetValue(true);
-						effect.Parameters["DiffuseColor"].SetValue(new Vector4((meshPart.Effect as BasicEffect).DiffuseColor, 1));
+						_effect.Parameters["UseColors"].SetValue(true);
+						_effect.Parameters["DiffuseColor"].SetValue(new Vector4((meshPart.Effect as BasicEffect).DiffuseColor, 1));
 					}
 					else
 					{
-						effect.Parameters["xTexture"].SetValue((meshPart.Effect as BasicEffect).Texture);
+						_effect.Parameters["xTexture"].SetValue((meshPart.Effect as BasicEffect).Texture);
 					}
-					meshPart.Effect = effect.Clone();
+					meshPart.Effect = _effect.Clone();
 				}
 			return newModel;
 		}
 
 		private void LoadFloorPlan()
 		{
-			floorPlan = new int[,]
+			_floorPlan = new[,]
 			 {
-				  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-				  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 			 };
 		}
 
 		private void SetUpBoundingBoxes()
 		{
-			var cityWidth = floorPlan.GetLength(0);
-			var cityLength = floorPlan.GetLength(1);
-
-
-			var bbList = new List<BoundingBox>();
-			for (var x = 0; x < cityWidth; x++)
-			{
-				for (var z = 0; z < cityLength; z++)
-				{
-					var buildingType = floorPlan[x, z];
-					if (buildingType != 0)
-					{
-						var buildingHeight = buildingHeights[buildingType];
-						var buildingPoints = new Vector3[2];
-						buildingPoints[0] = new Vector3(x, 0, -z);
-						buildingPoints[1] = new Vector3(x + 1, buildingHeight, -z - 1);
-						var buildingBox = BoundingBox.CreateFromPoints(buildingPoints);
-						bbList.Add(buildingBox);
-					}
-				}
-			}
-			buildingBoundingBoxes = bbList.ToArray();
-
+			var raceTrackWidth = _floorPlan.GetLength(0);
+			var raceTrackLength = _floorPlan.GetLength(1);
 
 			var boundaryPoints = new Vector3[2];
-			boundaryPoints[0] = new Vector3(0, 0, 0);
-			boundaryPoints[1] = new Vector3(cityWidth, 20, -cityLength);
-			BoundingBox.CreateFromPoints(boundaryPoints);
+			boundaryPoints[0] = new Vector3(0, -20, 0);
+			boundaryPoints[1] = new Vector3(raceTrackWidth, 20, -raceTrackLength);
+			_raceTrackBox = BoundingBox.CreateFromPoints(boundaryPoints);
 		}
 
 		private void SetUpCamera()
 		{
-			viewMatrix = Matrix.CreateLookAt(new Vector3(20, 13, -5), new Vector3(8, 0, -7), new Vector3(0, 1, 0));
-			projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 0.2f, 500.0f);
+			_viewMatrix = Matrix.CreateLookAt(new Vector3(20, 13, -5), new Vector3(8, 0, -7), new Vector3(0, 1, 0));
+			_projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, 0.2f, 500.0f);
 		}
 
 		private void SetUpVertices()
 		{
-			var differentBuildings = buildingHeights.Length - 1;
-			float imagesInTexture = 1 + differentBuildings * 2;
-
-			var cityWidth = floorPlan.GetLength(0);
-			var cityLength = floorPlan.GetLength(1);
-
+			var raceTrackWidth = _floorPlan.GetLength(0);
+			var raceTrackLength = _floorPlan.GetLength(1);
 
 			var verticesList = new List<VertexPositionNormalTexture>();
-			for (var x = 0; x < cityWidth; x++)
+			for (var x = 0; x < raceTrackWidth; x++)
 			{
-				for (var z = 0; z < cityLength; z++)
+				for (var z = 0; z < raceTrackLength; z++)
 				{
-					var currentbuilding = floorPlan[x, z];
+					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z), new Vector3(0, 1, 0), new Vector2(0, 1)));
+					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(0, 0)));
+					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z), new Vector3(0, 1, 0), new Vector2(1 / 11.0f, 1)));
 
-					//floor or ceiling
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, buildingHeights[currentbuilding], -z), new Vector3(0, 1, 0), new Vector2(currentbuilding * 2 / imagesInTexture, 1)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, buildingHeights[currentbuilding], -z - 1), new Vector3(0, 1, 0), new Vector2((currentbuilding * 2) / imagesInTexture, 0)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, buildingHeights[currentbuilding], -z), new Vector3(0, 1, 0), new Vector2((currentbuilding * 2 + 1) / imagesInTexture, 1)));
-
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, buildingHeights[currentbuilding], -z - 1), new Vector3(0, 1, 0), new Vector2((currentbuilding * 2) / imagesInTexture, 0)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, buildingHeights[currentbuilding], -z - 1), new Vector3(0, 1, 0), new Vector2((currentbuilding * 2 + 1) / imagesInTexture, 0)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, buildingHeights[currentbuilding], -z), new Vector3(0, 1, 0), new Vector2((currentbuilding * 2 + 1) / imagesInTexture, 1)));
+					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(0, 0)));
+					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(1 / 11.0f, 0)));
+					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z), new Vector3(0, 1, 0), new Vector2(1 / 11.0f, 1)));
 				}
 			}
 
-			cityVertexBuffer = new VertexBuffer(device, VertexPositionNormalTexture.VertexDeclaration, verticesList.Count, BufferUsage.WriteOnly);
-			cityVertexBuffer.SetData(verticesList.ToArray());
+			_vertexBuffer = new VertexBuffer(_device, VertexPositionNormalTexture.VertexDeclaration, verticesList.Count, BufferUsage.WriteOnly);
+			_vertexBuffer.SetData(verticesList.ToArray());
+		}
+
+		private void SetUpLightData()
+		{
+			_lightPosition = new Vector3(5, 10, 5);
+			_ambientPower = 0.3f;
 		}
 
 		public Game1()
 		{
-			graphics = new GraphicsDeviceManager(this);
+			_graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 		}
+
 		#endregion
 
 		#region Draw
 
 		protected override void Draw(GameTime gameTime)
 		{
-			device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.DarkSlateBlue, 1.0f, 0);
+			_device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.DarkSlateBlue, 1.0f, 0);
 
 			DrawSkybox();
-			DrawCity();
-			var car1Matrix = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
-			DrawModel(xwingModel, carTextures, car1Matrix, "Simplest");
-			spriteBatch.Begin();
-			spriteBatch.DrawString(font, $"{(int)(moveSpeed * 1000)} km/h", 
-				new Vector2(GraphicsDevice.Viewport.Width * 2 / 3, GraphicsDevice.Viewport.Height * 7 / 8), Color.Red);
-			spriteBatch.End();
+			DrawRaceTrack();
+			var carMatrix = Matrix.CreateScale(0.1f, 0.1f, 0.1f) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(_carRotation) *
+							Matrix.CreateTranslation(_carPosition);
+			DrawModel(_carModel, _carTextures, carMatrix);
+
+			//_spriteBatch.Begin();
+			//_spriteBatch.DrawString(_font, $"{(int)(_moveSpeed * 1000)} km/h",
+			//    new Vector2(GraphicsDevice.Viewport.Width * 2 / 3.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
+			//_spriteBatch.End();
+
 			base.Draw(gameTime);
 		}
 
-		// Old Drawing method
-		private void DrawModel()
-		{
-			var worldMatrix = Matrix.CreateScale(0.0005f, 0.0005f, 0.0005f) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
-
-			var xwingTransforms = new Matrix[xwingModel.Bones.Count];
-			xwingModel.CopyAbsoluteBoneTransformsTo(xwingTransforms);
-			foreach (var mesh in xwingModel.Meshes)
-			{
-				foreach (var currentEffect in mesh.Effects)
-				{
-					currentEffect.CurrentTechnique = currentEffect.Techniques["Colored"];
-					currentEffect.Parameters["xWorld"].SetValue(xwingTransforms[mesh.ParentBone.Index] * worldMatrix);
-					currentEffect.Parameters["xView"].SetValue(viewMatrix);
-					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
-					currentEffect.Parameters["AmbientIntensity"].SetValue(0.5f);
-				}
-				mesh.Draw();
-			}
-		}
-
-		private void DrawModel(Model model, Texture2D[] textures, Matrix wMatrix, string technique)
+		private void DrawModel(Model model, Texture2D[] textures, Matrix wMatrix)
 		{
 			var modelTransforms = new Matrix[model.Bones.Count];
 			model.CopyAbsoluteBoneTransformsTo(modelTransforms);
-			var i = 0;
+
+			//var i = 0;
 			foreach (var mesh in model.Meshes)
 			{
 				foreach (var currentEffect in mesh.Effects)
 				{
-					wMatrix = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationY(MathHelper.Pi) 
-						* Matrix.CreateFromQuaternion(carRotation) * Matrix.CreateTranslation(carPosition);
 					var worldMatrix = modelTransforms[mesh.ParentBone.Index] * wMatrix;
 					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
-					currentEffect.Parameters["xWorldViewProjection"].SetValue(worldMatrix * viewMatrix * projectionMatrix);
 
-					//if (textures != null && textures.Length != 0)
-					//	currentEffect.Parameters["xTexture"].SetValue(textures[i++]);
-					
 					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
-					currentEffect.Parameters["xView"].SetValue(viewMatrix);
-					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
-					currentEffect.Parameters["xCamUp"].SetValue(camup);
-					currentEffect.Parameters["xCamPos"].SetValue(campos);
+					currentEffect.Parameters["xView"].SetValue(_viewMatrix);
+					currentEffect.Parameters["xProjection"].SetValue(_projectionMatrix);
+					//currentEffect.Parameters["xTexture"].SetValue(textures[i++]);
 
-					// Nowe:
 					currentEffect.Parameters["Ka"].SetValue(0.5f);
 					currentEffect.Parameters["Ks"].SetValue(0.5f);
 					currentEffect.Parameters["Kd"].SetValue(0.75f);
-					currentEffect.Parameters["A"].SetValue(150f);
-					
+					currentEffect.Parameters["A"].SetValue(15f);
 
-					currentEffect.Parameters["xLight1Pos"].SetValue(lightPos);
+					_effect.Parameters["xCamUp"].SetValue(_cameraUp);
+					_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
+					currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
 					currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
-					currentEffect.Parameters["AmbientIntensity"].SetValue(ambientPower);
+					currentEffect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
 
 				}
 				mesh.Draw();
@@ -438,72 +358,69 @@ namespace RacingGame
 
 		private void DrawSkybox()
 		{
-			var ss = new SamplerState();
-			ss.AddressU = TextureAddressMode.Clamp;
-			ss.AddressV = TextureAddressMode.Clamp;
-			device.SamplerStates[0] = ss;
+			var ss = new SamplerState { AddressU = TextureAddressMode.Clamp, AddressV = TextureAddressMode.Clamp };
+			_device.SamplerStates[0] = ss;
 
 			var dss = new DepthStencilState { DepthBufferEnable = false };
-			device.DepthStencilState = dss;
+			_device.DepthStencilState = dss;
 
-			var skyboxTransforms = new Matrix[skyboxModel.Bones.Count];
-			skyboxModel.CopyAbsoluteBoneTransformsTo(skyboxTransforms);
+			var skyboxTransforms = new Matrix[_skyboxModel.Bones.Count];
+			_skyboxModel.CopyAbsoluteBoneTransformsTo(skyboxTransforms);
+
 			var i = 0;
-			foreach (var mesh in skyboxModel.Meshes)
+			foreach (var mesh in _skyboxModel.Meshes)
 			{
 				foreach (var currentEffect in mesh.Effects)
 				{
-					var worldMatrix = skyboxTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(carPosition);
+					var worldMatrix = skyboxTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(_carPosition);
 					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
 					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
-					currentEffect.Parameters["xView"].SetValue(viewMatrix);
-					currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
-					currentEffect.Parameters["xTexture"].SetValue(skyboxTextures[i++]);
-					currentEffect.Parameters["xCamUp"].SetValue(camup);
-					currentEffect.Parameters["xCamPos"].SetValue(campos);
+					currentEffect.Parameters["xView"].SetValue(_viewMatrix);
+					currentEffect.Parameters["xProjection"].SetValue(_projectionMatrix);
+					currentEffect.Parameters["xTexture"].SetValue(_skyboxTextures[i++]);
 
-					// Nowe:
 					currentEffect.Parameters["Ka"].SetValue(0.5f);
 					currentEffect.Parameters["Ks"].SetValue(0.5f);
 					currentEffect.Parameters["Kd"].SetValue(0.75f);
 					currentEffect.Parameters["A"].SetValue(15f);
 
-					currentEffect.Parameters["xLight1Pos"].SetValue(lightPos);
+					_effect.Parameters["xCamUp"].SetValue(_cameraUp);
+					_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
+					currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
 					currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
-					currentEffect.Parameters["AmbientIntensity"].SetValue(ambientPower);
+					currentEffect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
 				}
 				mesh.Draw();
 			}
 
-			dss = new DepthStencilState();
-			dss.DepthBufferEnable = true;
-			device.DepthStencilState = dss;
+			dss = new DepthStencilState { DepthBufferEnable = true };
+			_device.DepthStencilState = dss;
 		}
 
-		private void DrawCity()
+		private void DrawRaceTrack()
 		{
-			effect.CurrentTechnique = effect.Techniques[CurrentModel];
-			effect.Parameters["xWorld"].SetValue(Matrix.Identity);
-			effect.Parameters["xView"].SetValue(viewMatrix);
-			effect.Parameters["xProjection"].SetValue(projectionMatrix);
-			effect.Parameters["xTexture"].SetValue(sceneryTexture);
-			effect.Parameters["xCamUp"].SetValue(camup);
-			effect.Parameters["xCamPos"].SetValue(campos);
-			// Nowe:
-			effect.Parameters["Ka"].SetValue(0.5f);
-			effect.Parameters["Ks"].SetValue(0.5f);
-			effect.Parameters["Kd"].SetValue(0.75f);
-			effect.Parameters["A"].SetValue(15f);
+			_effect.CurrentTechnique = _effect.Techniques[CurrentModel];
+			_effect.Parameters["xWorld"].SetValue(Matrix.Identity);
+			_effect.Parameters["xView"].SetValue(_viewMatrix);
+			_effect.Parameters["xProjection"].SetValue(_projectionMatrix);
+			_effect.Parameters["xTexture"].SetValue(_sceneryTexture);
 
-			effect.Parameters["xLight1Pos"].SetValue(lightPos);
-			effect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
-			effect.Parameters["AmbientIntensity"].SetValue(ambientPower);
+			_effect.Parameters["Ka"].SetValue(0.5f);
+			_effect.Parameters["Ks"].SetValue(0.5f);
+			_effect.Parameters["Kd"].SetValue(0.75f);
+			_effect.Parameters["A"].SetValue(15f);
 
-			foreach (var pass in effect.CurrentTechnique.Passes)
+			_effect.Parameters["xCamUp"].SetValue(_cameraUp);
+			_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
+			_effect.Parameters["xLight1Pos"].SetValue(_lightPosition);
+			_effect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+			_effect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
+
+			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{
 				pass.Apply();
-				device.SetVertexBuffer(cityVertexBuffer);
-				device.DrawPrimitives(PrimitiveType.TriangleList, 0, cityVertexBuffer.VertexCount / 3);
+				_device.SetVertexBuffer(_vertexBuffer);
+				_device.DrawPrimitives(PrimitiveType.TriangleList, 0, _vertexBuffer.VertexCount / 3);
 			}
 		}
 

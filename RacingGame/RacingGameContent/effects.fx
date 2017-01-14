@@ -6,7 +6,7 @@ float A;
 
 //------- Light variables --------
 
-// Point Lights:
+// Point Light Sources:
 float3 xLight1Pos;
 float4 xLight1Color;
 float xLight1Intensity = 1.0f;
@@ -15,14 +15,9 @@ float xLight1Intensity = 1.0f;
 float3 xCamPos;
 float3 xCamUp;
 
-// Ambient Light:
+// Light:
 float4 AmbientColor = float4(1, 1, 1, 1);
 float AmbientIntensity = 0.3f;
-
-// Diffuse Light:
-float3 DiffuseLightDirection = float3(1, 0, 0);
-//float4 DiffuseColor = float4(1, 1, 1, 1);
-float DiffuseIntensity = 1.0f;
 
 //------- Constants --------
 float4x4 xView;
@@ -30,29 +25,25 @@ float4x4 xProjection;
 float4x4 xWorld;
 float4x4 xWorldViewProjection;
 
+//------- Texturing --------
 bool UseColors;
 float4 DiffuseColor;
 
 //------- Shader I/O structures --------
 struct VertexShaderInput
 {
-	float4 Position : POSITION0;
-	float4 Normal : NORMAL0;
+	float4 Position			 : POSITION0;
+	float4 Normal			 : NORMAL0;
 	float2 TextureCoordinate : TEXCOORD0;
 };
 
 struct VertexShaderOutput
 {
-	float4 Position : POSITION0;
-	float4 PositionWorld : TEXCOORD0;
+	float4 Position			 : POSITION0;
+	float4 PositionWorld	 : TEXCOORD0;
 	float2 TextureCoordinate : TEXCOORD1;
-	float4 Intensity : COLOR;
-	float3 Normal : NORMAL0;
-};
-
-struct PixelToFrame
-{
-	float4 Color : COLOR0;
+	float4 Intensity         : COLOR0;
+	float3 Normal			 : NORMAL0;
 };
 
 //------- Texture sampler --------
@@ -63,7 +54,7 @@ sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEA
 float4 PhongLighting(float3 N, float3 L, float3 V, float3 R)
 {
 	float4 Ia = Ka;
-	float4 Id = Kd * DiffuseIntensity * saturate(dot(N, L));
+	float4 Id = Kd * xLight1Intensity * saturate(dot(N, L));
 	float4 Is = Ks * xLight1Intensity * pow(saturate(dot(R, V)), A);
 
 	return Ia * AmbientColor + (Id + Is) * xLight1Color;
@@ -72,14 +63,14 @@ float4 PhongLighting(float3 N, float3 L, float3 V, float3 R)
 float4 BlinnLighting(float3 N, float3 L, float3 H)
 {
 	float4 Ia = Ka;
-	float4 Id = Kd * DiffuseIntensity * saturate(dot(N, L));
+	float4 Id = Kd * xLight1Intensity * saturate(dot(N, L));
 	float4 Is = Ks * xLight1Intensity * pow(saturate(dot(N, H)), 2 * A);
 
 	return Ia * AmbientColor + (Id + Is) * xLight1Color;
 }
 
-//------- Flat shading shader--------
-VertexShaderOutput CommonVertexShader(VertexShaderInput input)
+//------- Flat vertex shader --------
+VertexShaderOutput FlatVertexShader(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
@@ -93,9 +84,9 @@ VertexShaderOutput CommonVertexShader(VertexShaderInput input)
 	return output;
 }
 
+//------- Flat shading pixel shaders --------
 float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 {
-	input.TextureCoordinate.y--;
 	float3 N = normalize(cross(ddy(input.PositionWorld.xyz), ddx(input.PositionWorld.xyz)));
 	float3 L = normalize(xLight1Pos - (float3) input.PositionWorld);
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
@@ -116,7 +107,6 @@ float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 
 float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 {
-	input.TextureCoordinate.y--;
 	float3 N = normalize(cross(ddy(input.PositionWorld.xyz), ddx(input.PositionWorld.xyz)));
 	float3 L = normalize(xLight1Pos - (float3) input.PositionWorld);
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
@@ -125,7 +115,11 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 	float4 lightColor = BlinnLighting(N, L, H);
 	lightColor.a = 1;
 
-	float4 textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
+	float4 textureColor = 0;
+	if (UseColors)
+		textureColor = DiffuseColor;
+	else
+		textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
 	textureColor.a = 1;
 
 	return saturate(textureColor * lightColor);
@@ -136,7 +130,7 @@ technique FlatPhong
 {
 	pass Pass0
 	{
-		VertexShader = compile vs_3_0 CommonVertexShader();
+		VertexShader = compile vs_3_0 FlatVertexShader();
 		PixelShader = compile ps_3_0 FlatPhongPixelShader();
 	}
 }
@@ -145,37 +139,27 @@ technique FlatBlinn
 {
 	pass Pass0
 	{
-		VertexShader = compile vs_3_0 CommonVertexShader();
+		VertexShader = compile vs_3_0 FlatVertexShader();
 		PixelShader = compile ps_3_0 FlatBlinnPixelShader();
 	}
 }
 
-//------- Gouraud shading shaders --------
-float4 GouraudPixelShader(VertexShaderOutput input) : COLOR0
-{
-	input.TextureCoordinate.y--;
-	return input.Intensity * xTexture.Sample(TextureSampler, input.TextureCoordinate);
-}
-
+//------- Gouraud vertex shaders --------
 VertexShaderOutput GouraudPhongVertexShader(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
-	//transform position to clip space
 	input.Position = mul(input.Position, xWorld);
 	output.Position = mul(input.Position, xView);
 	output.Position = mul(output.Position, xProjection);
 
-	//set texture coords
 	output.TextureCoordinate = input.TextureCoordinate;
 
-	//calculate lighting vectors
 	float3 L = normalize(xLight1Pos - (float3) input.Position);
 	float3 N = normalize(mul(input.Normal, (float3x3) xWorld));
 	float3 V = normalize(xCamPos - (float3) input.Position);
-	float3 R = (2 * dot(N, L)) * N - L;
+	float3 R = reflect(L, N);
 
-	//calculate per vertex lighting intensity and interpolate it like a color
 	output.Intensity = PhongLighting(N, L, V, R);
 
 	return output;
@@ -185,47 +169,51 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
-	//transform position to clip space
 	input.Position = mul(input.Position, xWorld);
 	output.Position = mul(input.Position, xView);
 	output.Position = mul(output.Position, xProjection);
 
-	//set texture coords
 	output.TextureCoordinate = input.TextureCoordinate;
 
-	//calculate lighting vectors
 	float3 L = normalize(xLight1Pos - (float3) input.Position);
 	float3 N = normalize(mul(input.Normal, (float3x3) xWorld));
 	float3 V = normalize(xCamPos - (float3) input.Position);
-	float3 R = reflect(xLight1Pos - N, N);
 	float3 H = normalize(L + V);
 
-	//calculate per vertex lighting intensity and interpolate it like a color
 	output.Intensity = BlinnLighting(N, L, H);
 
 	return output;
 }
 
+//------- Gouraud pixel shader --------
+float4 GouraudPixelShader(VertexShaderOutput input) : COLOR0
+{
+	if (UseColors)
+	return input.Intensity * DiffuseColor;
+	else
+		return input.Intensity * xTexture.Sample(TextureSampler, input.TextureCoordinate);
+}
+
 //------- Gouraud shading techniques --------
 technique GouraudPhong
 {
-	pass P0
+	pass Pass0
 	{
-		SetVertexShader(CompileShader(vs_3_0, GouraudPhongVertexShader()));
-		SetPixelShader(CompileShader(ps_3_0, GouraudPixelShader()));
+		VertexShader = compile vs_3_0 GouraudPhongVertexShader();
+		PixelShader = compile ps_3_0 GouraudPixelShader();
 	}
 }
 
 technique GouraudBlinn
 {
-	pass P0
+	pass Pass0
 	{
-		SetVertexShader(CompileShader(vs_3_0, GouraudBlinnVertexShader()));
-		SetPixelShader(CompileShader(ps_3_0, GouraudPixelShader()));
+		VertexShader = compile vs_3_0 GouraudBlinnVertexShader();
+		PixelShader = compile ps_3_0 GouraudPixelShader();
 	}
 }
 
-//------- Phong shading shaders --------
+//------- Phong vertex shader --------
 VertexShaderOutput PhongVertexShader(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
@@ -240,27 +228,30 @@ VertexShaderOutput PhongVertexShader(VertexShaderInput input)
 	return output;
 }
 
-
+//------- Phong pixel shaders --------
 float4 PhongPhongPixelShader(VertexShaderOutput input) : COLOR0
 {
-	input.TextureCoordinate.y--;
 	float3 L = normalize(xLight1Pos - (float3) input.PositionWorld);
 	float3 N = normalize(input.Normal);
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 	float3 R = reflect(L, N);
 
-	return PhongLighting(N, L, V, R) * xTexture.Sample(TextureSampler, input.TextureCoordinate);
+	if (UseColors)
+		return PhongLighting(N, L, V, R) * DiffuseColor;
+	else
+		return PhongLighting(N, L, V, R) * xTexture.Sample(TextureSampler, input.TextureCoordinate);
 }
 
 float4 PhongBlinnPixelShader(VertexShaderOutput input) : COLOR0
 {
-	input.TextureCoordinate.y--;
 	float3 L = normalize(xLight1Pos - (float3) input.PositionWorld);
 	float3 N = normalize(input.Normal);
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 	float3 H = normalize(L + V);
-
-	return BlinnLighting(N, L, H) * xTexture.Sample(TextureSampler, input.TextureCoordinate);
+	if (UseColors)
+		return BlinnLighting(N, L, H) * DiffuseColor;
+	else
+		return BlinnLighting(N, L, H) * xTexture.Sample(TextureSampler, input.TextureCoordinate);
 }
 
 //------- Phong shading techniques --------
