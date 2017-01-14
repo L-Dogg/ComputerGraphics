@@ -7,9 +7,8 @@ float A;
 //------- Light variables --------
 
 // Point Light Sources:
-float3 xLight1Pos;
-float4 xLight1Color;
-float xLight1Intensity = 1.0f;
+float4 xLightColor = float4(1, 1, 1, 1);
+float xLightIntensity = 1.0f;
 
 // Camera:
 float3 xCamPos;
@@ -51,25 +50,25 @@ struct VertexShaderOutput
 
 //------- Texture sampler --------
 Texture2D xTexture;
-sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = mirror; AddressV = mirror; };
+sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
 //------- Lighting functions --------
 float4 PhongLighting(float3 N, float3 L, float3 V, float3 R)
 {
 	float4 Ia = Ka;
-	float4 Id = Kd * xLight1Intensity * saturate(dot(N, L));
-	float4 Is = Ks * xLight1Intensity * pow(saturate(dot(R, V)), A);
+	float4 Id = Kd * xLightIntensity * saturate(dot(N, L));
+	float4 Is = Ks * xLightIntensity * pow(saturate(dot(R, V)), A);
 
-	return Ia * AmbientColor + (Id + Is) * xLight1Color;
+	return Ia * AmbientColor + (Id + Is) * xLightColor;
 }
 
 float4 BlinnLighting(float3 N, float3 L, float3 H)
 {
 	float4 Ia = Ka;
-	float4 Id = Kd * xLight1Intensity * saturate(dot(N, L));
-	float4 Is = Ks * xLight1Intensity * pow(saturate(dot(N, H)), 2 * A);
+	float4 Id = Kd * xLightIntensity * saturate(dot(N, L));
+	float4 Is = Ks * xLightIntensity * pow(saturate(dot(N, H)), 2 * A);
 
-	return Ia * AmbientColor + (Id + Is) * xLight1Color;
+	return Ia * AmbientColor + (Id + Is) * xLightColor;
 }
 
 //------- Flat vertex shader --------

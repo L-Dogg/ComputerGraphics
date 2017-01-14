@@ -27,7 +27,6 @@ namespace RacingGame
 		private Texture2D[] _skyboxTextures;
 
 		private Model _carModel;
-		private Texture2D[] _carTextures;
 		private Vector3 _carPosition = new Vector3(8, 0.037f, -3);
 		private Quaternion _carRotation = Quaternion.Identity;
 
@@ -41,8 +40,7 @@ namespace RacingGame
 		private float _moveSpeed;
 		private float _gameSpeed = 1.0f;
 		private enum CollisionType { None, Boundary }
-
-		private Vector3 _lightPosition;
+		
 		private float _ambientPower;
 
 		private Matrix _lightPositions;
@@ -100,9 +98,9 @@ namespace RacingGame
 			var keys = Keyboard.GetState();
 
 			// Turn
-			if (keys.IsKeyDown(Keys.Right) && (_moveSpeed > 0.00005f || _moveSpeed < -0.00005f))
+			if (keys.IsKeyDown(Keys.Right) && (_moveSpeed > 0.0005f || _moveSpeed < -0.0005f))
 				leftRightRot += turningSpeed;
-			if (keys.IsKeyDown(Keys.Left) && (_moveSpeed > 0.00005f || _moveSpeed < -0.00005f))
+			if (keys.IsKeyDown(Keys.Left) && (_moveSpeed > 0.0005f || _moveSpeed < -0.0005f))
 				leftRightRot -= turningSpeed;
 
 			// Accelerate
@@ -304,7 +302,6 @@ namespace RacingGame
 
 		private void SetUpLightData()
 		{
-			_lightPosition = new Vector3(5, 10, 5);
 			_lightPositions = new Matrix
 				(5, 10, 5, 0,
 				1, 30, 3, 0,
@@ -333,7 +330,7 @@ namespace RacingGame
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
-			DrawModel(_carModel, _carTextures, carMatrix);
+			DrawModel(_carModel, null, carMatrix);
 
 			//_spriteBatch.Begin();
 			//_spriteBatch.DrawString(_font, $"{(int)(_moveSpeed * 1000)} km/h",
@@ -368,8 +365,6 @@ namespace RacingGame
 
 					_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 					_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
-					//currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
-					//currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
 					currentEffect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
 
 					_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
@@ -407,10 +402,8 @@ namespace RacingGame
 					currentEffect.Parameters["Kd"].SetValue(0.75f);
 					currentEffect.Parameters["A"].SetValue(15f);
 
-					_effect.Parameters["xCamUp"].SetValue(_cameraUp);
-					_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
-					//currentEffect.Parameters["xLight1Pos"].SetValue(_lightPosition);
-					//currentEffect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
+					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
+					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
 					currentEffect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
 
 					_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
@@ -437,8 +430,6 @@ namespace RacingGame
 
 			_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 			_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
-			//_effect.Parameters["xLight1Pos"].SetValue(_lightPosition);
-			//_effect.Parameters["xLight1Color"].SetValue(new Vector4(1f, 1f, 1f, 1f));
 			_effect.Parameters["AmbientIntensity"].SetValue(_ambientPower);
 
 			_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
