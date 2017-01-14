@@ -7,6 +7,8 @@ namespace RacingGame
 {
 	public class Game1 : Game
 	{
+		#region Private Fields
+
 		private readonly GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
 		private SpriteFont _font;
@@ -32,6 +34,8 @@ namespace RacingGame
 		private Vector3 _cameraUp;
 		private Vector3 _cameraPosition;
 		private Quaternion _cameraRotation = Quaternion.Identity;
+		private float _cameraAngle = 0f;
+		private const float _cameraChangeAngle = 0.005f;
 
 		private readonly float _acceleration = 0.0005f;
 		private float _moveSpeed;
@@ -44,6 +48,8 @@ namespace RacingGame
 		private string _shadingModel = "Flat";
 		private string _lightingModel = "Phong";
 		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
+
+		#endregion
 
 		#region Update
 
@@ -72,7 +78,7 @@ namespace RacingGame
 		{
 			_cameraRotation = Quaternion.Lerp(_cameraRotation, _carRotation, 0.08f);
 
-			_cameraPosition = new Vector3(0, 0.33f, 0.88f);
+			_cameraPosition = new Vector3(_cameraAngle, 0.33f, 0.88f);
 			_cameraPosition = Vector3.Transform(_cameraPosition, Matrix.CreateFromQuaternion(_cameraRotation));
 			_cameraPosition += _carPosition;
 
@@ -106,6 +112,14 @@ namespace RacingGame
 				_moveSpeed -= _acceleration;
 			else if (_moveSpeed < 0.0f)
 				_moveSpeed += _acceleration;
+
+			// Change camera angle:
+			if (keys.IsKeyDown(Keys.J))
+				_cameraAngle -= _cameraChangeAngle;
+			else if (keys.IsKeyDown(Keys.L))
+				_cameraAngle += _cameraChangeAngle;
+			else if (keys.IsKeyDown(Keys.K))
+				_cameraAngle = 0;
 
 			// Change light model:
 			if (keys.IsKeyDown(Keys.D1))
