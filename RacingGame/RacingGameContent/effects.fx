@@ -6,11 +6,11 @@ float A;
 
 //------- Light variables --------
 float4x4 xLightPositions;
-int LightCount = 2;
+int xLightCount = 1;
 
-float4 AmbientColor = float4(1, 1, 1, 1);
+float4 AmbientColor = float4(0.2f, 0.2f, 0.2f, 0.2f);
 float4   LightColor = float4(1, 1, 1, 1);
-float AmbientIntensity = 0.2f;
+float AmbientIntensity = 0.1f;
 float   LightIntensity = 1.0f;
 
 //------- Camera variables --------
@@ -50,16 +50,16 @@ sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEA
 //------- Lighting functions --------
 float4 PhongLighting(float3 N, float3 L, float3 V, float3 R, float dist)
 {
-	float4 Id = Kd * LightIntensity / (0.75 * dist * dist) * saturate(dot(N, L));
-	float4 Is = Ks * LightIntensity / (0.75 * dist * dist) * pow(saturate(dot(R, V)), A);
+	float4 Id = Kd * LightIntensity * 75 / (dist * dist) * saturate(dot(N, L));
+	float4 Is = Ks * LightIntensity * 75/ (dist * dist) * pow(saturate(dot(R, V)), A);
 
 	return (Id + Is) * LightColor;
 }
 
 float4 BlinnLighting(float3 N, float3 L, float3 H, float dist)
 {
-	float4 Id = Kd * LightIntensity / (0.75 * dist * dist) * saturate(dot(N, L));
-	float4 Is = Ks * LightIntensity / (0.75 * dist * dist) * pow(saturate(dot(N, H)), 2 * A);
+	float4 Id = Kd * LightIntensity * 75 / (dist * dist) * saturate(dot(N, L));
+	float4 Is = Ks * LightIntensity * 75 / (dist * dist) * pow(saturate(dot(N, H)), 2 * A);
 
 	return (Id + Is) * LightColor;
 }
@@ -86,7 +86,7 @@ float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 
 	float4 lightColor = Ka * AmbientColor;
-	for (int i = 0; i < LightCount; i++)
+	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
 		float3 L = light - (float3) input.PositionWorld;
@@ -114,7 +114,7 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 
 	float4 lightColor = Ka * AmbientColor;
-	for (int i = 0; i < LightCount; i++)
+	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
 		float3 L = light - (float3) input.PositionWorld;
@@ -170,7 +170,7 @@ VertexShaderOutput GouraudPhongVertexShader(VertexShaderInput input)
 	float3 V = normalize(xCamPos - (float3) input.Position);
 
 	float4 intensity = Ka * AmbientColor;
-	for (int i = 0; i < LightCount; i++)
+	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
 		float3 L = light - (float3) input.Position;
@@ -201,7 +201,7 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 	float3 V = normalize(xCamPos - (float3) input.Position);
 
 	float4 intensity = Ka * AmbientColor;
-	for (int i = 0; i < LightCount; i++)
+	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
 		float3 L = light - (float3) input.Position;
@@ -268,7 +268,7 @@ float4 PhongPhongPixelShader(VertexShaderOutput input) : COLOR0
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 
 	float4 intensity = Ka * AmbientColor;
-	for (int i = 0; i < LightCount; i++)
+	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
 		float3 L = light - (float3) input.PositionWorld;
@@ -292,7 +292,7 @@ float4 PhongBlinnPixelShader(VertexShaderOutput input) : COLOR0
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 
 	float4 intensity = Ka * AmbientColor;
-	for (int i = 0; i < LightCount; i++)
+	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
 		float3 L = light - (float3) input.PositionWorld;

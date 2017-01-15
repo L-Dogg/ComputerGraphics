@@ -27,6 +27,7 @@ namespace RacingGame
 		private Model _carModel;
 		private Model _fenceModel;
 		private Model _treeModel;
+		private Model _waterTankModel;
 
 		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
 		private Vector3 _carPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
@@ -41,8 +42,9 @@ namespace RacingGame
 			new Vector3(55.27253f, 0.037f, -52.69949f),
 			new Vector3(63.2239f, 0.037f, -24.0257f)
 		};
-
 		private float[] _treeHeights = {0.37f, 0.63f, 0.25f};
+
+		private Vector3 _waterTankPosition = new Vector3(15, 0.037f, -17);
 
 		private Vector3 _cameraUp;
 		private Vector3 _cameraPosition;
@@ -58,7 +60,8 @@ namespace RacingGame
 		private enum CollisionType { None, Boundary }
 
 		private Matrix _lightPositions;
-
+		private int _lightsCount = 1;
+		private readonly int MaxLights = 3;
 		private string _shadingModel = "Flat";
 		private string _lightingModel = "Phong";
 		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
@@ -136,6 +139,12 @@ namespace RacingGame
 			else if (keys.IsKeyDown(Keys.K))
 				_cameraAngle = 0;
 
+			// Change light count:
+			if (keys.IsKeyDown(Keys.OemPlus))
+				_lightsCount = _lightsCount < MaxLights ? _lightsCount + 1 : MaxLights;
+			else if (keys.IsKeyDown(Keys.OemMinus))
+				_lightsCount = _lightsCount > 1 ? _lightsCount - 1 : 1;
+
 			// Change light model:
 			if (keys.IsKeyDown(Keys.D1))
 				_lightingModel = "Phong";
@@ -171,8 +180,8 @@ namespace RacingGame
 
 		protected override void Initialize()
 		{
-			_graphics.PreferredBackBufferWidth = 1280;
-			_graphics.PreferredBackBufferHeight = 720;
+			_graphics.PreferredBackBufferWidth = 1920;
+			_graphics.PreferredBackBufferHeight = 1080;
 			_graphics.IsFullScreen = false;
 			_graphics.ApplyChanges();
 			Window.Title = "Project Cars";
@@ -195,6 +204,7 @@ namespace RacingGame
 			
 			_fenceModel = LoadModel("fence");
 			_treeModel = LoadModel("Tree");
+			_waterTankModel = LoadModel("Water_Tank_fbx");
 
 			SetUpCamera();
 			SetUpVertices();
@@ -231,11 +241,6 @@ namespace RacingGame
 			return newModel;
 		}
 		
-		/// <summary>
-		/// 1 - up/straight
-		/// 2 - left/straight
-		/// 
-		/// </summary>
 		private void LoadFloorPlan()
 		{
 			_floorPlan = new[,]
@@ -359,10 +364,10 @@ namespace RacingGame
 		private void SetUpLightData()
 		{
 			_lightPositions = new Matrix(
-				_carStartPosition.X + 0.5f, _carStartPosition.Y + 2, _carStartPosition.Z, 0,
-                18, 5, -17, 0,
-				0, 0, 0, 0,
-				0, 0, 0, 0
+				_carStartPosition.X + 0.5f, _carStartPosition.Y + 10, _carStartPosition.Z, 0,
+                18, 10, -17, 0,
+				33.28685f, 10, -51.12287f, 0,
+                0, 0, 0, 0
 			);
 		}
 
@@ -388,9 +393,15 @@ namespace RacingGame
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
 
-			DrawModel(_carModel, carMatrix);
-			DrawFences();
+			var stopMatrix = Matrix.CreateScale(scale/10, scale/10, scale/10) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity) *
+							Matrix.CreateTranslation(_waterTankPosition);
 
+			DrawModel(_carModel, carMatrix);
+			DrawModel(_waterTankModel, stopMatrix); 
+
+			DrawFences();
 			DrawTrees();
 
 			//_spriteBatch.Begin();
@@ -478,6 +489,7 @@ namespace RacingGame
 					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
 					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
 					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 
 				}
 				if (i == 1)
@@ -516,7 +528,7 @@ namespace RacingGame
 					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
 					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
 					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
-
+					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 				}
 				mesh.Draw();
 			}
@@ -551,6 +563,7 @@ namespace RacingGame
 					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
 					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
 					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 				}
 				mesh.Draw();
 			}
@@ -576,6 +589,7 @@ namespace RacingGame
 			_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 			_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
 			_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
+			_effect.Parameters["xLightCount"].SetValue(_lightsCount);
 
 			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{
