@@ -143,7 +143,7 @@ namespace RacingGame
 		{
 			_cameraPosition = new Vector3(30, 5.5f, 0.8f);
 			_cameraUp = new Vector3(0, 1, 0);
-			_viewMatrix = Matrix.CreateLookAt(_cameraPosition, _carStartPosition, _cameraUp);
+			_viewMatrix = Matrix.CreateLookAt(_cameraPosition, _carStartPosition + new Vector3(2, 2.4f, 0), _cameraUp);
 		}
 
 		private void ProcessKeyboard(GameTime gameTime)
