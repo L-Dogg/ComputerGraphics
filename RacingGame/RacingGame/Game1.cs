@@ -372,13 +372,9 @@ namespace RacingGame
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
+			
+			FenceSetup();
 
-			var fenceMatrix = Matrix.CreateScale(0.005f)*
-			                  Matrix.CreateRotationY(MathHelper.Pi)*
-			                  Matrix.CreateFromQuaternion(Quaternion.Identity)*
-			                  Matrix.CreateTranslation(_carStartPosition + new Vector3(0.5f, 0, 0.5f));
-
-			DrawFence(_fenceModel, fenceMatrix);
 			DrawModel(_carModel, carMatrix);
 
 			//_spriteBatch.Begin();
@@ -387,6 +383,32 @@ namespace RacingGame
 			//_spriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+
+		private void FenceSetup()
+		{
+			var tmpMatrix = Matrix.CreateScale(0.005f)*
+			                Matrix.CreateRotationY(MathHelper.PiOver2)*
+			                Matrix.CreateFromQuaternion(Quaternion.Identity);
+            for (var x = 0f; x < 63.8f; x+=0.65f)
+			{
+				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f + x, 0.037f, 0.01f);
+				DrawFence(_fenceModel, fenceMatrix);
+				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f + x, 0.037f, -60f);
+				DrawFence(_fenceModel, fenceMatrix);
+			}
+
+			tmpMatrix = Matrix.CreateScale(0.005f) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity);
+
+			for (var x = 0f; x < 63.8f; x += 0.65f)
+			{
+				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f, 0.037f, 0.01f - x);
+				DrawFence(_fenceModel, fenceMatrix);
+				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(60f, 0.037f, -60f+x);
+				DrawFence(_fenceModel, fenceMatrix);
+			}
 		}
 
 		private void DrawFence(Model model, Matrix wMatrix)
