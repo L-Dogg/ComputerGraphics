@@ -96,14 +96,14 @@ float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 
 		lightColor += PhongLighting(N, L, V, R, dist);
 	}
-	lightColor.a = 1;
+	//lightColor.a = 1;
 
 	float4 textureColor = 0;
 	if (xUseColors)
 		textureColor = xDiffuseColor;
 	else
 		textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
-	textureColor.a = 1;
+	//textureColor.a = 1;
 
 	return saturate(textureColor * lightColor);
 }
@@ -124,14 +124,14 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 
 		lightColor += BlinnLighting(N, L, H, dist);
 	}
-	lightColor.a = 1;
+	//lightColor.a = 1;
 
 	float4 textureColor = 0;
 	if (xUseColors)
 		textureColor = xDiffuseColor;
 	else
 		textureColor = xTexture.Sample(TextureSampler, input.TextureCoordinate);
-	textureColor.a = 1;
+	//textureColor.a = 1;
 
 	return saturate(textureColor * lightColor);
 }
@@ -180,7 +180,7 @@ VertexShaderOutput GouraudPhongVertexShader(VertexShaderInput input)
 
 		intensity += PhongLighting(N, L, V, R, dist);
 	}
-	intensity.a = 1;
+	//intensity.a = 1;
 
 	output.Intensity = intensity;
 
@@ -211,7 +211,7 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 
 		intensity += BlinnLighting(N, L, H, dist);
 	}
-	intensity.a = 1;
+	//intensity.a = 1;
 
 	output.Intensity = intensity;
 
@@ -278,7 +278,7 @@ float4 PhongPhongPixelShader(VertexShaderOutput input) : COLOR0
 
 		intensity += PhongLighting(N, L, V, R, dist);
 	}
-	intensity.a = 1;
+	//intensity.a = 1;
 
 	if (xUseColors)
 		return saturate(intensity * xDiffuseColor);
@@ -302,7 +302,7 @@ float4 PhongBlinnPixelShader(VertexShaderOutput input) : COLOR0
 
 		intensity += BlinnLighting(N, L, H, dist);
 	}
-	intensity.a = 1;
+	//intensity.a = 1;
 
 	if (xUseColors)
 		return saturate(intensity * xDiffuseColor);

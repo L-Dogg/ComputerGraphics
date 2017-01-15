@@ -37,8 +37,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="skybox2.x">
-      <Name>skybox2</Name>
+    <Compile Include="skybox.x">
+      <Name>skybox</Name>
       <Importer>XImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
@@ -58,8 +58,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LANCEREVOX.FBX">
-      <Name>LANCEREVOX</Name>
+    <Compile Include="car.FBX">
+      <Name>car</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fence.fbx">
+      <Name>fence</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>

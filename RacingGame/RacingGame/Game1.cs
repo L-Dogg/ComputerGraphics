@@ -19,13 +19,15 @@ namespace RacingGame
 
 		private int[,] _floorPlan;
 		private Texture2D _sceneryTexture;
-		private const int FloorTypes = 7;
+		private const int FloorTypes = 8;
 		private BoundingBox _raceTrackBox;
 		private VertexBuffer _vertexBuffer;
 
 		private Model _skyboxModel;
 		private Model _carModel;
-		private Vector3 _carPosition = new Vector3(58.14551f, 0.037f, -4.822078f);
+		private Model _fenceModel;
+		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
+		private Vector3 _carPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
 		private Quaternion _carRotation = Quaternion.Identity;
 
 		private Vector3 _cameraUp;
@@ -62,8 +64,8 @@ namespace RacingGame
 			{
 				_moveSpeed = 0f;
 				_carRotation = Quaternion.Identity;
-				_carPosition = new Vector3(58.14551f, 0.037f, -4.822078f);
-				_gameSpeed /= 1.1f;
+				_carPosition = _carStartPosition;
+                _gameSpeed /= 1.1f;
 			}
 
 			UpdateCamera();
@@ -174,9 +176,10 @@ namespace RacingGame
 
 			_effect = Content.Load<Effect>("effects");
 			_sceneryTexture = Content.Load<Texture2D>("texturemap");
-			_skyboxModel = LoadModel("skybox2");
-			//_carModel = LoadModel("car");
-			_carModel = LoadModel("LANCEREVOX");
+			_skyboxModel = LoadModel("skybox");
+			_carModel = LoadModel("car");
+			
+			_fenceModel = LoadModel("fence");
 
 			SetUpCamera();
 			SetUpVertices();
@@ -203,8 +206,10 @@ namespace RacingGame
 					}
 					else
 					{
+						_effect.Parameters["xUseColors"].SetValue(false);
 						_effect.Parameters["xTexture"].SetValue((meshPart.Effect as BasicEffect).Texture);
 					}
+
 					meshPart.Effect = _effect.Clone();
 				}
 			}
@@ -250,7 +255,7 @@ namespace RacingGame
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-				  {0,0,0,0,6,2,2,2,2,2,2,2,2,2,2,2,2,4,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,6,2,7,2,2,2,2,2,2,2,2,2,2,4,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -367,6 +372,13 @@ namespace RacingGame
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
+
+			var fenceMatrix = Matrix.CreateScale(0.005f)*
+			                  Matrix.CreateRotationY(MathHelper.Pi)*
+			                  Matrix.CreateFromQuaternion(Quaternion.Identity)*
+			                  Matrix.CreateTranslation(_carStartPosition + new Vector3(0.5f, 0, 0.5f));
+
+			DrawFence(_fenceModel, fenceMatrix);
 			DrawModel(_carModel, carMatrix);
 
 			//_spriteBatch.Begin();
@@ -375,6 +387,56 @@ namespace RacingGame
 			//_spriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+
+		private void DrawFence(Model model, Matrix wMatrix)
+		{
+			var modelTransforms = new Matrix[model.Bones.Count];
+			model.CopyAbsoluteBoneTransformsTo(modelTransforms);
+
+
+			var prevBlend = _graphics.GraphicsDevice.BlendState;
+			var prevDepth = _graphics.GraphicsDevice.DepthStencilState;
+
+			_graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+			_graphics.GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+			int i = 0;
+			foreach (var mesh in model.Meshes)
+			{
+				if (i == 1)
+				{
+					_graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+					_graphics.GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+				}
+				foreach (var currentEffect in mesh.Effects)
+				{
+					var worldMatrix = modelTransforms[mesh.ParentBone.Index] * wMatrix;
+					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
+
+					currentEffect.Parameters["xWorld"].SetValue(worldMatrix);
+					currentEffect.Parameters["xView"].SetValue(_viewMatrix);
+					currentEffect.Parameters["xProjection"].SetValue(_projectionMatrix);
+
+					currentEffect.Parameters["Ka"].SetValue(0.5f);
+					currentEffect.Parameters["Ks"].SetValue(0.5f);
+					currentEffect.Parameters["Kd"].SetValue(0.75f);
+					currentEffect.Parameters["A"].SetValue(15f);
+
+					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
+					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
+					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+
+				}
+				if (i == 1)
+				{
+					_graphics.GraphicsDevice.BlendState = prevBlend;
+					_graphics.GraphicsDevice.DepthStencilState = prevDepth;
+				}
+				mesh.Draw();
+				i++;
+			}
+			_graphics.GraphicsDevice.BlendState = prevBlend;
+			_graphics.GraphicsDevice.DepthStencilState = prevDepth;
 		}
 
 		private void DrawModel(Model model, Matrix wMatrix)
