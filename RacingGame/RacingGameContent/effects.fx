@@ -182,7 +182,7 @@ VertexShaderOutput GouraudPhongVertexShader(VertexShaderInput input)
 	}
 	intensity.a = 1;
 
-	output.Intensity = saturate(intensity);
+	output.Intensity = intensity;
 
 	return output;
 }
@@ -213,7 +213,7 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 	}
 	intensity.a = 1;
 
-	output.Intensity = saturate(intensity);
+	output.Intensity = intensity;
 
 	return output;
 }
@@ -222,9 +222,9 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 float4 GouraudPixelShader(VertexShaderOutput input) : COLOR0
 {
 	if (xUseColors)
-	return input.Intensity * xDiffuseColor;
+		return saturate(input.Intensity * xDiffuseColor);
 	else
-		return input.Intensity * xTexture.Sample(TextureSampler, input.TextureCoordinate);
+		return saturate(input.Intensity * xTexture.Sample(TextureSampler, input.TextureCoordinate));
 }
 
 //------- Gouraud shading techniques --------

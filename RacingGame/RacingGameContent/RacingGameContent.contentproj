@@ -141,6 +141,278 @@
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BOTTOM MASK.tga">
+      <Name>BOTTOM MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="BOTTOM.tga">
+      <Name>BOTTOM</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="BRAKDISC.tga">
+      <Name>BRAKDISC</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="BRIDE BLACK.tga">
+      <Name>BRIDE BLACK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="CARBON.tga">
+      <Name>CARBON</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DOOR MASK.tga">
+      <Name>DOOR MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DOOR.tga">
+      <Name>DOOR</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DOORLINE MASK.tga">
+      <Name>DOORLINE MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DOORLINE.tga">
+      <Name>DOORLINE</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DRIVER CUTOUT.tga">
+      <Name>DRIVER CUTOUT</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DRIVER SPORT.tga">
+      <Name>DRIVER SPORT</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="DRIVER.tga">
+      <Name>DRIVER</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="HOODTRUNK MASK.tga">
+      <Name>HOODTRUNK MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="HOODTRUNK.tga">
+      <Name>HOODTRUNK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX BADGING MASK.tga">
+      <Name>LANCEREVOX BADGING MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX BADGING NORMAL.tga">
+      <Name>LANCEREVOX BADGING NORMAL</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX BADGING.tga">
+      <Name>LANCEREVOX BADGING</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX BRAKELIGHT GLASS.tga">
+      <Name>LANCEREVOX BRAKELIGHT GLASS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX BRAKELIGHT MASK.tga">
+      <Name>LANCEREVOX BRAKELIGHT MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX BRAKELIGHT.tga">
+      <Name>LANCEREVOX BRAKELIGHT</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX ENGINE NORMAL.tga">
+      <Name>LANCEREVOX ENGINE NORMAL</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX ENGINE.tga">
+      <Name>LANCEREVOX ENGINE</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX HEADLIGHT GLASS.tga">
+      <Name>LANCEREVOX HEADLIGHT GLASS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX HEADLIGHT MASK.tga">
+      <Name>LANCEREVOX HEADLIGHT MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX HEADLIGHT.tga">
+      <Name>LANCEREVOX HEADLIGHT</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX INTERIOR.tga">
+      <Name>LANCEREVOX INTERIOR</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX MISC MIRROR.tga">
+      <Name>LANCEREVOX MISC MIRROR</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX MISC.tga">
+      <Name>LANCEREVOX MISC</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX RIM MASK.tga">
+      <Name>LANCEREVOX RIM MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX RIM.tga">
+      <Name>LANCEREVOX RIM</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LANCEREVOX.FBX">
+      <Name>LANCEREVOX</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="LICENSE MASK.tga">
+      <Name>LICENSE MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="LICENSE.tga">
+      <Name>LICENSE</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="TIRE BUMP.tga">
+      <Name>TIRE BUMP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="TIRE.tga">
+      <Name>TIRE</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="TIREBACK.tga">
+      <Name>TIREBACK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="TREAD BUMP.tga">
+      <Name>TREAD BUMP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="TREAD.tga">
+      <Name>TREAD</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WDEFROST.tga">
+      <Name>WDEFROST</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW F DECALS.tga">
+      <Name>WINDOW F DECALS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW F SKIN.tga">
+      <Name>WINDOW F SKIN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW FL DECALS.tga">
+      <Name>WINDOW FL DECALS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW FL SKIN.tga">
+      <Name>WINDOW FL SKIN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW FR DECALS.tga">
+      <Name>WINDOW FR DECALS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW FR SKIN.tga">
+      <Name>WINDOW FR SKIN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW FRONT MASK.tga">
+      <Name>WINDOW FRONT MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW FRONT.tga">
+      <Name>WINDOW FRONT</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW MASK.tga">
+      <Name>WINDOW MASK</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW R DECALS.tga">
+      <Name>WINDOW R DECALS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW R SKIN.tga">
+      <Name>WINDOW R SKIN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW RL DECALS.tga">
+      <Name>WINDOW RL DECALS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW RL SKIN.tga">
+      <Name>WINDOW RL SKIN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW RR DECALS.tga">
+      <Name>WINDOW RR DECALS</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="WINDOW RR SKIN.tga">
+      <Name>WINDOW RR SKIN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

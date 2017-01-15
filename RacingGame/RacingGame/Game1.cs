@@ -19,6 +19,7 @@ namespace RacingGame
 
 		private int[,] _floorPlan;
 		private Texture2D _sceneryTexture;
+		private const int FloorTypes = 7;
 		private BoundingBox _raceTrackBox;
 		private VertexBuffer _vertexBuffer;
 
@@ -31,7 +32,7 @@ namespace RacingGame
 		private Vector3 _cameraPosition;
 		private Quaternion _cameraRotation = Quaternion.Identity;
 		private readonly float _cameraChangeAngle = 0.005f;
-		private float _cameraAngle;
+		private float _cameraAngle = 0;
 
 		private readonly float _acceleration = 0.0005f;
 		private float _moveSpeed;
@@ -71,7 +72,8 @@ namespace RacingGame
 		{
 			_cameraRotation = Quaternion.Lerp(_cameraRotation, _carRotation, 0.08f);
 
-			_cameraPosition = new Vector3(_cameraAngle, 0.33f, 0.88f);
+			_cameraPosition = new Vector3(0, 0.3f, 0.8f);
+			_cameraPosition = Vector3.Transform(_cameraPosition, Matrix.CreateFromAxisAngle(new Vector3(0, -1, 0), _cameraAngle));
 			_cameraPosition = Vector3.Transform(_cameraPosition, Matrix.CreateFromQuaternion(_cameraRotation));
 			_cameraPosition += _carPosition;
 
@@ -171,7 +173,8 @@ namespace RacingGame
 			_effect = Content.Load<Effect>("effects");
 			_sceneryTexture = Content.Load<Texture2D>("texturemap");
 			_skyboxModel = LoadModel("skybox2");
-			_carModel = LoadModel("car");
+			//_carModel = LoadModel("car");
+			_carModel = LoadModel("LANCEREVOX");
 
 			SetUpCamera();
 			SetUpVertices();
@@ -190,7 +193,11 @@ namespace RacingGame
 					if ((meshPart.Effect as BasicEffect).Texture == null)
 					{
 						_effect.Parameters["xUseColors"].SetValue(true);
-						_effect.Parameters["xDiffuseColor"].SetValue(new Vector4((meshPart.Effect as BasicEffect).DiffuseColor, 1));
+						var clr = (meshPart.Effect as BasicEffect).DiffuseColor;
+                        if ((double)clr.X == 1.0 && (double)clr.Y == 1.0)
+							_effect.Parameters["xDiffuseColor"].SetValue(new Vector4(249/255f, 187/255f, 0.0f, 1f));
+						else
+							_effect.Parameters["xDiffuseColor"].SetValue(new Vector4((meshPart.Effect as BasicEffect).DiffuseColor, 1));
 					}
 					else
 					{
@@ -201,18 +208,18 @@ namespace RacingGame
 			}
 			return newModel;
 		}
-
+		
 		private void LoadFloorPlan()
 		{
 			_floorPlan = new[,]
 			 {
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,2,2,3,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
+				  {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -252,17 +259,24 @@ namespace RacingGame
 			var raceTrackLength = _floorPlan.GetLength(1);
 
 			var verticesList = new List<VertexPositionNormalTexture>();
-			for (var x = 0; x < raceTrackWidth; x++)
+			float textureCount = FloorTypes;
+            for (var x = 0; x < raceTrackWidth; x++)
 			{
 				for (var z = 0; z < raceTrackLength; z++)
 				{
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z), new Vector3(0, 1, 0), new Vector2(0, 1)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(0, 0)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z), new Vector3(0, 1, 0), new Vector2(1 / 11.0f, 1)));
+					for (var i = 0; i < FloorTypes; i++)
+					{
+						if (_floorPlan[x, z] == i)
+						{
+							verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z), new Vector3(0, 1, 0), new Vector2(i / textureCount, 1)));
+							verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(i / textureCount, 0)));
+							verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z), new Vector3(0, 1, 0), new Vector2((i+1) / textureCount, 1)));
 
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(0, 0)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(1 / 11.0f, 0)));
-					verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z), new Vector3(0, 1, 0), new Vector2(1 / 11.0f, 1)));
+							verticesList.Add(new VertexPositionNormalTexture(new Vector3(x, 0, -z - 1), new Vector3(0, 1, 0), new Vector2(i / textureCount, 0)));
+							verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z - 1), new Vector3(0, 1, 0), new Vector2((i + 1) / textureCount, 0)));
+							verticesList.Add(new VertexPositionNormalTexture(new Vector3(x + 1, 0, -z), new Vector3(0, 1, 0), new Vector2((i + 1) / textureCount, 1)));
+						}
+                    }
 				}
 			}
 
@@ -296,8 +310,8 @@ namespace RacingGame
 
 			DrawSkybox();
 			DrawRaceTrack();
-
-			var carMatrix = Matrix.CreateScale(0.1f, 0.1f, 0.1f) *
+			var scale = 0.05f;
+			var carMatrix = Matrix.CreateScale(scale, scale,scale) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
@@ -380,6 +394,7 @@ namespace RacingGame
 
 		private void DrawRaceTrack()
 		{
+			_effect.Parameters["xUseColors"].SetValue(false);
 			_effect.CurrentTechnique = _effect.Techniques[CurrentModel];
 			_effect.Parameters["xWorld"].SetValue(Matrix.Identity);
 			_effect.Parameters["xView"].SetValue(_viewMatrix);
