@@ -51,7 +51,7 @@ sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEA
 float4 PhongLighting(float3 N, float3 L, float3 V, float3 R, float dist)
 {
 	float4 Id = Kd * LightIntensity * 75 / (dist * dist) * saturate(dot(N, L));
-	float4 Is = Ks * LightIntensity * 75/ (dist * dist) * pow(saturate(dot(R, V)), A);
+	float4 Is = Ks * LightIntensity * 75/ (dist * dist) * pow(saturate(dot(-R, V)), A);
 
 	return (Id + Is) * LightColor;
 }

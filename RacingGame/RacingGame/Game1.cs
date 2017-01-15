@@ -31,27 +31,27 @@ namespace RacingGame
 		private Model _bambooHouseModel;
 		private Model _slrModel;
 
-		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
-		private Vector3 _carPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
+		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0, -5.966733f);
+		private Vector3 _carPosition = new Vector3(30.39419f, 0, -5.966733f);
 		private Quaternion _carRotation = Quaternion.Identity;
 
 		private Vector3[] _treePositions =
 		{
-			new Vector3(32.25059f, 0.037f, -10.68214f),
-			new Vector3(32.25059f, 0.037f, -10.68214f),
-			new Vector3(14.1391f, 0.037f, -29.09725f),
-			new Vector3(29.83624f, 0.037f, -46.26336f),
-			new Vector3(55.27253f, 0.037f, -52.69949f),
-			new Vector3(63.2239f, 0.037f, -24.0257f)
+			new Vector3(32.25059f, 0, -10.68214f),
+			new Vector3(32.25059f, 0, -10.68214f),
+			new Vector3(14.1391f, 0, -29.09725f),
+			new Vector3(29.83624f, 0, -46.26336f),
+			new Vector3(55.27253f, 0, -52.69949f),
+			new Vector3(63.2239f, 0, -24.0257f)
 		};
 		private float[] _treeHeights = {0.37f, 0.63f, 0.25f};
 
-		private Vector3 _waterTankPosition = new Vector3(15, 0.037f, -17);
+		private Vector3 _waterTankPosition = new Vector3(15, 0, -17);
 
 		private readonly Vector3[] _houseesPositions =
 		{
-			new Vector3(41.17903f, 0.037f, -15.565f),
-			new Vector3(46.55457f, 0.037f, -12.63017f)
+			new Vector3(41.17903f, 0, -15.565f),
+			new Vector3(46.55457f, 0, -12.63017f)
 		};
 
 		private Vector3 _cameraUp;
@@ -140,18 +140,18 @@ namespace RacingGame
 				_moveSpeed = 0;
 
 			// Change camera angle:
-			if (keys.IsKeyDown(Keys.J))
+			if (keys.IsKeyDown(Keys.L))
 				_cameraAngle -= _cameraChangeAngle;
-			else if (keys.IsKeyDown(Keys.L))
+			else if (keys.IsKeyDown(Keys.J))
 				_cameraAngle += _cameraChangeAngle;
 			else if (keys.IsKeyDown(Keys.K))
 				_cameraAngle = 0;
 
 			// Change light count:
-			if (keys.IsKeyDown(Keys.OemPlus))
-				_lightsCount = _lightsCount < MaxLights ? _lightsCount + 1 : MaxLights;
-			else if (keys.IsKeyDown(Keys.OemMinus))
-				_lightsCount = _lightsCount > 1 ? _lightsCount - 1 : 1;
+			if (keys.IsKeyDown(Keys.OemPlus) && _lightsCount < MaxLights)
+				_lightsCount++;
+			else if (keys.IsKeyDown(Keys.OemMinus) && _lightsCount > 1)
+				_lightsCount--;
 
 			// Change light model:
 			if (keys.IsKeyDown(Keys.D1))
@@ -435,9 +435,9 @@ namespace RacingGame
 			                Matrix.CreateFromQuaternion(Quaternion.Identity);
             for (var x = 0f; x < 63.8f; x+=0.65f)
 			{
-				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f + x, 0.037f, 0.01f);
+				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f + x, 0, 0.01f);
 				DrawFence(_fenceModel, fenceMatrix);
-				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f + x, 0.037f, -60f);
+				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f + x, 0, -60f);
 				DrawFence(_fenceModel, fenceMatrix);
 			}
 
@@ -447,9 +447,9 @@ namespace RacingGame
 
 			for (var x = 0f; x < 63.8f; x += 0.65f)
 			{
-				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f, 0.037f, 0.01f - x);
+				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f, 0, 0.01f - x);
 				DrawFence(_fenceModel, fenceMatrix);
-				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(65f, 0.037f, -60f+x);
+				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(65f, 0, -60f+x);
 				DrawFence(_fenceModel, fenceMatrix);
 			}
 		}
@@ -475,7 +475,7 @@ namespace RacingGame
 			{
 				for (var i = 0; i < 3; i++)
 				{
-					var houseMatrix = Matrix.CreateScale(0.08f) *
+					var houseMatrix = Matrix.CreateScale(0.13f) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(Quaternion.Identity) *
 							Matrix.CreateTranslation(startVector + new Vector3(1.35f * i, 0, 0));
@@ -483,7 +483,7 @@ namespace RacingGame
 					var carMatrix = Matrix.CreateScale(0.05f) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(Quaternion.Identity) *
-							Matrix.CreateTranslation(startVector + new Vector3(1.35f * i, 0, 1.5f));
+							Matrix.CreateTranslation(startVector + new Vector3(1.35f * i, 0, 2.15f));
 
 					DrawModel(_bambooHouseModel, houseMatrix);
 					DrawModel(_slrModel, carMatrix);
