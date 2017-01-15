@@ -28,6 +28,8 @@ namespace RacingGame
 		private Model _fenceModel;
 		private Model _treeModel;
 		private Model _waterTankModel;
+		private Model _bambooHouseModel;
+		private Model _slrModel;
 
 		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
 		private Vector3 _carPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
@@ -45,6 +47,12 @@ namespace RacingGame
 		private float[] _treeHeights = {0.37f, 0.63f, 0.25f};
 
 		private Vector3 _waterTankPosition = new Vector3(15, 0.037f, -17);
+
+		private readonly Vector3[] _houseesPositions =
+		{
+			new Vector3(41.17903f, 0.037f, -15.565f),
+			new Vector3(46.55457f, 0.037f, -12.63017f)
+		};
 
 		private Vector3 _cameraUp;
 		private Vector3 _cameraPosition;
@@ -205,6 +213,8 @@ namespace RacingGame
 			_fenceModel = LoadModel("fence");
 			_treeModel = LoadModel("Tree");
 			_waterTankModel = LoadModel("Water_Tank_fbx");
+			_bambooHouseModel = LoadModel("Bambo_House");
+			_slrModel = LoadModel("SLR");
 
 			SetUpCamera();
 			SetUpVertices();
@@ -224,8 +234,13 @@ namespace RacingGame
 					{
 						_effect.Parameters["xUseColors"].SetValue(true);
 						var clr = (meshPart.Effect as BasicEffect).DiffuseColor;
-                        if ((double)clr.X == 1.0 && (double)clr.Y == 1.0)
-							_effect.Parameters["xDiffuseColor"].SetValue(new Vector4(249/255f, 187/255f, 0.0f, 1f));
+						if ((double) clr.X == 1.0 && (double) clr.Y == 1.0)
+						{
+							if (assetName == "car")
+								_effect.Parameters["xDiffuseColor"].SetValue(new Vector4(249/255f, 187/255f, 0.0f, 1f));
+							else
+								_effect.Parameters["xDiffuseColor"].SetValue(new Vector4(249 / 255f, 0, 0.2f, 1f));
+						}
 						else
 							_effect.Parameters["xDiffuseColor"].SetValue(new Vector4((meshPart.Effect as BasicEffect).DiffuseColor, 1));
 					}
@@ -399,8 +414,9 @@ namespace RacingGame
 							Matrix.CreateTranslation(_waterTankPosition);
 
 			DrawModel(_carModel, carMatrix);
-			DrawModel(_waterTankModel, stopMatrix); 
+			DrawModel(_waterTankModel, stopMatrix);
 
+			DrawHousesAndCars();
 			DrawFences();
 			DrawTrees();
 
@@ -442,13 +458,35 @@ namespace RacingGame
 		{
 			foreach (var startVector in _treePositions)
 			{
-				for (int i = 0; i < 3; i++)
+				for (var i = 0; i < 3; i++)
 				{
                     var treeMatrix = Matrix.CreateScale(_treeHeights[i]) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(startVector + new Vector3(0.5f * i, 0, 0));
 					DrawModel(_treeModel, treeMatrix);
+				}
+			}
+		}
+
+		private void DrawHousesAndCars()
+		{
+			foreach (var startVector in _houseesPositions)
+			{
+				for (var i = 0; i < 3; i++)
+				{
+					var houseMatrix = Matrix.CreateScale(0.08f) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity) *
+							Matrix.CreateTranslation(startVector + new Vector3(1.35f * i, 0, 0));
+
+					var carMatrix = Matrix.CreateScale(0.05f) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity) *
+							Matrix.CreateTranslation(startVector + new Vector3(1.35f * i, 0, 1.5f));
+
+					DrawModel(_bambooHouseModel, houseMatrix);
+					DrawModel(_slrModel, carMatrix);
 				}
 			}
 		}
