@@ -26,9 +26,23 @@ namespace RacingGame
 		private Model _skyboxModel;
 		private Model _carModel;
 		private Model _fenceModel;
+		private Model _treeModel;
+
 		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
 		private Vector3 _carPosition = new Vector3(30.39419f, 0.037f, -5.966733f);
 		private Quaternion _carRotation = Quaternion.Identity;
+
+		private Vector3[] _treePositions =
+		{
+			new Vector3(32.25059f, 0.037f, -10.68214f),
+			new Vector3(32.25059f, 0.037f, -10.68214f),
+			new Vector3(14.1391f, 0.037f, -29.09725f),
+			new Vector3(29.83624f, 0.037f, -46.26336f),
+			new Vector3(55.27253f, 0.037f, -52.69949f),
+			new Vector3(63.2239f, 0.037f, -24.0257f)
+		};
+
+		private float[] _treeHeights = {0.37f, 0.63f, 0.25f};
 
 		private Vector3 _cameraUp;
 		private Vector3 _cameraPosition;
@@ -180,6 +194,7 @@ namespace RacingGame
 			_carModel = LoadModel("car");
 			
 			_fenceModel = LoadModel("fence");
+			_treeModel = LoadModel("Tree");
 
 			SetUpCamera();
 			SetUpVertices();
@@ -344,8 +359,8 @@ namespace RacingGame
 		private void SetUpLightData()
 		{
 			_lightPositions = new Matrix(
-				8, 1, -2, 0,
-				8, 1, -6, 0,
+				_carStartPosition.X + 0.5f, _carStartPosition.Y + 2, _carStartPosition.Z, 0,
+                18, 5, -17, 0,
 				0, 0, 0, 0,
 				0, 0, 0, 0
 			);
@@ -372,10 +387,11 @@ namespace RacingGame
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
-			
-			FenceSetup();
 
 			DrawModel(_carModel, carMatrix);
+			DrawFences();
+
+			DrawTrees();
 
 			//_spriteBatch.Begin();
 			//_spriteBatch.DrawString(_font, $"{(int)(_moveSpeed * 1000)} km/h",
@@ -385,10 +401,10 @@ namespace RacingGame
 			base.Draw(gameTime);
 		}
 
-		private void FenceSetup()
+		private void DrawFences()
 		{
-			var tmpMatrix = Matrix.CreateScale(0.005f)*
-			                Matrix.CreateRotationY(MathHelper.PiOver2)*
+			var tmpMatrix = Matrix.CreateScale(0.005f) *
+			                Matrix.CreateRotationY(MathHelper.PiOver2) *
 			                Matrix.CreateFromQuaternion(Quaternion.Identity);
             for (var x = 0f; x < 63.8f; x+=0.65f)
 			{
@@ -406,8 +422,23 @@ namespace RacingGame
 			{
 				var fenceMatrix = tmpMatrix * Matrix.CreateTranslation(0.1f, 0.037f, 0.01f - x);
 				DrawFence(_fenceModel, fenceMatrix);
-				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(60f, 0.037f, -60f+x);
+				fenceMatrix = tmpMatrix * Matrix.CreateTranslation(65f, 0.037f, -60f+x);
 				DrawFence(_fenceModel, fenceMatrix);
+			}
+		}
+
+		private void DrawTrees()
+		{
+			foreach (var startVector in _treePositions)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+                    var treeMatrix = Matrix.CreateScale(_treeHeights[i]) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(_carRotation) *
+							Matrix.CreateTranslation(startVector + new Vector3(0.5f * i, 0, 0));
+					DrawModel(_treeModel, treeMatrix);
+				}
 			}
 		}
 
