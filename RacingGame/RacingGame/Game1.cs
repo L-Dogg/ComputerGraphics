@@ -6,6 +6,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RacingGame
 {
+	enum CameraType
+	{
+		Static,
+		Following,
+		Dynamic
+	}
 	public class Game1 : Game
 	{
 		private readonly GraphicsDeviceManager _graphics;
@@ -54,6 +60,7 @@ namespace RacingGame
 			new Vector3(46.55457f, 0, -12.63017f)
 		};
 
+		private CameraType _cameraType = CameraType.Dynamic;
 		private Vector3 _cameraUp;
 		private Vector3 _cameraPosition;
 		private Quaternion _cameraRotation = Quaternion.Identity;
@@ -93,7 +100,13 @@ namespace RacingGame
                 _gameSpeed /= 1.1f;
 			}
 
-			UpdateCamera();
+			if (_cameraType == CameraType.Dynamic)
+				UpdateCamera();
+			else if(_cameraType == CameraType.Following)
+				UpdateCameraFollowing();
+			else 
+				UpdateCameraStatic();
+
 			base.Update(gameTime);
 		}
 
@@ -110,7 +123,27 @@ namespace RacingGame
 			_cameraUp = Vector3.Transform(_cameraUp, Matrix.CreateFromQuaternion(_cameraRotation));
 
 			_viewMatrix = Matrix.CreateLookAt(_cameraPosition, _carPosition, _cameraUp);
-			//_projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, 0.2f, 500.0f);
+		}
+
+		private void UpdateCameraFollowing()
+		{
+			_cameraRotation = Quaternion.Lerp(_cameraRotation, _carRotation, 0.08f);
+
+			_cameraPosition = new Vector3(30, 5.5f, 0.8f);
+			_cameraPosition = Vector3.Transform(_cameraPosition, Matrix.CreateFromAxisAngle(new Vector3(0, -1, 0), 0));
+			_cameraPosition = Vector3.Transform(_cameraPosition, Matrix.CreateFromQuaternion(Quaternion.Identity));
+			
+			_cameraUp = new Vector3(0, 1, 0);
+			_cameraUp = Vector3.Transform(_cameraUp, Matrix.CreateFromQuaternion(_cameraRotation));
+
+			_viewMatrix = Matrix.CreateLookAt(_cameraPosition, _carPosition, _cameraUp);
+		}
+
+		private void UpdateCameraStatic()
+		{
+			_cameraPosition = new Vector3(30, 5.5f, 0.8f);
+			_cameraUp = new Vector3(0, 1, 0);
+			_viewMatrix = Matrix.CreateLookAt(_cameraPosition, _carStartPosition, _cameraUp);
 		}
 
 		private void ProcessKeyboard(GameTime gameTime)
@@ -146,6 +179,13 @@ namespace RacingGame
 				_cameraAngle += _cameraChangeAngle;
 			else if (keys.IsKeyDown(Keys.K))
 				_cameraAngle = 0;
+
+			if (keys.IsKeyDown(Keys.I))
+				_cameraType = CameraType.Dynamic;
+			else if (keys.IsKeyDown(Keys.O))
+				_cameraType = CameraType.Following;
+			else if (keys.IsKeyDown(Keys.P))
+				_cameraType = CameraType.Static;
 
 			// Change light count:
 			if (keys.IsKeyDown(Keys.OemPlus) && _lightsCount < MaxLights)
@@ -462,7 +502,7 @@ namespace RacingGame
 				{
                     var treeMatrix = Matrix.CreateScale(_treeHeights[i]) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
-							Matrix.CreateFromQuaternion(_carRotation) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity) *
 							Matrix.CreateTranslation(startVector + new Vector3(0.5f * i, 0, 0));
 					DrawModel(_treeModel, treeMatrix);
 				}
