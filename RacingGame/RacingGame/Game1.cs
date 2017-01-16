@@ -30,7 +30,7 @@ namespace RacingGame
 	public class Game1 : Game
 	{
 		#region Fields
-		private bool gamePaused = false;
+		private bool gamePaused = true;
 
 		private readonly GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
@@ -60,18 +60,19 @@ namespace RacingGame
 		private Vector3 _carPosition = new Vector3(30.39419f, 0, -5.966733f);
 		private Quaternion _carRotation = Quaternion.Identity;
 
-		private Vector3[] _treePositions =
+		private readonly Vector3[] _treePositions =
 		{
 			new Vector3(32.25059f, 0, -10.68214f),
 			new Vector3(32.25059f, 0, -10.68214f),
 			new Vector3(14.1391f, 0, -29.09725f),
 			new Vector3(29.83624f, 0, -46.26336f),
 			new Vector3(55.27253f, 0, -52.69949f),
-			new Vector3(63.2239f, 0, -24.0257f)
+			new Vector3(63.2239f, 0, -24.0257f),
+			new Vector3(48.31152f, 0, -24.0257f)
 		};
-		private float[] _treeHeights = {0.37f, 0.63f, 0.25f};
+		private readonly float[] _treeHeights = {0.37f, 0.63f, 0.25f, 0.15f, 0.44f};
 
-		private Vector3 _waterTankPosition = new Vector3(15, 0, -17);
+		private readonly Vector3 _waterTankPosition = new Vector3(15, 0, -17);
 
 		private readonly Vector3[] _houseesPositions =
 		{
@@ -95,12 +96,18 @@ namespace RacingGame
 
 		private Matrix _lightPositions;
 		private int _lightsCount = 1;
-		private readonly int MaxLights = 3;
+		private readonly int MaxLights = 4;
 		private string _shadingModel = "Flat";
 		private string _lightingModel = "Phong";
 		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
 
 		private Waypoint[] _waypoints;
+		private readonly float _aiMoveSpeed = 0.078f;
+		private int _waypointIndex = 0;
+
+		private bool _plusPressed;
+		private bool _minusPressed;
+		private bool _escapePressed;
 		#endregion
 
 		#region Update
@@ -181,32 +188,15 @@ namespace RacingGame
 			var keys = Keyboard.GetState();
 
 			// Pause
-			if (gamePaused && keys.IsKeyDown(Keys.Escape))
+			if (gamePaused && keys.IsKeyDown(Keys.F2))
+			{
 				gamePaused = false;
-			else if (!gamePaused && keys.IsKeyDown(Keys.Escape))
+			}
+			else if (!gamePaused && keys.IsKeyDown(Keys.F1))
+			{
 				gamePaused = true;
-
-			if (gamePaused)
-				return;
+			}
 			
-
-			// Turn
-			if (keys.IsKeyDown(Keys.Right) && _moveSpeed > 0.00005f || keys.IsKeyDown(Keys.Left) && _moveSpeed < -0.00005f)
-				leftRightRot += turningSpeed;
-			if (keys.IsKeyDown(Keys.Left) && _moveSpeed > 0.00005f || keys.IsKeyDown(Keys.Right) && _moveSpeed < -0.00005f)
-				leftRightRot -= turningSpeed;
-
-			// Accelerate
-			if (keys.IsKeyDown(Keys.Up) && _moveSpeed <= _topSpeed)
-				_moveSpeed += _acceleration;
-			else if (keys.IsKeyDown(Keys.Down) && _moveSpeed >= -_topSpeed)
-				_moveSpeed -= _acceleration;
-			else if (_moveSpeed > 0.0f && _moveSpeed >= _speedEpsilon)
-				_moveSpeed -= _acceleration;
-			else if (_moveSpeed < 0.0f && _moveSpeed <= -_speedEpsilon)
-				_moveSpeed += _acceleration;
-			else if (Math.Abs(_moveSpeed) < _speedEpsilon)
-				_moveSpeed = 0;
 
 			// Change camera angle:
 			if (keys.IsKeyDown(Keys.L))
@@ -224,10 +214,24 @@ namespace RacingGame
 				_cameraType = CameraType.Static;
 
 			// Change light count:
-			if (keys.IsKeyDown(Keys.OemPlus) && _lightsCount < MaxLights)
+			if (keys.IsKeyDown(Keys.OemPlus) && _lightsCount < MaxLights && !_plusPressed)
+			{
 				_lightsCount++;
-			else if (keys.IsKeyDown(Keys.OemMinus) && _lightsCount > 1)
+				_plusPressed = true;
+			}
+			else if (keys.IsKeyUp(Keys.OemPlus) && _plusPressed)
+			{
+				_plusPressed = false;
+			}
+			if (keys.IsKeyDown(Keys.OemMinus) && _lightsCount > 1 && !_minusPressed)
+			{
 				_lightsCount--;
+				_minusPressed = true;
+			}
+			else if (keys.IsKeyUp(Keys.OemMinus) && _minusPressed)
+			{
+				_minusPressed = false;
+			}
 
 			// Change light model:
 			if (keys.IsKeyDown(Keys.D1))
@@ -242,6 +246,27 @@ namespace RacingGame
 				_shadingModel = "Gouraud";
 			else if (keys.IsKeyDown(Keys.E))
 				_shadingModel = "Phong";
+
+			if (gamePaused)
+				return;
+			
+			// Turn
+			if (keys.IsKeyDown(Keys.Right) && _moveSpeed > 0.00005f || keys.IsKeyDown(Keys.Left) && _moveSpeed < -0.00005f)
+				leftRightRot += turningSpeed;
+			if (keys.IsKeyDown(Keys.Left) && _moveSpeed > 0.00005f || keys.IsKeyDown(Keys.Right) && _moveSpeed < -0.00005f)
+				leftRightRot -= turningSpeed;
+
+			// Accelerate
+			if (keys.IsKeyDown(Keys.Up) && _moveSpeed <= _topSpeed)
+				_moveSpeed += _acceleration;
+			else if (keys.IsKeyDown(Keys.Down) && _moveSpeed >= -_topSpeed)
+				_moveSpeed -= _acceleration;
+			else if (_moveSpeed > 0.0f && _moveSpeed >= _speedEpsilon)
+				_moveSpeed -= _acceleration;
+			else if (_moveSpeed < 0.0f && _moveSpeed <= -_speedEpsilon)
+				_moveSpeed += _acceleration;
+			else if (Math.Abs(_moveSpeed) < _speedEpsilon)
+				_moveSpeed = 0;
 
 			var additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
 			_carRotation *= additionalRot;
@@ -458,10 +483,10 @@ namespace RacingGame
 		private void SetUpLightData()
 		{
 			_lightPositions = new Matrix(
-				_carStartPosition.X + 0.5f, _carStartPosition.Y + 10, _carStartPosition.Z, 0,
-                18, 10, -17, 0,
-				33.28685f, 10, -51.12287f, 0,
-                0, 0, 0, 0
+				_carStartPosition.X + 0.5f, _carStartPosition.Y + 13, _carStartPosition.Z, 0,
+                18, 13, -17, 0,
+				33.28685f, 13, -51.12287f, 0,
+				62.82345f, 13, -18.72201f, 0
 			);
 		}
 
@@ -484,7 +509,7 @@ namespace RacingGame
 
 			//3
 			var x = wplist.Last().X;
-            for (float i = 0; i < 12; i += 0.1f)
+            for (float i = 0; i < 12; i += _aiMoveSpeed)
 				wplist.Add(new Waypoint(x - i, wplist.Last().Z, -1.55f));
 			
 			//4
@@ -500,7 +525,7 @@ namespace RacingGame
 			//5
 			x = wplist.Last().X;
 			z = wplist.Last().Z;
-			for (float i = 0; i < 12.75f; i += 0.1f)
+			for (float i = 0; i < 12.75f; i += _aiMoveSpeed * 1.1f)
 				wplist.Add(new Waypoint(x, z - i));
 
 			//6
@@ -516,7 +541,7 @@ namespace RacingGame
 			//7
 			x = wplist.Last().X;
 			z = wplist.Last().Z;
-			for (float i = 0; i < 19.25f; i += 0.1f)
+			for (float i = 0; i < 19.25f; i += _aiMoveSpeed)
 				wplist.Add(new Waypoint(x + i, z, 1.55f));
 
 			//8
@@ -644,7 +669,7 @@ namespace RacingGame
 			//23 zepsuta numeracja
 			x = wplist.Last().X;
 			z = wplist.Last().Z;
-			for (float i = 0; i < 0.3f; i += 0.1f)
+			for (float i = 0; i < 0.3f; i += _aiMoveSpeed)
 				wplist.Add(new Waypoint(x + i, z, 1.55f));
 			angle = 1.55f;
 			x = wplist.Last().X;
@@ -731,12 +756,24 @@ namespace RacingGame
 			DrawFences();
 			DrawTrees();
 			DrawAI();
-			//_spriteBatch.Begin();
-			//_spriteBatch.DrawString(_font, $" X = {_carPosition.X}, Z = {_carPosition.Z}",
-			//    new Vector2(GraphicsDevice.Viewport.Width * 2 / 3.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
-			//_spriteBatch.End();
+
+			DrawHUD();
 
 			base.Draw(gameTime);
+		}
+
+		private void DrawHUD()
+		{
+			var prevBlend = _graphics.GraphicsDevice.BlendState;
+			var prevDepth = _graphics.GraphicsDevice.DepthStencilState;
+			_spriteBatch.Begin();
+			_spriteBatch.DrawString(_font, $"{Math.Round(_moveSpeed * 1833)}km/h",
+				new Vector2(GraphicsDevice.Viewport.Width * 3 / 4.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
+			_spriteBatch.DrawString(_font, $"Lighting: {_lightingModel} ({_lightsCount} lights)\nShading: {_shadingModel}",
+				new Vector2(GraphicsDevice.Viewport.Width * 1 / 19.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
+			_spriteBatch.End();
+			_graphics.GraphicsDevice.BlendState = prevBlend;
+			_graphics.GraphicsDevice.DepthStencilState = prevDepth;
 		}
 
 		private void DrawFences()
@@ -769,16 +806,26 @@ namespace RacingGame
 		{
 			foreach (var startVector in _treePositions)
 			{
-				for (var i = 0; i < 3; i++)
+				for (var i = 0; i < 5; i++)
 				{
-                    var treeMatrix = Matrix.CreateScale(_treeHeights[i]) *
+                    var treeMatrix = Matrix.CreateScale(_treeHeights[i % _treeHeights.Length]) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(Quaternion.Identity) *
 							Matrix.CreateTranslation(startVector + new Vector3(0.5f * i, 0, 0));
 					DrawModel(_treeModel, treeMatrix);
 				}
 			}
-		}
+
+			for (var i = 0; i < 12; i++)
+			{
+				var treeMatrix = Matrix.CreateScale(_treeHeights[i % _treeHeights.Length]) *
+						Matrix.CreateRotationY(MathHelper.Pi) *
+						Matrix.CreateFromQuaternion(Quaternion.Identity) *
+						Matrix.CreateTranslation(_treePositions.Last() + new Vector3(-0.59f - 0.2f * i, 0, 0.25f * i));
+				DrawModel(_treeModel, treeMatrix);
+			}
+			
+        }
 
 		private void DrawHousesAndCars()
 		{
@@ -948,19 +995,18 @@ namespace RacingGame
 			}
 		}
 
-		private int waypointIndex = 0;
 		private void DrawAI()
 		{
-			Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), _waypoints[waypointIndex].Angle);
+			Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), _waypoints[_waypointIndex].Angle);
 
 			var scale = 0.025f;
 			var carMatrix = Matrix.CreateScale(scale) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(Quaternion.Identity * additionalRot) *
-							Matrix.CreateTranslation(new Vector3(_waypoints[waypointIndex].X, 0, _waypoints[waypointIndex].Z));
+							Matrix.CreateTranslation(new Vector3(_waypoints[_waypointIndex].X, 0, _waypoints[_waypointIndex].Z));
 
 			if (!gamePaused)
-				waypointIndex = (waypointIndex + 1)%_waypoints.Length;
+				_waypointIndex = (_waypointIndex + 1)%_waypoints.Length;
 
             DrawModel(_carModel, carMatrix);
 
