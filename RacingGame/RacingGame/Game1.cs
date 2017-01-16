@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -109,8 +110,12 @@ namespace RacingGame
 
 		private bool _plusPressed;
 		private bool _minusPressed;
+		private bool _hornPressed;
 
 		private MeterComponent _speedoMeter;
+
+		private SoundEffect _engineSound;
+		private SoundEffectInstance _soundEngineInstance;
 		#endregion
 
 		#region Update
@@ -273,6 +278,17 @@ namespace RacingGame
 			else if (Math.Abs(_moveSpeed) < _speedEpsilon)
 				_moveSpeed = 0;
 
+			// Horn:
+			if (keys.IsKeyDown(Keys.H) && !_hornPressed)
+			{
+				_soundEngineInstance.Play();
+				_hornPressed = true;
+			}
+			else if (keys.IsKeyDown(Keys.H) && _hornPressed)
+			{
+				_hornPressed = false;
+			}
+
 			var additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
 			_carRotation *= additionalRot;
 		}
@@ -334,8 +350,11 @@ namespace RacingGame
 
 			_speedoMeter = new MeterComponent(
 				new Vector2(GraphicsDevice.Viewport.Width * 3 / 4.0f, GraphicsDevice.Viewport.Height * 5 / 8.0f),
-				_speedometerTexture, _speedometerNeedleTexture, _spriteBatch, 0.6f
-				);
+				_speedometerTexture, _speedometerNeedleTexture, _spriteBatch, 0.6f);
+
+			_engineSound = Content.Load<SoundEffect>("engineSound");
+			_soundEngineInstance = _engineSound.CreateInstance();
+			_soundEngineInstance.IsLooped = false;
 		}
 
 		private Model LoadModel(string assetName)
