@@ -30,6 +30,7 @@ namespace RacingGame
 	public class Game1 : Game
 	{
 		#region Fields
+		private bool gamePaused = false;
 
 		private readonly GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
@@ -53,6 +54,7 @@ namespace RacingGame
 		private Model _waterTankModel;
 		private Model _bambooHouseModel;
 		private Model _slrModel;
+		private Model[] _stoneModels = new Model[5];
 
 		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0, -5.966733f);
 		private Vector3 _carPosition = new Vector3(30.39419f, 0, -5.966733f);
@@ -109,15 +111,19 @@ namespace RacingGame
 				Exit();
 
 			ProcessKeyboard(gameTime);
-			MoveForward(ref _carPosition, _carRotation, _moveSpeed);
 
-			var carSpere = new BoundingSphere(_carPosition, 0.04f);
-			if (CheckCollision(carSpere) != CollisionType.None)
+			if (!gamePaused)
 			{
-				_moveSpeed = 0f;
-				_carRotation = Quaternion.Identity;
-				_carPosition = _carStartPosition;
-                _gameSpeed /= 1.1f;
+				MoveForward(ref _carPosition, _carRotation, _moveSpeed);
+
+				var carSpere = new BoundingSphere(_carPosition, 0.04f);
+				if (CheckCollision(carSpere) != CollisionType.None)
+				{
+					_moveSpeed = 0f;
+					_carRotation = Quaternion.Identity;
+					_carPosition = _carStartPosition;
+					_gameSpeed /= 1.1f;
+				}
 			}
 
 			if (_cameraType == CameraType.Dynamic)
@@ -173,6 +179,16 @@ namespace RacingGame
 			var turningSpeed = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
 			turningSpeed *= 1.6f * _gameSpeed;
 			var keys = Keyboard.GetState();
+
+			// Pause
+			if (gamePaused && keys.IsKeyDown(Keys.Escape))
+				gamePaused = false;
+			else if (!gamePaused && keys.IsKeyDown(Keys.Escape))
+				gamePaused = true;
+
+			if (gamePaused)
+				return;
+			
 
 			// Turn
 			if (keys.IsKeyDown(Keys.Right) && _moveSpeed > 0.00005f || keys.IsKeyDown(Keys.Left) && _moveSpeed < -0.00005f)
@@ -276,6 +292,8 @@ namespace RacingGame
 			_waterTankModel = LoadModel("Water_Tank_fbx");
 			_bambooHouseModel = LoadModel("Bambo_House");
 			_slrModel = LoadModel("SLR");
+			
+			//_stoneModels[2] = LoadModel($"stone_2");
 
 			SetUpCamera();
 			SetUpVertices();
@@ -694,6 +712,7 @@ namespace RacingGame
 
 			DrawSkybox();
 			DrawRaceTrack();
+
 			var scale = 0.025f;
 			var carMatrix = Matrix.CreateScale(scale, scale,scale) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
@@ -940,7 +959,9 @@ namespace RacingGame
 							Matrix.CreateFromQuaternion(Quaternion.Identity * additionalRot) *
 							Matrix.CreateTranslation(new Vector3(_waypoints[waypointIndex].X, 0, _waypoints[waypointIndex].Z));
 
-			waypointIndex = (waypointIndex + 1)%_waypoints.Length;
+			if (!gamePaused)
+				waypointIndex = (waypointIndex + 1)%_waypoints.Length;
+
             DrawModel(_carModel, carMatrix);
 
 		}
