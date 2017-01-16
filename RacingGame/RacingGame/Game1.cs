@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,8 +13,24 @@ namespace RacingGame
 		Following,
 		Dynamic
 	}
+
+	public class Waypoint
+	{
+		public float X { get; }
+		public float Z { get; }
+		public float Angle { get; } = 0;
+		public Waypoint(float x, float z, float angle = 0)
+		{
+			this.X = x;
+			this.Z = z;
+			this.Angle = angle;
+		}
+	}
+
 	public class Game1 : Game
 	{
+		#region Fields
+
 		private readonly GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
 		private SpriteFont _font;
@@ -80,6 +97,9 @@ namespace RacingGame
 		private string _shadingModel = "Flat";
 		private string _lightingModel = "Phong";
 		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
+
+		private Waypoint[] _waypoints;
+		#endregion
 
 		#region Update
 
@@ -235,7 +255,8 @@ namespace RacingGame
 			Window.Title = "Project Cars";
 
 			LoadFloorPlan();
-
+			SetUpWaypoints();
+			
 			base.Initialize();
 		}
 
@@ -426,6 +447,237 @@ namespace RacingGame
 			);
 		}
 
+		private void SetUpWaypoints()
+		{
+			var wplist = new List<Waypoint>();
+			wplist.Add(new Waypoint(30.66f, -5.966733f));
+			// 1
+			for (float i = 0; i - 5.966733f >= -17.0f; i -= 0.05f)
+				wplist.Add(new Waypoint(30.66f, i - 5.966733f));
+
+			//2
+			var angle = -0.35f;
+			var z =  wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle > -1f; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(30.66f + i, z + i, angle));
+				angle -= 0.025f;
+			}
+
+			//3
+			var x = wplist.Last().X;
+            for (float i = 0; i < 12; i += 0.1f)
+				wplist.Add(new Waypoint(x - i, wplist.Last().Z, -1.55f));
+			
+			//4
+			angle = -1.55f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < 0f; i += 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i * 2, z - i, angle));
+				angle += 0.025f;
+			}
+
+			//5
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 12.75f; i += 0.1f)
+				wplist.Add(new Waypoint(x, z - i));
+
+			//6
+			angle = 0f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < 1f; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z + i, angle));
+				angle += 0.025f;
+			}
+
+			//7
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 19.25f; i += 0.1f)
+				wplist.Add(new Waypoint(x + i, z, 1.55f));
+
+			//8
+			angle = 1.45f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle > 0; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z + i, angle));
+				angle -= 0.025f;
+			}
+
+			//9
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 17.85; i += 0.1f)
+				wplist.Add(new Waypoint(x, z - i));
+
+			// 10
+			angle = 0f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < 1f; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z + i, angle));
+				angle += 0.025f;
+			}
+
+			// 11
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 8.89f; i += 0.1f)
+				wplist.Add(new Waypoint(x + i, z, 1.55f));
+
+			//12
+			angle = 1.55f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < MathHelper.Pi; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z - i, angle));
+				angle += 0.025f;
+			}
+
+			//13
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 13.038; i += 0.1f)
+				wplist.Add(new Waypoint(x, z + i, MathHelper.Pi));
+
+			//14
+			angle = MathHelper.Pi;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle > 1.55f; i += 0.0075f)
+			{
+				wplist.Add(new Waypoint(x + i, z + i, angle));
+				angle -= 0.025f;
+			}
+
+			//15
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 9.7f; i += 0.1f)
+				wplist.Add(new Waypoint(x + i, z, 1.55f));
+
+			//16
+			angle = 1.55f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < MathHelper.Pi; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z - i, angle));
+				angle += 0.025f;
+			}
+
+			//17
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 14.75f; i += 0.1f)
+				wplist.Add(new Waypoint(x, z + i, MathHelper.Pi));
+
+			//18
+			angle = MathHelper.Pi;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle > 1.55f; i += 0.0075f)
+			{
+				wplist.Add(new Waypoint(x + i, z + i, angle));
+				angle -= 0.025f;
+			}
+
+			//19
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 2f; i += 0.1f)
+				wplist.Add(new Waypoint(x + i, z, 1.55f));
+
+			//20
+			angle = 1.55f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < MathHelper.Pi; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z - i, angle));
+				angle += 0.025f;
+			}
+
+			//21
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 4.9f; i += 0.1f)
+				wplist.Add(new Waypoint(x, z + i, MathHelper.Pi));
+
+			//22
+			angle = MathHelper.Pi;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle > 1.55f; i += 0.0075f)
+			{
+				wplist.Add(new Waypoint(x + i, z + i, angle));
+				angle -= 0.025f;
+			}
+
+			//23 zepsuta numeracja
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 0.3f; i += 0.1f)
+				wplist.Add(new Waypoint(x + i, z, 1.55f));
+			angle = 1.55f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < MathHelper.Pi; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i, z - i, angle));
+				angle += 0.025f;
+			}
+
+			//24
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 8f; i += 0.1f)
+				wplist.Add(new Waypoint(x, z + i, MathHelper.Pi));
+
+			//25
+			angle = MathHelper.Pi;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle > 1.55f; i -= 0.0075f)
+			{
+				wplist.Add(new Waypoint(x + i, z - i, -angle));
+				angle -= 0.025f;
+			}
+
+			//26
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 30.1; i += 0.135f)
+				wplist.Add(new Waypoint(x - i, z, -1.55f));
+
+			//27
+			angle = -1.55f;
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i >= -2.35072f && angle < 0f; i += 0.0075f)
+			{
+				wplist.Add(new Waypoint(x - i * 2, z - i, angle));
+				angle += 0.025f;
+			}
+
+			//28
+			x = wplist.Last().X;
+			z = wplist.Last().Z;
+			for (float i = 0; i < 1; i += 0.1f)
+				wplist.Add(new Waypoint(x, z - i));
+
+			_waypoints = wplist.ToArray();
+		}
+
 		public Game1()
 		{
 			_graphics = new GraphicsDeviceManager(this);
@@ -459,9 +711,9 @@ namespace RacingGame
 			DrawHousesAndCars();
 			DrawFences();
 			DrawTrees();
-
+			DrawAI();
 			//_spriteBatch.Begin();
-			//_spriteBatch.DrawString(_font, $"{(int)(_moveSpeed * 1000)} km/h",
+			//_spriteBatch.DrawString(_font, $" X = {_carPosition.X}, Z = {_carPosition.Z}",
 			//    new Vector2(GraphicsDevice.Viewport.Width * 2 / 3.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
 			//_spriteBatch.End();
 
@@ -677,6 +929,21 @@ namespace RacingGame
 			}
 		}
 
+		private int waypointIndex = 0;
+		private void DrawAI()
+		{
+			Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), _waypoints[waypointIndex].Angle);
+
+			var scale = 0.025f;
+			var carMatrix = Matrix.CreateScale(scale) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity * additionalRot) *
+							Matrix.CreateTranslation(new Vector3(_waypoints[waypointIndex].X, 0, _waypoints[waypointIndex].Z));
+
+			waypointIndex = (waypointIndex + 1)%_waypoints.Length;
+            DrawModel(_carModel, carMatrix);
+
+		}
 		#endregion
 	}
 }
