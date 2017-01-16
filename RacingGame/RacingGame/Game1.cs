@@ -43,6 +43,8 @@ namespace RacingGame
 
 		private int[,] _floorPlan;
 		private Texture2D _sceneryTexture;
+		private Texture2D _speedometerTexture;
+		private Texture2D _speedometerNeedleTexture;
 		private const int FloorTypes = 8;
 		private BoundingBox _raceTrackBox;
 		private VertexBuffer _vertexBuffer;
@@ -107,7 +109,8 @@ namespace RacingGame
 
 		private bool _plusPressed;
 		private bool _minusPressed;
-		private bool _escapePressed;
+
+		private MeterComponent _speedoMeter;
 		#endregion
 
 		#region Update
@@ -139,6 +142,8 @@ namespace RacingGame
 				UpdateCameraFollowing();
 			else 
 				UpdateCameraStatic();
+
+			_speedoMeter.Update(_moveSpeed, _topSpeed);
 
 			base.Update(gameTime);
 		}
@@ -308,23 +313,29 @@ namespace RacingGame
 			_device = _graphics.GraphicsDevice;
 
 			_effect = Content.Load<Effect>("effects");
+
 			_sceneryTexture = Content.Load<Texture2D>("texturemap");
+			_speedometerNeedleTexture = Content.Load<Texture2D>("needle");
+			_speedometerTexture = Content.Load<Texture2D>("meter");
+
 			_skyboxModel = LoadModel("skybox");
 			_carModel = LoadModel("car");
-			
 			_fenceModel = LoadModel("fence");
 			_treeModel = LoadModel("Tree");
 			_waterTankModel = LoadModel("Water_Tank_fbx");
 			_bambooHouseModel = LoadModel("Bambo_House");
 			_slrModel = LoadModel("SLR");
 			
-			//_stoneModels[2] = LoadModel($"stone_2");
-
 			SetUpCamera();
 			SetUpVertices();
 
 			SetUpBoundingBoxes();
 			SetUpLightData();
+
+			_speedoMeter = new MeterComponent(
+				new Vector2(GraphicsDevice.Viewport.Width * 3 / 4.0f, GraphicsDevice.Viewport.Height * 5 / 8.0f),
+				_speedometerTexture, _speedometerNeedleTexture, _spriteBatch, 0.6f
+				);
 		}
 
 		private Model LoadModel(string assetName)
@@ -752,6 +763,8 @@ namespace RacingGame
 			DrawModel(_carModel, carMatrix);
 			DrawModel(_waterTankModel, stopMatrix);
 
+			
+
 			DrawHousesAndCars();
 			DrawFences();
 			DrawTrees();
@@ -766,12 +779,12 @@ namespace RacingGame
 		{
 			var prevBlend = _graphics.GraphicsDevice.BlendState;
 			var prevDepth = _graphics.GraphicsDevice.DepthStencilState;
-			_spriteBatch.Begin();
-			_spriteBatch.DrawString(_font, $"{Math.Round(_moveSpeed * 1833)}km/h",
-				new Vector2(GraphicsDevice.Viewport.Width * 3 / 4.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
-			_spriteBatch.DrawString(_font, $"Lighting: {_lightingModel} ({_lightsCount} lights)\nShading: {_shadingModel}",
+			var text = _lightsCount > 1 ? "lights" : "light";
+            _spriteBatch.Begin();
+			_spriteBatch.DrawString(_font, $"Lighting: {_lightingModel} ({_lightsCount} {text})\nShading: {_shadingModel}",
 				new Vector2(GraphicsDevice.Viewport.Width * 1 / 19.0f, GraphicsDevice.Viewport.Height * 7 / 8.0f), Color.Red);
 			_spriteBatch.End();
+			_speedoMeter.Draw();
 			_graphics.GraphicsDevice.BlendState = prevBlend;
 			_graphics.GraphicsDevice.DepthStencilState = prevDepth;
 		}
