@@ -312,7 +312,7 @@ namespace RacingGame
 		{
 			_graphics.PreferredBackBufferWidth = 1920;
 			_graphics.PreferredBackBufferHeight = 1080;
-			_graphics.IsFullScreen = false;
+			_graphics.IsFullScreen = true;
 			_graphics.ApplyChanges();
 			Window.Title = "Project Cars";
 

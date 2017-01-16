@@ -12,8 +12,7 @@ namespace RacingGame
 		private SpriteBatch spriteBatch;
 
 		private const float MAX_METER_ANGLE = 230;
-		private bool enabled = false;
-
+		
 		private float scale;
 		private float lastAngle;
 
