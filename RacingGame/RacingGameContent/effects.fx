@@ -6,12 +6,17 @@ float A;
 
 //------- Light variables --------
 float4x4 xLightPositions;
-int xLightCount = 1;
+float4x4 xLightColors;
+int xLightCount = 0;
 
 float4 AmbientColor = float4(0.2f, 0.2f, 0.2f, 0.2f);
-float4   LightColor = float4(1, 1, 1, 1);
-float AmbientIntensity = 0.1f;
+float AmbientIntensity = 0.2f;
 float   LightIntensity = 1.0f;
+
+float4x4 xCarLightPositions;
+float4x4 xCarLightColors;
+int xCarLightCount = 2;
+float xCarLightIntensity = 0.0005f;
 
 //------- Camera variables --------
 float3 xCamPos;
@@ -48,20 +53,24 @@ Texture2D xTexture;
 sampler TextureSampler = sampler_state { texture = <xTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
 //------- Lighting functions --------
-float4 PhongLighting(float3 N, float3 L, float3 V, float3 R, float dist)
+float4 PhongLighting(float3 N, float3 L, float3 V, float3 R, float dist, float4 color, bool isCarLight)
 {
-	float4 Id = Kd * LightIntensity * 95 / (dist * dist) * saturate(dot(N, L));
-	float4 Is = Ks * LightIntensity * 95/ (dist * dist) * pow(saturate(dot(-R, V)), A);
+	float intensity = isCarLight ? xCarLightIntensity : LightIntensity;
 
-	return (Id + Is) * LightColor;
+	float4 Id = Kd * intensity * 95 / (dist * dist) * saturate(dot(N, L));
+	float4 Is = Ks * intensity * 95/ (dist * dist) * pow(saturate(dot(-R, V)), A);
+
+	return (Id + Is) * color;
 }
 
-float4 BlinnLighting(float3 N, float3 L, float3 H, float dist)
+float4 BlinnLighting(float3 N, float3 L, float3 H, float dist, float4 color, bool isCarLight)
 {
-	float4 Id = Kd * LightIntensity * 95 / (dist * dist) * saturate(dot(N, L));
-	float4 Is = Ks * LightIntensity * 95 / (dist * dist) * pow(saturate(dot(N, H)), 2 * A);
+	float intensity = isCarLight ? LightIntensity : xCarLightIntensity;
 
-	return (Id + Is) * LightColor;
+	float4 Id = Kd * intensity * 95 / (dist * dist) * saturate(dot(N, L));
+	float4 Is = Ks * intensity * 95 / (dist * dist) * pow(saturate(dot(N, H)), 2 * A);
+
+	return (Id + Is) * color;
 }
 
 //------- Flat vertex shader --------
@@ -94,7 +103,18 @@ float4 FlatPhongPixelShader(VertexShaderOutput input) : COLOR0
 		L = normalize(L);
 		float3 R = reflect(L, N);
 
-		lightColor += PhongLighting(N, L, V, R, dist);
+		lightColor += PhongLighting(N, L, V, R, dist, xLightColors[i], false);
+	}
+
+	for (int j = 0; j < xCarLightCount; j++)
+	{
+		float4 light = xCarLightPositions[j];
+		float3 L = light - (float3) input.PositionWorld;
+		float dist = length(L);
+		L = normalize(L);
+		float3 R = reflect(L, N);
+
+		lightColor += PhongLighting(N, L, V, R, dist, xCarLightColors[j], true);
 	}
 	//lightColor.a = 1;
 
@@ -122,7 +142,7 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 		L = normalize(L);
 		float3 H = normalize(L + V);
 
-		lightColor += BlinnLighting(N, L, H, dist);
+		lightColor += BlinnLighting(N, L, H, dist, xLightColors[i], false);
 	}
 	//lightColor.a = 1;
 
@@ -178,7 +198,7 @@ VertexShaderOutput GouraudPhongVertexShader(VertexShaderInput input)
 		L = normalize(L);
 		float3 R = reflect(L, N);
 
-		intensity += PhongLighting(N, L, V, R, dist);
+		intensity += PhongLighting(N, L, V, R, dist, xLightColors[i], false);
 	}
 	//intensity.a = 1;
 
@@ -209,7 +229,7 @@ VertexShaderOutput GouraudBlinnVertexShader(VertexShaderInput input)
 		L = normalize(L);
 		float3 H = normalize(L + V);
 
-		intensity += BlinnLighting(N, L, H, dist);
+		intensity += BlinnLighting(N, L, H, dist, xLightColors[i], false);
 	}
 	//intensity.a = 1;
 
@@ -276,7 +296,7 @@ float4 PhongPhongPixelShader(VertexShaderOutput input) : COLOR0
 		L = normalize(L);
 		float3 R = reflect(L, N);
 
-		intensity += PhongLighting(N, L, V, R, dist);
+		intensity += PhongLighting(N, L, V, R, dist, xLightColors[i], false);
 	}
 	//intensity.a = 1;
 
@@ -300,7 +320,7 @@ float4 PhongBlinnPixelShader(VertexShaderOutput input) : COLOR0
 		L = normalize(L);
 		float3 H = normalize(L + V);
 
-		intensity += BlinnLighting(N, L, H, dist);
+		intensity += BlinnLighting(N, L, H, dist, xLightColors[i], false);
 	}
 	//intensity.a = 1;
 

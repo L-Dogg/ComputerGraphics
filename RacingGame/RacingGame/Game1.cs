@@ -57,7 +57,6 @@ namespace RacingGame
 		private Model _waterTankModel;
 		private Model _bambooHouseModel;
 		private Model _slrModel;
-		private Model[] _stoneModels = new Model[5];
 
 		private readonly Vector3 _carStartPosition = new Vector3(30.39419f, 0, -5.966733f);
 		private Vector3 _carPosition = new Vector3(30.39419f, 0, -5.966733f);
@@ -75,7 +74,7 @@ namespace RacingGame
 		};
 		private readonly float[] _treeHeights = {0.37f, 0.63f, 0.25f, 0.15f, 0.44f};
 
-		private readonly Vector3 _waterTankPosition = new Vector3(15, 0, -17);
+		private readonly Vector3 _waterTankPosition = new Vector3(15, 0.3f, -17);
 
 		private readonly Vector3[] _houseesPositions =
 		{
@@ -98,11 +97,18 @@ namespace RacingGame
 		private enum CollisionType { None, Boundary }
 
 		private Matrix _lightPositions;
-		private int _lightsCount = 1;
+		private Matrix _lightColors;
+		private int _lightsCount = 0;
 		private readonly int MaxLights = 4;
 		private string _shadingModel = "Flat";
 		private string _lightingModel = "Phong";
 		private string CurrentModel => $"{_shadingModel}{_lightingModel}";
+
+		private Matrix _carLightPositions;
+		private Matrix _carLightColors;
+		private float carLightXOffset = -0.11f;
+		private float carLightYOffset = 0.17f;
+		private float carLightZOffset = -0.22f;
 
 		private Waypoint[] _waypoints;
 		private readonly float _aiMoveSpeed = 0.078f;
@@ -149,6 +155,13 @@ namespace RacingGame
 				UpdateCameraStatic();
 
 			_speedoMeter.Update(_moveSpeed, _topSpeed);
+
+			_carLightPositions = new Matrix(
+				_carPosition.X + carLightXOffset, _carPosition.Y + carLightYOffset, _carPosition.Z + carLightZOffset, 0,
+				_carPosition.X - carLightXOffset, _carPosition.Y + carLightYOffset, _carPosition.Z + carLightZOffset, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0
+			);
 
 			base.Update(gameTime);
 		}
@@ -233,7 +246,7 @@ namespace RacingGame
 			{
 				_plusPressed = false;
 			}
-			if (keys.IsKeyDown(Keys.OemMinus) && _lightsCount > 1 && !_minusPressed)
+			if (keys.IsKeyDown(Keys.OemMinus) && _lightsCount > 0 && !_minusPressed)
 			{
 				_lightsCount--;
 				_minusPressed = true;
@@ -338,7 +351,7 @@ namespace RacingGame
 			_carModel = LoadModel("car");
 			_fenceModel = LoadModel("fence");
 			_treeModel = LoadModel("Tree");
-			_waterTankModel = LoadModel("Water_Tank_fbx");
+			_waterTankModel = LoadModel("Highfbx");
 			_bambooHouseModel = LoadModel("Bambo_House");
 			_slrModel = LoadModel("SLR");
 			
@@ -513,11 +526,33 @@ namespace RacingGame
 		private void SetUpLightData()
 		{
 			_lightPositions = new Matrix(
-				_carStartPosition.X + 0.5f, _carStartPosition.Y + 13, _carStartPosition.Z, 0,
+				_carStartPosition.X - 0.5f, _carStartPosition.Y + 10, _carStartPosition.Z, 0,
                 18, 13, -17, 0,
 				33.28685f, 13, -51.12287f, 0,
 				62.82345f, 13, -18.72201f, 0
 			);
+
+			_lightColors = new Matrix(
+				1, 1, 1, 1,
+				0.2f, 0.8f, 0.1f, 1,
+				0.1f, 0.1f, 0.8f, 1,
+				0.7f, 0.3f, 0.3f, 1
+			);
+
+			_carLightPositions = new Matrix(
+				_carStartPosition.X + carLightXOffset, _carStartPosition.Y + carLightYOffset, _carStartPosition.Z + carLightZOffset, 0,
+				_carStartPosition.X - carLightXOffset, _carStartPosition.Y + carLightYOffset, _carStartPosition.Z + carLightZOffset, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0
+			);
+
+			_carLightColors = new Matrix(
+				1, 0, 0, 1,
+				0, 0, 1, 1,
+				0, 0, 0, 1,
+				0, 0, 0, 1
+            );
+
 		}
 
 		private void SetUpWaypoints()
@@ -774,15 +809,21 @@ namespace RacingGame
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
 
-			var stopMatrix = Matrix.CreateScale(scale/10, scale/10, scale/10) *
+			var stopMatrix = Matrix.CreateScale(scale) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(Quaternion.Identity) *
 							Matrix.CreateTranslation(_waterTankPosition);
 
 			DrawModel(_carModel, carMatrix);
+
 			DrawModel(_waterTankModel, stopMatrix);
 
-			
+			stopMatrix = Matrix.CreateScale(scale) *
+							Matrix.CreateRotationY(MathHelper.Pi) *
+							Matrix.CreateFromQuaternion(Quaternion.Identity) *
+							Matrix.CreateTranslation(_carStartPosition - new Vector3(1f, 0.3f, 1f));
+
+			DrawModel(_waterTankModel, stopMatrix);
 
 			DrawHousesAndCars();
 			DrawFences();
@@ -917,7 +958,10 @@ namespace RacingGame
 					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
 					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
 					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+					currentEffect.Parameters["xLightColors"].SetValue(_lightColors);
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
+					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
+					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
 
 				}
 				if (i == 1)
@@ -955,8 +999,12 @@ namespace RacingGame
 
 					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
 					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
-					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions); 
+					currentEffect.Parameters["xLightColors"].SetValue(_lightColors);
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
+					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
+					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
+
 				}
 				mesh.Draw();
 			}
@@ -991,7 +1039,10 @@ namespace RacingGame
 					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
 					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
 					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+					currentEffect.Parameters["xLightColors"].SetValue(_lightColors);
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
+					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
+					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
 				}
 				mesh.Draw();
 			}
@@ -1017,7 +1068,10 @@ namespace RacingGame
 			_effect.Parameters["xCamUp"].SetValue(_cameraUp);
 			_effect.Parameters["xCamPos"].SetValue(_cameraPosition);
 			_effect.Parameters["xLightPositions"].SetValue(_lightPositions);
+			_effect.Parameters["xLightColors"].SetValue(_lightColors);
 			_effect.Parameters["xLightCount"].SetValue(_lightsCount);
+			_effect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
+			_effect.Parameters["xCarLightColors"].SetValue(_carLightColors);
 
 			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{

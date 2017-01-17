@@ -12,8 +12,7 @@ namespace RacingGame
 		private SpriteBatch spriteBatch;
 
 		private const float MAX_METER_ANGLE = 230;
-		private bool enabled = false;
-
+		
 		private float scale;
 		private float lastAngle;
 
@@ -23,7 +22,7 @@ namespace RacingGame
 		private Texture2D backgroundImage;
 		private Texture2D needleImage;
 
-		public float currentAngle = 0;
+		private float currentAngle = 0;
 
 		/// <summary>
 		/// Creates a new TextComponent for the HUD.
