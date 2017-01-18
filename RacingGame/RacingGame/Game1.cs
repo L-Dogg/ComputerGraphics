@@ -54,7 +54,7 @@ namespace RacingGame
 		private Model _carModel;
 		private Model _fenceModel;
 		private Model _treeModel;
-		private Model _waterTankModel;
+		private Model _sphereModel;
 		private Model _bambooHouseModel;
 		private Model _slrModel;
 
@@ -156,9 +156,13 @@ namespace RacingGame
 
 			_speedoMeter.Update(_moveSpeed, _topSpeed);
 
+
+			
+			var l1 = _carPosition + Vector3.Transform(new Vector3(carLightXOffset, carLightYOffset, carLightZOffset), Matrix.CreateFromQuaternion(_carRotation));
+			var l2 = _carPosition + Vector3.Transform(new Vector3(-carLightXOffset, carLightYOffset, carLightZOffset), Matrix.CreateFromQuaternion(_carRotation));
 			_carLightPositions = new Matrix(
-				_carPosition.X + carLightXOffset, _carPosition.Y + carLightYOffset, _carPosition.Z + carLightZOffset, 0,
-				_carPosition.X - carLightXOffset, _carPosition.Y + carLightYOffset, _carPosition.Z + carLightZOffset, 0,
+				l1.X, l1.Y, l1.Z, 0,
+				l2.X, l2.Y, l2.Z, 0,
 				0, 0, 0, 0,
 				0, 0, 0, 0
 			);
@@ -325,7 +329,7 @@ namespace RacingGame
 		{
 			_graphics.PreferredBackBufferWidth = 1920;
 			_graphics.PreferredBackBufferHeight = 1080;
-			_graphics.IsFullScreen = true;
+			_graphics.IsFullScreen = false;
 			_graphics.ApplyChanges();
 			Window.Title = "Project Cars";
 
@@ -351,7 +355,7 @@ namespace RacingGame
 			_carModel = LoadModel("car");
 			_fenceModel = LoadModel("fence");
 			_treeModel = LoadModel("Tree");
-			_waterTankModel = LoadModel("Highfbx");
+			_sphereModel = LoadModel("Highfbx");
 			_bambooHouseModel = LoadModel("Bambo_House");
 			_slrModel = LoadModel("SLR");
 			
@@ -809,21 +813,14 @@ namespace RacingGame
 							Matrix.CreateFromQuaternion(_carRotation) *
 							Matrix.CreateTranslation(_carPosition);
 
-			var stopMatrix = Matrix.CreateScale(scale) *
-							Matrix.CreateRotationY(MathHelper.Pi) *
-							Matrix.CreateFromQuaternion(Quaternion.Identity) *
-							Matrix.CreateTranslation(_waterTankPosition);
-
 			DrawModel(_carModel, carMatrix);
 
-			DrawModel(_waterTankModel, stopMatrix);
-
-			stopMatrix = Matrix.CreateScale(scale) *
+            var sphereMatrix = Matrix.CreateScale(0.002f) *
 							Matrix.CreateRotationY(MathHelper.Pi) *
 							Matrix.CreateFromQuaternion(Quaternion.Identity) *
-							Matrix.CreateTranslation(_carStartPosition - new Vector3(1f, 0.3f, 1f));
+							Matrix.CreateTranslation(_carStartPosition + new Vector3(-0.5f, 0.2f, -1f));
 
-			DrawModel(_waterTankModel, stopMatrix);
+			DrawSphere(_sphereModel, sphereMatrix);
 
 			DrawHousesAndCars();
 			DrawFences();
@@ -1009,6 +1006,36 @@ namespace RacingGame
 				mesh.Draw();
 			}
 		}
+		private void DrawSphere(Model model, Matrix wMatrix)
+		{
+			foreach (var mesh in model.Meshes)
+			{
+				foreach (var currentEffect in mesh.Effects)
+				{
+					currentEffect.CurrentTechnique = currentEffect.Techniques[CurrentModel];
+
+					currentEffect.Parameters["xWorld"].SetValue(wMatrix);
+					currentEffect.Parameters["xView"].SetValue(_viewMatrix);
+					currentEffect.Parameters["xProjection"].SetValue(_projectionMatrix);
+
+					currentEffect.Parameters["Ka"].SetValue(0.5f);
+					currentEffect.Parameters["Ks"].SetValue(0.5f);
+					currentEffect.Parameters["Kd"].SetValue(0.75f);
+					currentEffect.Parameters["A"].SetValue(15f);
+
+					currentEffect.Parameters["xCamUp"].SetValue(_cameraUp);
+					currentEffect.Parameters["xCamPos"].SetValue(_cameraPosition);
+					currentEffect.Parameters["xLightPositions"].SetValue(_lightPositions);
+					currentEffect.Parameters["xLightColors"].SetValue(_lightColors);
+					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
+					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
+					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
+
+				}
+				mesh.Draw();
+			}
+		}
+
 
 		private void DrawSkybox()
 		{
