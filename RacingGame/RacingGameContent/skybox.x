@@ -217,7 +217,7 @@ Mesh Unnamed_1 {
      1.000000;1.000000;1.000000;;
        0.000000;0.000000;0.000000;;
           TextureFilename {
-      "hills_rt.tga";
+      "hills_lf.tga";
      }
      }
  }
@@ -264,7 +264,7 @@ Mesh Unnamed_2 {
      1.000000;1.000000;1.000000;;
        0.000000;0.000000;0.000000;;
           TextureFilename {
-      "hills_lf.tga";
+      "hills_rt.tga";
      }
      }
  }
