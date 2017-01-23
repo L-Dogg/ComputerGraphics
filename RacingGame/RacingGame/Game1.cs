@@ -106,6 +106,7 @@ namespace RacingGame
 
 		private Matrix _carLightPositions;
 		private Matrix _carLightColors;
+		private Matrix _carLightDirections;
 		private float carLightXOffset = -0.11f;
 		private float carLightYOffset = 0.17f;
 		private float carLightZOffset = -0.22f;
@@ -166,6 +167,15 @@ namespace RacingGame
 				0, 0, 0, 0,
 				0, 0, 0, 0
 			);
+
+			var m = Matrix.CreateFromQuaternion(_carRotation);
+			
+			_carLightDirections = new Matrix(
+				m.M11, m.M12, m.M13, m.M14,
+				0,0,0,0,
+				0, 0, 0, 0,
+				0, 0, 0, 0
+				);
 
 			base.Update(gameTime);
 		}
@@ -531,9 +541,9 @@ namespace RacingGame
 		{
 			_lightPositions = new Matrix(
 				_carStartPosition.X - 0.5f, _carStartPosition.Y + 10, _carStartPosition.Z, 0,
-                18, 13, -17, 0,
-				33.28685f, 13, -51.12287f, 0,
-				62.82345f, 13, -18.72201f, 0
+                18, 8.5f, -17, 0,
+				33.28685f, 8.5f, -51.12287f, 0,
+				62.82345f, 8.5f, -18.72201f, 0
 			);
 
 			_lightColors = new Matrix(
@@ -557,6 +567,12 @@ namespace RacingGame
 				0, 0, 0, 1
             );
 
+			_carLightDirections = new Matrix(
+				1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0
+			);
 		}
 
 		private void SetUpWaypoints()
@@ -959,7 +975,7 @@ namespace RacingGame
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
 					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
-
+					currentEffect.Parameters["xCarLightDirections"].SetValue(_carLightDirections);
 				}
 				if (i == 1)
 				{
@@ -1001,6 +1017,7 @@ namespace RacingGame
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
 					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
+					currentEffect.Parameters["xCarLightDirections"].SetValue(_carLightDirections);
 
 				}
 				mesh.Draw();
@@ -1030,6 +1047,7 @@ namespace RacingGame
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
 					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
+					currentEffect.Parameters["xCarLightDirections"].SetValue(_carLightDirections);
 
 				}
 				mesh.Draw();
@@ -1070,6 +1088,7 @@ namespace RacingGame
 					currentEffect.Parameters["xLightCount"].SetValue(_lightsCount);
 					currentEffect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
 					currentEffect.Parameters["xCarLightColors"].SetValue(_carLightColors);
+					currentEffect.Parameters["xCarLightDirections"].SetValue(_carLightDirections);
 				}
 				mesh.Draw();
 			}
@@ -1099,6 +1118,7 @@ namespace RacingGame
 			_effect.Parameters["xLightCount"].SetValue(_lightsCount);
 			_effect.Parameters["xCarLightPositions"].SetValue(_carLightPositions);
 			_effect.Parameters["xCarLightColors"].SetValue(_carLightColors);
+			_effect.Parameters["xCarLightDirections"].SetValue(_carLightDirections);
 
 			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{
