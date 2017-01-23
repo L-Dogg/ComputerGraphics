@@ -14,8 +14,8 @@ float   LightIntensity = 1.0f;
 
 float4x4 xCarLightPositions;
 float4x4 xCarLightColors;
-int xCarLightCount = 2;
-float xCarLightIntensity = 0.0005f;
+int xCarLightCount = 4;
+float xCarLightIntensity = 0.9f;
 float4x4 xCarLightDirections;
 
 float spotCosCutOff = 0.9;
@@ -93,7 +93,7 @@ SpotLighting PhongSpotlight(VertexShaderOutput PSIn, float3 N, float3 V)
 		float3 D = normalize(xCarLightDirections[j]);
 		float cos_cur_angle = dot(normalize(-L), D);
 		
-		float spotEffect = pow(cos_cur_angle, 20);
+		float spotEffect = pow(abs(cos_cur_angle), 20);
 		float att = spotEffect / (0.5 * length(L) + 0.25 * length(L) * length(L));
 		L = normalize(L);
 		float cos_inner_cone_angle = spotCosCutOff;
@@ -103,8 +103,38 @@ SpotLighting PhongSpotlight(VertexShaderOutput PSIn, float3 N, float3 V)
 		Output.DiffuseColor += xDiffuseColor * xCarLightColors[j] * att * spot;
 		float3 R = normalize(2 * dot(L, N) * N - L);
 
-		float specular = pow(max(dot(R, V), 0.0), 0.05f);
+		float specular = pow(max(dot(R, V), 0.0), 0.9f);
 		Output.SpecularColor += xCarLightColors[j] * Ks * specular * att * spot;		
+	}
+
+	Output.DiffuseColor = saturate(Output.DiffuseColor);
+	Output.SpecularColor = saturate(Output.SpecularColor);
+	return Output;
+}
+
+SpotLighting BlinnSpotlight(VertexShaderOutput PSIn, float3 N, float3 V)
+{
+	SpotLighting Output = (SpotLighting)0;
+	for (int j = 0; j < xCarLightCount; j++)
+	{
+		float3 L = xCarLightPositions[j] - (float3)PSIn.PositionWorld;
+		float3 D = normalize(xCarLightDirections[j]);
+		float cos_cur_angle = dot(normalize(-L), D);
+		
+		float spotEffect = pow(abs(cos_cur_angle), 20);
+		float att = spotEffect / (0.5 * length(L) +
+			0.25 * length(L) * length(L));
+		L = normalize(L);
+		float cos_inner_cone_angle = spotCosCutOff;
+		float cos_inner_minus_outer_angle = cos_inner_cone_angle - cos_outer_cone_angle;
+		float spot = 0.0;
+		spot = saturate((cos_cur_angle - cos_outer_cone_angle) / cos_inner_minus_outer_angle);
+		Output.DiffuseColor += xDiffuseColor * xCarLightColors[0] * att * spot;
+		float3 H = normalize(L + V);
+
+		float specular = pow(max(dot(N, H), 0.0), 2 * 0.9f);
+		Output.SpecularColor += xCarLightColors[0] * Ks * specular * att * spot;
+		
 	}
 
 	Output.DiffuseColor = saturate(Output.DiffuseColor);
@@ -162,7 +192,10 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 	float3 N = normalize(cross(ddy(input.PositionWorld.xyz), ddx(input.PositionWorld.xyz)));
 	float3 V = normalize(xCamPos - (float3) input.PositionWorld);
 
-	float4 lightColor = Ka * AmbientColor;
+	SpotLighting spot = BlinnSpotlight(input, N, V);
+
+	float4 lightColor = Ka * (AmbientColor + spot.DiffuseColor);
+	lightColor += spot.SpecularColor;
 	for (int i = 0; i < xLightCount; i++)
 	{
 		float4 light = xLightPositions[i];
@@ -173,18 +206,7 @@ float4 FlatBlinnPixelShader(VertexShaderOutput input) : COLOR0
 
 		lightColor += BlinnLighting(N, L, H, dist, xLightColors[i], false);
 	}
-
-	for (int j = 0; j < xCarLightCount; j++)
-	{
-		float4 light = xCarLightPositions[j];
-		float3 L = light - (float3) input.PositionWorld;
-		float dist = length(L);
-		L = normalize(L);
-		float3 H = normalize(L + V);
-
-		lightColor += BlinnLighting(N, L, H, dist, xCarLightColors[j], true);
-	}
-	
+		
 	float4 textureColor = 0;
 	if (xUseColors)
 		textureColor = xDiffuseColor;
@@ -382,36 +404,3 @@ technique PhongBlinn
 		PixelShader = compile ps_3_0 PhongBlinnPixelShader();
 	}
 }
-
-
-
-//SpotLighting BlinnPhongSpotlight(VertexShaderOutput PSIn, float3 N, float3 V)
-//{
-//	SpotLighting Output = (SpotLighting)0;
-//	for (int j = 0; j < xCarLightCount; j++)
-//	{
-//		float3 L = spotlightPositions[j] - (float3)PSIn.PositionWorld;
-//		float3 D = normalize(spotlightDirections[j]);
-//		float cos_cur_angle = dot(normalize(-L), D);
-//		if (cos_cur_angle > spotCosCutOff)
-//		{
-//			float spotEffect = pow(cos_cur_angle, 20);
-//			float att = spotEffect / (0.5 * length(L) +
-//				0.25 * length(L) * length(L));
-//			L = normalize(L);
-//			float cos_inner_cone_angle = spotCosCutOff;
-//			float cos_inner_minus_outer_angle = cos_inner_cone_angle - cos_outer_cone_angle;
-//			float spot = 0.0;
-//			spot = saturate((cos_cur_angle - cos_outer_cone_angle) / cos_inner_minus_outer_angle);
-//			Output.DiffColor += xDiffuse * LightColors[0] * att * spot;
-//			float3 H = normalize(L + V);
-//
-//			float specular = pow(max(dot(N, H), 0.0), 2 * specularPower);
-//			Output.SpecularColor += LightColors[0] * xSpecular * specular * att * spot;
-//		}
-//	}
-//
-//	Output.DiffColor = saturate(Output.DiffColor);
-//	Output.SpecularColor = saturate(Output.SpecularColor);
-//	return Output;
-//}

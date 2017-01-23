@@ -62,6 +62,8 @@ namespace RacingGame
 		private Vector3 _carPosition = new Vector3(30.39419f, 0, -5.966733f);
 		private Quaternion _carRotation = Quaternion.Identity;
 
+		private readonly Vector3 _aiCarStartPosition = new Vector3(30.66f, 0, -5.966733f);
+
 		private readonly Vector3[] _treePositions =
 		{
 			new Vector3(32.25059f, 0, -10.68214f),
@@ -108,8 +110,8 @@ namespace RacingGame
 		private Matrix _carLightColors;
 		private Matrix _carLightDirections;
 		private float carLightXOffset = -0.11f;
-		private float carLightYOffset = 0.17f;
-		private float carLightZOffset = -0.22f;
+		private float carLightYOffset = 0.35f;
+		private float carLightZOffset = -0.01f;
 
 		private Waypoint[] _waypoints;
 		private readonly float _aiMoveSpeed = 0.078f;
@@ -157,27 +159,37 @@ namespace RacingGame
 
 			_speedoMeter.Update(_moveSpeed, _topSpeed);
 
+			UpdateSpotlights();
 
-			
+			base.Update(gameTime);
+		}
+
+		private void UpdateSpotlights()
+		{
 			var l1 = _carPosition + Vector3.Transform(new Vector3(carLightXOffset, carLightYOffset, carLightZOffset), Matrix.CreateFromQuaternion(_carRotation));
 			var l2 = _carPosition + Vector3.Transform(new Vector3(-carLightXOffset, carLightYOffset, carLightZOffset), Matrix.CreateFromQuaternion(_carRotation));
+			var botWp = _waypoints[_waypointIndex % _waypoints.Length];
+			var _botPosition = new Vector3(botWp.X, 0, botWp.Z);
+			var l3 = _botPosition + Vector3.Transform(new Vector3(-carLightXOffset, carLightYOffset, carLightZOffset),
+				Matrix.CreateFromQuaternion(Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), botWp.Angle)));
+			var l4 = _botPosition + Vector3.Transform(new Vector3(carLightXOffset, carLightYOffset, carLightZOffset),
+				Matrix.CreateFromQuaternion(Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), botWp.Angle)));
+
 			_carLightPositions = new Matrix(
 				l1.X, l1.Y, l1.Z, 0,
 				l2.X, l2.Y, l2.Z, 0,
-				0, 0, 0, 0,
-				0, 0, 0, 0
+				l3.X, l3.Y, l3.Z, 0,
+				l4.X, l4.Y, l4.Z, 0
 			);
 
-			var m = Matrix.CreateFromQuaternion(_carRotation);
-			
+			var dir = new Vector3(0, -0.8f, -1);
+			dir = Vector3.Transform(dir, _carRotation);
 			_carLightDirections = new Matrix(
-				m.M11, m.M12, m.M13, m.M14,
-				0,0,0,0,
-				0, 0, 0, 0,
-				0, 0, 0, 0
-				);
-
-			base.Update(gameTime);
+				dir.X, dir.Y, dir.Z, 0,
+				dir.X, dir.Y, dir.Z, 0,
+				dir.X, dir.Y, dir.Z, 0,
+				dir.X, dir.Y, dir.Z, 0
+			);
 		}
 
 		private void UpdateCamera()
@@ -556,16 +568,17 @@ namespace RacingGame
 			_carLightPositions = new Matrix(
 				_carStartPosition.X + carLightXOffset, _carStartPosition.Y + carLightYOffset, _carStartPosition.Z + carLightZOffset, 0,
 				_carStartPosition.X - carLightXOffset, _carStartPosition.Y + carLightYOffset, _carStartPosition.Z + carLightZOffset, 0,
-				0, 0, 0, 0,
-				0, 0, 0, 0
+				_aiCarStartPosition.X + carLightXOffset, _aiCarStartPosition.Y + carLightYOffset, _aiCarStartPosition.Z + carLightZOffset, 0,
+				_aiCarStartPosition.X - carLightXOffset, _aiCarStartPosition.Y + carLightYOffset, _aiCarStartPosition.Z + carLightZOffset, 0
 			);
-
+			
 			_carLightColors = new Matrix(
-				1, 0, 0, 1,
-				0, 0, 1, 1,
-				0, 0, 0, 1,
-				0, 0, 0, 1
-            );
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1
+
+			);
 
 			_carLightDirections = new Matrix(
 				1, 0, 0, 0,
