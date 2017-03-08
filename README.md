@@ -52,3 +52,6 @@ Grafika 3D:
   * cieniowanie stałe
   * cieniowanie Gourauda
   * cieniowanie Phonga
+
+## TODO:
+Refactor RacingGame
