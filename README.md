@@ -38,3 +38,17 @@ Wypełnianie i obcinanie - podstawowa specyfikacja:
 
 ## GK3:
 Separacja RGB->YCbCr,HSV,Lab (dowolny profil kolorów)
+
+## GK4 (RacingGame):
+Grafika 3D:
+* Jeśli nie ustalono inaczej, w każdym projekcie min 3 kamery:
+  * nieruchoma obserwująca scenę
+  * nieruchoma śledząca ruchomy obiekt
+  * związana z ruchomym obiektem
+* W każdym projekcie mozliwość zmiany modelu oświetlenia:
+  * model Phonga
+  * model Blinna
+* W każdym projekcie (z wyjątkiem raytracingu) mozliwość zmiany trybu cieniowania (wypełniania trójkątów):
+  * cieniowanie stałe
+  * cieniowanie Gourauda
+  * cieniowanie Phonga
