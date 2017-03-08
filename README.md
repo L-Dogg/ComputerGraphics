@@ -34,4 +34,7 @@ Wypełnianie i obcinanie - podstawowa specyfikacja:
       * 'Zaburzenie' wektora normalnego - mapowanie nierówności (bump mapping) N' = N + D (zaburzenie)
     zaburzenie na podstawie mapy wysokości (height map) odczytywanej z tektury - algorytm Blinna
 * "obcinanie" wybranych dwóch wielokątów (z dwóch zaznaczonych powstaje jeden)
- * Część wspólna wielokątów - algorytm Weilera-Athertona - grupa a
+ * Część wspólna wielokątów - algorytm Weilera-Athertona
+
+## GK3:
+Separacja RGB->YCbCr,HSV,Lab (dowolny profil kolorów)
