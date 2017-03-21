@@ -53,5 +53,9 @@ Grafika 3D:
   * cieniowanie Gourauda
   * cieniowanie Phonga
 
+<p align="center">
+  <img src="http://i.imgur.com/JCU15hU.jpg" alt="Screenshot 1"/>
+</p>
+
 ## TODO:
 Refactor RacingGame
